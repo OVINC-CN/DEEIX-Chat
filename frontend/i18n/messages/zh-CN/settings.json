@@ -3,7 +3,7 @@
   "general": "通用",
   "account": "账户",
   "chat": "对话",
-  "subscription": "订阅",
+  "subscription": "计费",
   "about": "关于",
   "navigation": "设置导航",
   "aboutPage": {
@@ -365,7 +365,7 @@
     }
   },
   "subscriptionPage": {
-    "title": "订阅",
+    "title": "计费",
     "actions": {
       "cancel": "取消",
       "processing": "处理中"

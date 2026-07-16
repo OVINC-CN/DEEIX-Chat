@@ -3,7 +3,7 @@
   "general": "General",
   "account": "Account",
   "chat": "Chat",
-  "subscription": "Subscription",
+  "subscription": "Billing",
   "about": "About",
   "navigation": "Settings navigation",
   "aboutPage": {
@@ -365,7 +365,7 @@
     }
   },
   "subscriptionPage": {
-    "title": "Subscription",
+    "title": "Billing",
     "actions": {
       "cancel": "Cancel",
       "processing": "Processing"
