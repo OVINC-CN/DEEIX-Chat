@@ -3,10 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import {
-  Check,
-  ChevronDown,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import {
   Avatar,
@@ -17,13 +14,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItemIcon,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -32,13 +25,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { SpinnerLabel } from "@/components/ui/spinner";
-import { logout, patchMe } from "@/shared/api/auth";
+import { logout } from "@/shared/api/auth";
 import { useAuthSession } from "@/shared/auth/auth-session-context";
 import { clearSessionAndRedirectToLogin } from "@/shared/auth/session";
-import { dispatchUserProfileUpdated } from "@/shared/auth/user-profile-events";
 import { dispatchOpenAnnouncements, getAnnouncementUnread, subscribeAnnouncementUnreadChanged } from "@/shared/events/announcement-events";
-import { useAppLocale } from "@/i18n/app-i18n-provider";
-import { APP_LOCALE_LABELS, APP_LOCALES, type AppLocale } from "@/i18n/config";
 
 export function NavUser({
   user,
@@ -51,12 +41,10 @@ export function NavUser({
   };
 }) {
   const t = useTranslations("common.navigation");
-  const { locale, setLocale } = useAppLocale();
   const router = useRouter();
-  const { accessToken, user: sessionUser } = useAuthSession();
+  const { accessToken } = useAuthSession();
   const [open, setOpen] = React.useState(false);
   const [loggingOut, setLoggingOut] = React.useState(false);
-  const [savingLocale, setSavingLocale] = React.useState<AppLocale | null>(null);
   const [hasUnreadAnnouncement, setHasUnreadAnnouncement] = React.useState(() => getAnnouncementUnread());
   const skipTriggerFocusRef = React.useRef(false);
   const isAdmin = user.role === "admin" || user.role === "superadmin";
@@ -96,34 +84,6 @@ export function NavUser({
     setOpen(false);
     dispatchOpenAnnouncements();
   }, []);
-
-  const onLocaleSelect = React.useCallback(
-    async (nextLocale: AppLocale) => {
-      if (nextLocale === locale && !savingLocale) {
-        return;
-      }
-
-      if (sessionUser) {
-        dispatchUserProfileUpdated({ ...sessionUser, locale: nextLocale });
-      }
-      void setLocale(nextLocale);
-
-      if (!accessToken) {
-        return;
-      }
-
-      setSavingLocale(nextLocale);
-      try {
-        const nextUser = await patchMe(accessToken, { locale: nextLocale });
-        dispatchUserProfileUpdated(nextUser);
-      } catch {
-        // Keep the local language selection; a later profile refresh may retry or restore the server value.
-      } finally {
-        setSavingLocale((current) => (current === nextLocale ? null : current));
-      }
-    },
-    [accessToken, locale, savingLocale, sessionUser, setLocale],
-  );
 
   return (
     <SidebarMenu className="group-data-[collapsible=icon]:items-center">
@@ -178,26 +138,6 @@ export function NavUser({
                   {hasUnreadAnnouncement ? <span aria-hidden="true" className="size-1.5 rounded-full bg-destructive" /> : null}
                 </span>
               </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="focus:bg-accent/40 data-[state=open]:bg-accent/40">
-                  {t("language")}
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="min-w-32 p-1.5">
-                  {APP_LOCALES.map((item) => (
-                    <DropdownMenuItem
-                      key={item}
-                      disabled={savingLocale === item}
-                      onSelect={(event) => {
-                        event.preventDefault();
-                        void onLocaleSelect(item);
-                      }}
-                    >
-                      {APP_LOCALE_LABELS[item]}
-                      {locale === item ? <DropdownMenuItemIcon icon={Check} className="ml-auto" /> : null}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>

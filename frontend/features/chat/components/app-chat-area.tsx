@@ -60,6 +60,7 @@ import { cn } from "@/lib/utils";
 
 const DEFAULT_MCP_TOOLS_SETTING_KEY = "chat.default_mcp_tool_ids";
 const EMPTY_CONVERSATION_OPTIONS: ConversationOptions = {};
+const EMPTY_PROJECT_DEFAULT_SKILL_IDS: number[] = [];
 const TOP_LOAD_OLDER_MESSAGES_THRESHOLD_PX = 48;
 const SCREENSHOT_PREVIEW_CLOSE_DELAY_MS = 220;
 function dragEventContainsFiles(event: React.DragEvent<HTMLElement>): boolean {
@@ -245,10 +246,6 @@ export function AppChatArea() {
     return projects.find((item) => item.publicID === routeProjectID) ?? null;
   }, [conversationID, projects, routeProjectID]);
   const newConversationProjectID = !conversationID ? routeProjectID ?? requestedNewConversationProjectID : "";
-  const newConversationProject = React.useMemo(
-    () => projects.find((item) => item.publicID === newConversationProjectID) ?? null,
-    [newConversationProjectID, projects],
-  );
   const prependNewConversationInContext = React.useCallback(
     (platformModelName?: string) => prependNewConversation(platformModelName, newConversationProjectID || undefined),
     [newConversationProjectID, prependNewConversation],
@@ -318,24 +315,18 @@ export function AppChatArea() {
   const newConversationSelectionKey = `${newConversationRevision}:${newConversationProjectID || "unassigned"}`;
   const newConversationDefaultMCPToolIDs = React.useMemo(
     () => filterAvailableMCPToolIDs(
-      newConversationProject?.mcpDefaultMode === "custom"
-        ? newConversationProject.defaultMCPToolIDs
-        : defaultToolIDs,
+      defaultToolIDs,
       availableTools,
       mcpMaxSelectedTools,
     ),
-    [availableTools, defaultToolIDs, mcpMaxSelectedTools, newConversationProject],
-  );
-  const newConversationDefaultSkillIDs = React.useMemo(
-    () => (newConversationProject?.defaultSkillIDs ?? []).slice(0, mcpMaxSelectedTools),
-    [mcpMaxSelectedTools, newConversationProject],
+    [availableTools, defaultToolIDs, mcpMaxSelectedTools],
   );
   const { onSelectedSkillsChange, onSelectedToolsChange } = useNewConversationDefaults({
     conversationID,
     contextKey: newConversationSelectionKey,
-    defaultsPending: Boolean(newConversationProjectID && !newConversationProject),
+    defaultsPending: false,
     defaultMCPToolIDs: newConversationDefaultMCPToolIDs,
-    defaultSkillIDs: newConversationDefaultSkillIDs,
+    defaultSkillIDs: EMPTY_PROJECT_DEFAULT_SKILL_IDS,
     toolsLoading,
     setSelectedToolIDs,
     setSelectedSkills,

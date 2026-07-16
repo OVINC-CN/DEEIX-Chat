@@ -602,17 +602,17 @@ export function NavProjects() {
       await updateProject(draft.publicID, {
         name,
         systemPrompt: draft.systemPrompt.trim(),
-        mcpDefaultMode: draft.mcpDefaultMode,
-        defaultMCPToolIDs: draft.mcpDefaultMode === "custom" ? draft.defaultMCPToolIDs : [],
-        defaultSkillIDs: draft.defaultSkillIDs,
+        mcpDefaultMode: "inherit",
+        defaultMCPToolIDs: [],
+        defaultSkillIDs: [],
       });
     } else {
       await createProject({
         name,
         systemPrompt: draft.systemPrompt.trim(),
-        mcpDefaultMode: draft.mcpDefaultMode,
-        defaultMCPToolIDs: draft.mcpDefaultMode === "custom" ? draft.defaultMCPToolIDs : [],
-        defaultSkillIDs: draft.defaultSkillIDs,
+        mcpDefaultMode: "inherit",
+        defaultMCPToolIDs: [],
+        defaultSkillIDs: [],
       });
     }
     closeDraft();
@@ -692,9 +692,6 @@ export function NavProjects() {
                 onCreate={() => setDraft({
                   name: "",
                   systemPrompt: "",
-                  mcpDefaultMode: "inherit",
-                  defaultMCPToolIDs: [],
-                  defaultSkillIDs: [],
                 })}
                 onOpenChange={setProjectsOpen}
                 toggleLabel={projectsOpen ? t("collapseSection") : t("expandSection")}
@@ -723,9 +720,6 @@ export function NavProjects() {
               onCreate={() => setDraft({
                 name: "",
                 systemPrompt: "",
-                mcpDefaultMode: "inherit",
-                defaultMCPToolIDs: [],
-                defaultSkillIDs: [],
               })}
               onOpenChange={setProjectsOpen}
               toggleLabel={projectsOpen ? t("collapseSection") : t("expandSection")}
@@ -834,9 +828,6 @@ export function NavProjects() {
                                           publicID: project.publicID,
                                           name: project.name,
                                           systemPrompt: project.systemPrompt ?? "",
-                                          mcpDefaultMode: project.mcpDefaultMode ?? "inherit",
-                                          defaultMCPToolIDs: project.defaultMCPToolIDs ?? [],
-                                          defaultSkillIDs: project.defaultSkillIDs ?? [],
                                         });
                                       }}
                                     >
