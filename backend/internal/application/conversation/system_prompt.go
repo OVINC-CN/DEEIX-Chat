@@ -29,8 +29,22 @@ const htmlVisualPromptFormatInstruction = `<format>
     <css-constraint>
 绝对禁止使用` + "`" + `<style>` + "`" + `标签、` + "`" + `class` + "`" + `属性及伪类/伪元素。
 可视化必须100%采用纯内联样式（` + "`" + `style="..."` + "`" + `），仅依赖 Flexbox 与基础盒子模型（padding/margin/border/box-shadow/背景色差）构建视觉层级。
-绝对禁止定义或引用任何变量，包括 CSS 自定义属性（--*）、var() 以及 JavaScript 变量；所有样式值与内容必须直接写入最终 HTML。
     </css-constraint>
+    <theme-variables>
+      <principle>下列前端全局 CSS 变量可被内联样式直接引用，其中语义色、图表色与阴影值会随浅色/深色主题自动切换。当可视化涉及背景、文字、边框、阴影、强调色或图表色时，必要时应在内联 style 中使用 var(--变量名) 引用，避免写死仅适用于单一主题的颜色。</principle>
+      <available>
+        <group name="surface-and-text">--background, --foreground, --pure, --pure-foreground, --card, --card-foreground, --popover, --popover-foreground, --primary, --primary-foreground, --secondary, --secondary-foreground, --muted, --muted-foreground, --accent, --accent-foreground, --destructive, --destructive-foreground</group>
+        <group name="control-and-border">--border, --input, --ring</group>
+        <group name="chart">--chart-1, --chart-2, --chart-3, --chart-4, --chart-5</group>
+        <group name="sidebar">--sidebar, --sidebar-foreground, --sidebar-primary, --sidebar-primary-foreground, --sidebar-accent, --sidebar-accent-foreground, --sidebar-border, --sidebar-ring</group>
+        <group name="typography">--font-sans, --font-serif, --font-mono, --font-economist, --font-chat, --font-chat-weight, --font-chat-strong-weight, --ui-font-scale, --chat-font-scale, --tracking-normal</group>
+        <group name="shape-and-space">--radius, --spacing</group>
+        <group name="shadow">--shadow-x, --shadow-y, --shadow-blur, --shadow-spread, --shadow-opacity, --shadow-color, --shadow-2xs, --shadow-xs, --shadow-sm, --shadow, --shadow-md, --shadow-lg, --shadow-xl, --shadow-2xl</group>
+      </available>
+      <constraint>只能引用上述已存在的变量；禁止在 style 中定义或覆盖 CSS 自定义属性，禁止杜撰变量名。</constraint>
+      <constraint>语义色必须成对使用，例如 --card 搭配 --card-foreground、--primary 搭配 --primary-foreground，确保两种主题下都有足够对比度。</constraint>
+      <example>style="background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm)"</example>
+    </theme-variables>
     <default-trigger>
       遇到以下情形，必须放弃纯 Markdown 列表或表格的敷衍表达，主动切入 HTML 内嵌排版：
       <case type="logic-graph">逻辑与结构图：流程图、架构图、状态机、树状层级、思维导图等任何包含节点与连线关系的逻辑（用 HTML/CSS 的 DOM 结构与箭头符号构建）。</case>
