@@ -390,14 +390,6 @@ html[data-branding-pending] body {
     font-size: calc(15px * var(--ui-font-scale));
   }
 
-  .text-\[22px\] {
-    font-size: calc(22px * var(--ui-font-scale));
-  }
-
-  .text-\[32px\] {
-    font-size: calc(32px * var(--ui-font-scale));
-  }
-
   .text-\[0\.8rem\] {
     font-size: calc(0.8rem * var(--ui-font-scale));
   }
@@ -406,12 +398,6 @@ html[data-branding-pending] body {
   .chat-font-content .text-\[15px\],
   textarea.text-\[15px\] {
     font-size: calc(15px * var(--chat-font-scale));
-  }
-
-  @media (min-width: 48rem) {
-    .md\:text-\[32px\] {
-      font-size: calc(32px * var(--ui-font-scale));
-    }
   }
 
   .chat-font-content {
