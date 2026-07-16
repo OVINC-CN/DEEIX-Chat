@@ -17,14 +17,13 @@ import (
 )
 
 const (
-	conversationMetadataMessageMaxTokens    = int64(5000)
-	conversationFallbackTitleMaxRunes       = 16
-	conversationMetadataGenerationTimeout   = 90 * time.Second
-	conversationAutoGenerateTitleSettingKey = "chat.auto_generate_title"
-	conversationMetadataRefreshPending      = "pending"
-	conversationMetadataRefreshNotNeeded    = "not_needed"
-	conversationMetadataRefreshNoContent    = "skipped_no_titleable_content"
-	conversationMetadataTitlePrompt         = `Generate a concise title from the first conversation turn below. Return ONLY a valid JSON object.
+	conversationMetadataMessageMaxTokens  = int64(5000)
+	conversationFallbackTitleMaxRunes     = 16
+	conversationMetadataGenerationTimeout = 90 * time.Second
+	conversationMetadataRefreshPending    = "pending"
+	conversationMetadataRefreshNotNeeded  = "not_needed"
+	conversationMetadataRefreshNoContent  = "skipped_no_titleable_content"
+	conversationMetadataTitlePrompt       = `Generate a concise title from the first conversation turn below. Return ONLY a valid JSON object.
 
 ## Constraints
 1. **Content**: Reflect the primary topic, goal, or main subject.
@@ -120,7 +119,7 @@ func (s *Service) generateConversationMetadata(ctx context.Context, conversation
 	var updated *model.Conversation
 
 	shouldReplaceTitle := shouldAutoReplaceConversationTitle(conversation.Title)
-	shouldGenerateTitle := shouldReplaceTitle && s.autoGenerateConversationTitleEnabled(ctx, conversation.UserID)
+	shouldGenerateTitle := shouldReplaceTitle
 	fallbackTitle := conversationTitleFromFirstUserMessage(userMsg.Content)
 
 	if shouldGenerateTitle && !hasTitleableMessages {
@@ -588,17 +587,6 @@ func sanitizeGeneratedConversationLabels(raw []string) []string {
 		}
 	}
 	return labels
-}
-
-func (s *Service) autoGenerateConversationTitleEnabled(ctx context.Context, userID uint) bool {
-	value, err := s.repo.GetUserSettingValue(ctx, userID, conversationAutoGenerateTitleSettingKey)
-	if err != nil {
-		if s.logger != nil {
-			s.logger.Warn("conversation_title_setting_load_failed", zap.Uint("user_id", userID), zap.Error(err))
-		}
-		return true
-	}
-	return strings.TrimSpace(strings.ToLower(value)) != "false"
 }
 
 func shouldAutoReplaceConversationTitle(title string) bool {

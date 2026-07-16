@@ -33,7 +33,6 @@ import { resolveAccessToken } from "@/shared/auth/resolve-access-token";
 import { listUserMemories, upsertUserMemory, deleteUserMemory } from "@/shared/api/memory";
 import type { UserMemoryDTO } from "@/shared/api/memory.types";
 import { useDialogSnapshot } from "@/shared/hooks/use-dialog-snapshot";
-import { ModelSelect, type ModelSelectOption } from "@/shared/components/model-select";
 import {
   SettingsFieldList,
   SettingsFieldRow,
@@ -41,15 +40,9 @@ import {
   SettingsSection,
   SettingsSectionSeparator,
 } from "@/shared/components/settings-layout";
-import { resolveModelOptionIconUrl, resolveModelOptionLabel } from "@/shared/lib/model-option-display";
-import { parseKindsJSON } from "@/shared/model/llm-schema";
 import { platformModifierLabel, platformSendShortcut } from "@/shared/lib/platform-shortcuts";
 import type { SendShortcut } from "@/features/settings/types/settings";
 import { ChatDisplayAppearance } from "./chat-display-appearance";
-
-type ModelOption = ModelSelectOption;
-
-const SYSTEM_RECOMMENDED_MODEL = "none";
 
 // Preference memory section.
 
@@ -431,32 +424,11 @@ export function SettingsChat() {
   const {
     settings,
     loading,
-    vendorGroups,
     handleBool,
     handleEnum,
-    handleDefaultModel,
   } = useSettingsChat();
   const [modifierLabel, setModifierLabel] = React.useState<"Command" | "Ctrl">("Ctrl");
   const [modifierShortcut, setModifierShortcut] = React.useState<Exclude<SendShortcut, "enter">>("ctrl_enter");
-  const modelOptions = React.useMemo<ModelOption[]>(
-    () => [
-      { label: t("defaultModel.systemRecommended"), value: SYSTEM_RECOMMENDED_MODEL, iconUrl: null },
-      ...vendorGroups.flatMap(([, items]) =>
-        items
-          .filter((model) => model.platformModelName.trim() && parseKindsJSON(model.kindsJSON).includes("chat"))
-          .map((model) => ({
-            label: resolveModelOptionLabel(model.platformModelName),
-            value: model.platformModelName,
-            iconUrl: resolveModelOptionIconUrl({
-              platformModelName: model.platformModelName,
-              vendor: model.vendor ?? "",
-              icon: model.icon ?? "",
-            }),
-          })),
-      ),
-    ],
-    [t, vendorGroups],
-  );
 
   React.useEffect(() => {
     setModifierLabel(platformModifierLabel());
@@ -471,43 +443,6 @@ export function SettingsChat() {
 
   return (
     <SettingsPage>
-      <SettingsSection title={t("defaultModel.sectionTitle")}>
-        <SettingsFieldList>
-          <SettingsFieldRow
-            title={t("defaultModel.title")}
-            description={t("defaultModel.description")}
-          >
-            {loading ? (
-              <Skeleton className="h-8 w-full rounded-md" />
-            ) : (
-              <ModelSelect
-                value={settings.defaultModel}
-                fallbackValue={SYSTEM_RECOMMENDED_MODEL}
-                options={modelOptions}
-                contentClassName="min-w-[min(320px,calc(100vw-2rem))]"
-                onChange={handleDefaultModel}
-                disabled={loading}
-              />
-            )}
-          </SettingsFieldRow>
-          <div className="pt-4">
-            <SettingsFieldRow
-              title={t("defaultModel.autoTitle")}
-              description={t("defaultModel.autoTitleDescription")}
-            >
-              <Switch
-                checked={settings.autoGenerateTitle}
-                onCheckedChange={handleBool("chat.auto_generate_title", "autoGenerateTitle")}
-                disabled={loading}
-                aria-label={t("defaultModel.autoTitle")}
-              />
-            </SettingsFieldRow>
-          </div>
-        </SettingsFieldList>
-      </SettingsSection>
-
-      <SettingsSectionSeparator />
-
       <SettingsSection title={t("input.sectionTitle")}>
         <SettingsFieldList>
           <SettingsFieldRow

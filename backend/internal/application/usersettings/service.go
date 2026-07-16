@@ -22,7 +22,7 @@ func (e *ErrValidation) Error() string { return e.Msg }
 // allowedKeys 是用户可配置的 key 集合及其默认值。
 var allowedKeys = map[string]string{
 	"chat.file_mode":                            "auto",
-	"chat.send_on_enter":                        "enter",
+	"chat.send_on_enter":                        "ctrl_enter",
 	"chat.show_token_usage":                     "true",
 	"chat.show_model_info":                      "true",
 	"chat.show_latency":                         "true",
@@ -48,6 +48,7 @@ var fixedSettings = map[string]string{
 	"chat.show_model_info":            "true",
 	"chat.show_latency":               "true",
 	"chat.show_billing_cost":          "true",
+	"chat.auto_generate_title":        "true",
 	"chat.context_compact_auto":       "false",
 	"chat.markdown_render":            "true",
 	"chat.reuse_model_options":        "false",

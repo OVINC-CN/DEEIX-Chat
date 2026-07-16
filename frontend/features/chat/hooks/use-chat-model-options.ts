@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 import type {
   ChatModelOption,
@@ -20,7 +21,7 @@ import { listConversationRuns } from "@/shared/api/conversation";
 import { listPublicModels } from "@/shared/api/model";
 import { getBillingConfig } from "@/shared/api/billing";
 import { getMCPPolicy, getModelOptionPolicy } from "@/shared/api/settings";
-import { getUserSettings } from "@/shared/api/user-settings";
+import { getUserSettings, patchUserSettings } from "@/shared/api/user-settings";
 import type { PublicModelDTO } from "@/shared/api/model.types";
 import type { ModelNativeToolConfig, ModelOptionPolicy } from "@/shared/lib/model-option-policy";
 import { parseKindsJSON } from "@/shared/model/llm-schema";
@@ -322,11 +323,9 @@ function toChatModelOption(item: PublicModelDTO): ChatModelOption {
 
 export function useChatModelOptions({
   conversationPublicID,
-  conversationModel,
   resetToken,
 }: {
   conversationPublicID: string | null;
-  conversationModel?: string | null;
   resetToken?: number;
 }) {
   const t = useTranslations("chat.models");
@@ -334,8 +333,8 @@ export function useChatModelOptions({
   const [modelsLoading, setModelsLoading] = React.useState(true);
   const [modelsErrorMsg, setModelsErrorMsg] = React.useState("");
   const [selectedPlatformModelName, setSelectedPlatformModelName] = React.useState("");
-  const [userDefaultModel, setUserDefaultModel] = React.useState("");
-  const [sendShortcut, setSendShortcut] = React.useState<SendShortcut>("enter");
+  const [userSelectedModel, setUserSelectedModel] = React.useState("");
+  const [sendShortcut, setSendShortcut] = React.useState<SendShortcut>("ctrl_enter");
   const [restoreDraftOnFailure, setRestoreDraftOnFailure] = React.useState(true);
   const [preserveConversationDrafts, setPreserveConversationDrafts] = React.useState(true);
   const [inputHeight, setInputHeight] = React.useState<"compact" | "standard" | "loose">("standard");
@@ -348,12 +347,41 @@ export function useChatModelOptions({
   const activeConversationRef = React.useRef<string | null>(null);
   const userSelectedModelRef = React.useRef(false);
   const runModelRequestRef = React.useRef(0);
+  const persistModelRequestRef = React.useRef(0);
+  const persistModelQueueRef = React.useRef<Promise<void>>(Promise.resolve());
   const modelCatalogRequestRef = React.useRef<Promise<ModelCatalogRefreshResult> | null>(null);
 
-  const selectPlatformModelName = React.useCallback((platformModelName: string) => {
+  const setCurrentPlatformModelName = React.useCallback((platformModelName: string) => {
     userSelectedModelRef.current = true;
     setSelectedPlatformModelName(platformModelName);
   }, []);
+
+  const selectPlatformModelName = React.useCallback((platformModelName: string) => {
+    const normalizedName = platformModelName.trim();
+    setCurrentPlatformModelName(normalizedName);
+    setUserSelectedModel(normalizedName);
+
+    const requestID = persistModelRequestRef.current + 1;
+    persistModelRequestRef.current = requestID;
+    const request = persistModelQueueRef.current
+      .catch(() => undefined)
+      .then(async () => {
+        const token = await resolveAccessToken();
+        if (!token) {
+          throw new Error("missing access token");
+        }
+        const settings = await patchUserSettings(token, { "chat.default_model": normalizedName });
+        if (persistModelRequestRef.current === requestID) {
+          setUserSelectedModel(settings["chat.default_model"]?.trim() ?? normalizedName);
+        }
+      });
+    persistModelQueueRef.current = request;
+    void request.catch(() => {
+      if (persistModelRequestRef.current === requestID) {
+        toast.error(t("selectionSaveFailed"));
+      }
+    });
+  }, [setCurrentPlatformModelName, t]);
 
   const loadModelCatalog = React.useCallback((accessToken?: string): Promise<ModelCatalogRefreshResult> => {
     if (modelCatalogRequestRef.current) {
@@ -427,7 +455,7 @@ export function useChatModelOptions({
         }
         applyModelCatalog(catalog);
         setMCPMaxSelectedTools(resolveMCPMaxSelectedTools(nextMCPPolicy?.maxSelectedToolsPerMessage));
-        setUserDefaultModel(settings["chat.default_model"]?.trim() ?? "");
+        setUserSelectedModel(settings["chat.default_model"]?.trim() ?? "");
         setSendShortcut(parseSendShortcut(settings["chat.send_on_enter"]));
         setRestoreDraftOnFailure(settings["chat.restore_draft_on_failure"] !== "false");
         setPreserveConversationDrafts(settings["chat.preserve_conversation_drafts"] !== "false");
@@ -475,8 +503,9 @@ export function useChatModelOptions({
   React.useEffect(() => {
     const normalizedConversationID = conversationPublicID?.trim() || null;
     if (!normalizedConversationID) {
-      // 无会话状态也可能来自当前页点击“新对话”，要保留用户刚在选择器里切换的模型。
       activeConversationRef.current = null;
+      userSelectedModelRef.current = false;
+      runModelRequestRef.current += 1;
       return;
     }
 
@@ -484,11 +513,11 @@ export function useChatModelOptions({
     if (conversationChanged) {
       activeConversationRef.current = normalizedConversationID;
       userSelectedModelRef.current = false;
+      setSelectedPlatformModelName("");
     }
 
-    const fallbackModel = conversationModel?.trim() || "";
-    if (!userSelectedModelRef.current) {
-      setSelectedPlatformModelName(fallbackModel);
+    if (userSelectedModelRef.current || availableModels.length === 0) {
+      return;
     }
 
     let cancelled = false;
@@ -501,21 +530,47 @@ export function useChatModelOptions({
         return;
       }
 
-      const runs = await listConversationRuns(token, normalizedConversationID, { page: 1, pageSize: 1 });
+      const [runs, fallback] = await Promise.all([
+        listConversationRuns(token, normalizedConversationID, { page: 1, pageSize: 1 }).catch(() => null),
+        resolveConversationDefaultModel({
+          accessToken: token,
+          availableModels,
+          userDefaultModel: userSelectedModel,
+        }),
+      ]);
       if (cancelled || requestID !== runModelRequestRef.current || userSelectedModelRef.current) {
         return;
       }
 
-      const latestRunModel = runs.results[0]?.platformModelName?.trim() || "";
-      setSelectedPlatformModelName(latestRunModel || fallbackModel);
+      const latestRunModel = runs?.results[0]?.platformModelName?.trim() || "";
+      const latestRunModelAvailable = availableModels.some(
+        (item) => item.platformModelName === latestRunModel,
+      );
+      setSelectedPlatformModelName(latestRunModelAvailable ? latestRunModel : fallback.platformModelName);
     }
 
-    void loadLatestRunModel().catch(() => undefined);
+    void loadLatestRunModel().catch(async () => {
+      if (cancelled || requestID !== runModelRequestRef.current || userSelectedModelRef.current) {
+        return;
+      }
+      const token = await resolveAccessToken();
+      if (!token || cancelled || requestID !== runModelRequestRef.current || userSelectedModelRef.current) {
+        return;
+      }
+      const fallback = await resolveConversationDefaultModel({
+        accessToken: token,
+        availableModels,
+        userDefaultModel: userSelectedModel,
+      }).catch(() => ({ platformModelName: availableModels[0]?.platformModelName ?? "" }));
+      if (!cancelled && requestID === runModelRequestRef.current && !userSelectedModelRef.current) {
+        setSelectedPlatformModelName(fallback.platformModelName);
+      }
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [conversationModel, conversationPublicID, resetToken]);
+  }, [availableModels, conversationPublicID, resetToken, userSelectedModel]);
 
   React.useEffect(() => {
     if (availableModels.length === 0) {
@@ -534,7 +589,7 @@ export function useChatModelOptions({
       const result = await resolveConversationDefaultModel({
         accessToken: token,
         availableModels,
-        userDefaultModel,
+        userDefaultModel: userSelectedModel,
       });
       if (!cancelled && !userSelectedModelRef.current) {
         setSelectedPlatformModelName(result.platformModelName);
@@ -549,7 +604,7 @@ export function useChatModelOptions({
     return () => {
       cancelled = true;
     };
-  }, [availableModels, conversationPublicID, resetToken, userDefaultModel]);
+  }, [availableModels, conversationPublicID, resetToken, userSelectedModel]);
 
   const modelOptions = React.useMemo<ChatModelOption[]>(
     () =>
@@ -579,5 +634,6 @@ export function useChatModelOptions({
     mcpMaxSelectedTools,
     selectedPlatformModelName,
     setSelectedPlatformModelName: selectPlatformModelName,
+    setCurrentPlatformModelName,
   };
 }

@@ -7,7 +7,6 @@ import { getUserSettings } from "@/shared/api/user-settings";
 import { useAuthSession } from "@/shared/auth/auth-session-context";
 
 type ChatPreferences = {
-  autoGenerateTitle: boolean;
   deleteFilesByDefault: boolean;
 };
 
@@ -16,7 +15,6 @@ type ChatPreferencesState = ChatPreferences & {
 };
 
 const DEFAULT_CHAT_PREFERENCES: ChatPreferences = {
-  autoGenerateTitle: true,
   deleteFilesByDefault: false,
 };
 
@@ -27,7 +25,6 @@ let pendingPreferences: Promise<ChatPreferences> | null = null;
 
 function resolveChatPreferences(settings: Record<string, string>): ChatPreferences {
   return {
-    autoGenerateTitle: settings["chat.auto_generate_title"] !== "false",
     deleteFilesByDefault: settings["chat.delete_conversation_files_by_default"] === "true",
   };
 }

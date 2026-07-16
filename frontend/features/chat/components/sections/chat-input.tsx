@@ -222,7 +222,7 @@ function ChatInputComponent({
   uploading,
   isConversationMode,
   fileMode,
-  sendShortcut = "enter",
+  sendShortcut = "ctrl_enter",
   inputHeight = "standard",
   attachments,
   uploadingAttachments,

@@ -273,9 +273,9 @@ export function AppChatArea() {
     mcpMaxSelectedTools,
     selectedPlatformModelName,
     setSelectedPlatformModelName,
+    setCurrentPlatformModelName,
   } = useChatModelOptions({
     conversationPublicID: conversationID,
-    conversationModel: currentConversation?.model ?? null,
     resetToken: newConversationRevision,
   });
   const {
@@ -610,7 +610,7 @@ export function AppChatArea() {
         );
         const fallbackModel = sourceModel ?? modelOptions.find((item) => item.kinds.includes("image_edit"));
         if (fallbackModel) {
-          setSelectedPlatformModelName(fallbackModel.platformModelName);
+          setCurrentPlatformModelName(fallbackModel.platformModelName);
         }
       }
 
@@ -621,7 +621,7 @@ export function AppChatArea() {
       modelOptions,
       selectedModel,
       setAttachments,
-      setSelectedPlatformModelName,
+      setCurrentPlatformModelName,
       t,
     ],
   );

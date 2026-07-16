@@ -295,7 +295,8 @@
   },
   "models": {
     "signInRequired": "Sign in before loading models.",
-    "loadFailed": "Failed to load models. Please try again later."
+    "loadFailed": "Failed to load models. Please try again later.",
+    "selectionSaveFailed": "Failed to save the model selection. Refreshing may restore the previous selection."
   },
   "meta": {
     "inputTokens": "Input tokens",

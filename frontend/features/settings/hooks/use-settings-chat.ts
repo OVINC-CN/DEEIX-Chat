@@ -7,23 +7,18 @@ import { toast } from "sonner";
 import type { ChatSettings } from "@/features/settings/types/settings";
 import {
   DEFAULT_CHAT_SETTINGS,
-  groupModelsByVendor,
   parseChatSettings,
 } from "@/features/settings/utils/chat-settings";
 import { dispatchUserSettingsUpdated } from "@/features/settings/events/user-settings-events";
 import { useAuthSession } from "@/shared/auth/auth-session-context";
-import { listPublicModels } from "@/shared/api/model";
 import { getUserSettings, patchUserSettings } from "@/shared/api/user-settings";
-import type { PublicModelDTO } from "@/shared/api/model.types";
 import { useLocalizedErrorMessage } from "@/i18n/use-localized-error";
 
 type UseSettingsChatResult = {
   settings: ChatSettings;
   loading: boolean;
-  vendorGroups: ReturnType<typeof groupModelsByVendor>;
   handleBool: (key: string, field: keyof ChatSettings) => (checked: boolean) => void;
   handleEnum: (key: string, field: keyof ChatSettings) => (value: string) => void;
-  handleDefaultModel: (value: string) => void;
 };
 
 export function useSettingsChat(): UseSettingsChatResult {
@@ -31,7 +26,6 @@ export function useSettingsChat(): UseSettingsChatResult {
   const translateError = useLocalizedErrorMessage();
   const { accessToken } = useAuthSession();
   const [settings, setSettings] = React.useState<ChatSettings>(DEFAULT_CHAT_SETTINGS);
-  const [models, setModels] = React.useState<PublicModelDTO[]>([]);
   const [loading, setLoading] = React.useState(true);
   const settingRequestSeqRef = React.useRef<Record<string, number>>({});
 
@@ -40,17 +34,13 @@ export function useSettingsChat(): UseSettingsChatResult {
 
     void (async () => {
       try {
-        const [map, modelList] = await Promise.all([
-          getUserSettings(accessToken),
-          listPublicModels(accessToken).catch((): PublicModelDTO[] => []),
-        ]);
+        const map = await getUserSettings(accessToken);
 
         if (cancelled) {
           return;
         }
 
         setSettings(parseChatSettings(map));
-        setModels(modelList);
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -62,8 +52,6 @@ export function useSettingsChat(): UseSettingsChatResult {
       cancelled = true;
     };
   }, [accessToken]);
-
-  const vendorGroups = React.useMemo(() => groupModelsByVendor(models), [models]);
 
   const persistSetting = React.useCallback(
     <K extends keyof ChatSettings>(key: string, field: K, value: string, previousValue: ChatSettings[K]) => {
@@ -109,23 +97,10 @@ export function useSettingsChat(): UseSettingsChatResult {
     [persistSetting],
   );
 
-  const handleDefaultModel = React.useCallback(
-    (value: string) => {
-      const code = value === "none" ? "" : value;
-      setSettings((previous) => {
-        persistSetting("chat.default_model", "defaultModel", code, previous.defaultModel);
-        return { ...previous, defaultModel: code };
-      });
-    },
-    [persistSetting],
-  );
-
   return {
     settings,
     loading,
-    vendorGroups,
     handleBool,
     handleEnum,
-    handleDefaultModel,
   };
 }
