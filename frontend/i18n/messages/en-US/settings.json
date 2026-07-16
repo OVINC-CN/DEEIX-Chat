@@ -333,15 +333,6 @@
       "deleteFilesDefaultTitle": "Delete files by default when deleting chats",
       "deleteFilesDefaultDescription": "When enabled, delete confirmations select file deletion by default. Files still referenced by other conversations are kept."
     },
-    "display": {
-      "sectionTitle": "Display and rendering",
-      "widthTitle": "Chat area width",
-      "width": {
-        "compact": "Compact",
-        "standard": "Standard",
-        "wide": "Wide"
-      }
-    },
     "memory": {
       "sectionTitle": "AI preference memory",
       "save": "Save",

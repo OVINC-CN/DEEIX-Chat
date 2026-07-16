@@ -1,4 +1,3 @@
-import type { ChatContentWidth } from "@/shared/model/chat-content-width";
 import type { FontSizeOption } from "@/features/settings/utils/font-size";
 
 export type SendShortcut = "enter" | "ctrl_enter" | "meta_enter";
@@ -9,7 +8,6 @@ export type ChatSettings = {
   restoreDraftOnFailure: boolean;
   preserveConversationDrafts: boolean;
   inputHeight: ChatInputHeight;
-  contentWidth: ChatContentWidth;
 };
 
 export type ProfileDraft = {

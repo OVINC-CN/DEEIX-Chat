@@ -333,15 +333,6 @@
       "deleteFilesDefaultTitle": "删除会话时默认删除文件",
       "deleteFilesDefaultDescription": "开启后，删除会话确认框会默认勾选同时删除文件；仍被其他会话引用的文件会保留。"
     },
-    "display": {
-      "sectionTitle": "显示与渲染",
-      "widthTitle": "对话区域宽度",
-      "width": {
-        "compact": "紧凑",
-        "standard": "标准",
-        "wide": "宽屏"
-      }
-    },
     "memory": {
       "sectionTitle": "AI 偏好记忆",
       "save": "保存",

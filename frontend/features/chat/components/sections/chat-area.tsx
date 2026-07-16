@@ -447,7 +447,7 @@ export function ChatArea({
   billingDisplayCurrency = "USD",
   billingDisplayUsdToCnyRate = null,
   splitRightInset = false,
-  contentWidthClassName = "max-w-[1080px]",
+  contentWidthClassName = "max-w-[800px]",
   onScreenshotFull,
   onScreenshotSelect,
   screenshot,

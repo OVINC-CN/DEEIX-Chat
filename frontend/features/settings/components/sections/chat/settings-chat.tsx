@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { ChatContentWidth } from "@/shared/model/chat-content-width";
 import { useSettingsChat } from "@/features/settings/hooks/use-settings-chat";
 import { useLocalizedErrorMessage } from "@/i18n/use-localized-error";
 import { resolveAccessToken } from "@/shared/auth/resolve-access-token";
@@ -42,7 +41,6 @@ import {
 } from "@/shared/components/settings-layout";
 import { platformModifierLabel, platformSendShortcut } from "@/shared/lib/platform-shortcuts";
 import type { SendShortcut } from "@/features/settings/types/settings";
-import { ChatDisplayAppearance } from "./chat-display-appearance";
 
 // Preference memory section.
 
@@ -437,10 +435,6 @@ export function SettingsChat() {
 
   const sendShortcutLabel = settings.sendShortcut === "enter" ? "Enter" : `${modifierLabel}+Enter`;
 
-  const handleContentWidthChange = React.useCallback((value: ChatContentWidth) => {
-    handleEnum("chat.content_width", "contentWidth")(value);
-  }, [handleEnum]);
-
   return (
     <SettingsPage>
       <SettingsSection title={t("input.sectionTitle")}>
@@ -522,20 +516,6 @@ export function SettingsChat() {
                 aria-label={t("input.deleteFilesDefaultTitle")}
               />
             </SettingsFieldRow>
-          </div>
-        </SettingsFieldList>
-      </SettingsSection>
-
-      <SettingsSectionSeparator />
-
-      <SettingsSection title={t("display.sectionTitle")}>
-        <SettingsFieldList>
-          <div>
-            <ChatDisplayAppearance
-              contentWidth={settings.contentWidth}
-              onContentWidthChange={handleContentWidthChange}
-              disabled={loading}
-            />
           </div>
         </SettingsFieldList>
       </SettingsSection>

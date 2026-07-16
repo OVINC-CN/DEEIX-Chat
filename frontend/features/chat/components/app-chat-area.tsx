@@ -27,7 +27,6 @@ import { useChatScreenshot } from "@/features/chat/hooks/use-chat-screenshot";
 import { useChatVisualPrompt } from "@/features/chat/hooks/use-chat-visual-prompt";
 import { ChatInput } from "@/features/chat/components/sections/chat-input";
 import { ChatScreenshotPreviewDialog } from "@/features/chat/components/sections/chat-screenshot-preview-dialog";
-import { resolveChatContentWidthClassName } from "@/shared/model/chat-content-width";
 import { DeleteFilesOption } from "@/shared/components/delete-files-option";
 import { useSettingsChatPreferences } from "@/features/settings/hooks/use-settings-chat-preferences";
 import {
@@ -261,7 +260,6 @@ export function AppChatArea() {
     restoreDraftOnFailure,
     preserveConversationDrafts,
     inputHeight,
-    contentWidth,
     markdownRender,
     showModelInfo,
     showLatency,
@@ -1061,7 +1059,7 @@ export function AppChatArea() {
     onEditQueuedMessage,
     onGuideQueuedMessage,
   };
-  const chatContentWidthClassName = resolveChatContentWidthClassName(contentWidth);
+  const chatContentWidthClassName = "max-w-[800px]";
   const isConversationLoading = Boolean(conversationID) && loading && visibleMessageCount === 0 && messagesWithInlineError.length === 0;
   const isConversationLoadFailed = Boolean(conversationID) && !loading && errorMsg.trim().length > 0 && visibleMessageCount === 0;
   const shouldUseCenteredComposer =

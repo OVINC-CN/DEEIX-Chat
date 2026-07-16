@@ -173,7 +173,7 @@ export function ChatMessageBot({
   onEditImageAttachment,
   artifactActions,
   showBranchNavigator = true,
-  contentWidthClassName = "max-w-[1080px]",
+  contentWidthClassName = "max-w-[800px]",
   screenshotMeta,
 }: ChatMessageBotProps) {
   const tCommon = useTranslations("common.actions");

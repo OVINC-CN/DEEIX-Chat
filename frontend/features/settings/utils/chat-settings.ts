@@ -1,4 +1,3 @@
-import { parseChatContentWidth } from "@/shared/model/chat-content-width";
 import type { ChatInputHeight, ChatSettings, SendShortcut } from "@/features/settings/types/settings";
 import type { UserSettingsMap } from "@/shared/api/user-settings";
 import { platformSendShortcut } from "@/shared/lib/platform-shortcuts";
@@ -12,12 +11,10 @@ export const DEFAULT_CHAT_SETTINGS: ChatSettings = {
   restoreDraftOnFailure: true,
   preserveConversationDrafts: true,
   inputHeight: "standard",
-  contentWidth: "compact",
 };
 
 export function parseChatSettings(map: UserSettingsMap): ChatSettings {
   const inputHeight = map["chat.input_height"];
-  const contentWidth = map["chat.content_width"];
   const sendShortcut = map["chat.send_on_enter"];
 
   return {
@@ -26,7 +23,6 @@ export function parseChatSettings(map: UserSettingsMap): ChatSettings {
     restoreDraftOnFailure: map["chat.restore_draft_on_failure"] !== "false",
     preserveConversationDrafts: map["chat.preserve_conversation_drafts"] !== "false",
     inputHeight: INPUT_HEIGHTS.includes(inputHeight as ChatInputHeight) ? (inputHeight as ChatInputHeight) : "standard",
-    contentWidth: parseChatContentWidth(contentWidth),
   };
 }
 
