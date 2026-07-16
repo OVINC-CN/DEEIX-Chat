@@ -14,15 +14,11 @@ import (
 )
 
 const (
-	defaultAppName                      = "DEEIX Chat"
-	defaultBrandTitle                   = "DEEIX Chat"
-	defaultBrandShortName               = "DEEIX"
-	defaultBrandDescription             = "DEEIX Chat is a multi-model AI conversation system."
-	defaultBrandFaviconURL              = "/favicon.ico"
-	defaultBrandPWAIcon192URL           = "/pwa/icon-192.png"
-	defaultBrandPWAIcon512URL           = "/pwa/icon-512.png"
-	defaultBrandPWAMaskableIcon512URL   = "/pwa/icon-maskable-512.png"
-	defaultBrandAppleTouchIcon180URL    = "/pwa/apple-touch-icon.png"
+	defaultAppName                      = "OVINC Chat"
+	defaultBrandTitle                   = "OVINC Chat"
+	defaultBrandShortName               = "OVINC"
+	defaultBrandDescription             = "OVINC Chat is a multi-model AI conversation system."
+	defaultBrandFaviconURL              = "/favicon.png"
 	defaultJWTSecret                    = "deeix-chat-dev-secret"
 	defaultDataEncryptionKey            = "deeix-chat-dev-data-encryption-key"
 	defaultAdminUsername                = "admin"
@@ -192,15 +188,11 @@ type yamlConfig struct {
 		Env  string `yaml:"env"`
 	} `yaml:"app"`
 	Branding struct {
-		Title                 string `yaml:"title"`
-		ShortName             string `yaml:"short_name"`
-		Description           string `yaml:"description"`
-		LogoURL               string `yaml:"logo_url"`
-		FaviconURL            string `yaml:"favicon_url"`
-		PWAIcon192URL         string `yaml:"pwa_icon_192_url"`
-		PWAIcon512URL         string `yaml:"pwa_icon_512_url"`
-		PWAMaskableIcon512URL string `yaml:"pwa_maskable_icon_512_url"`
-		AppleTouchIcon180URL  string `yaml:"apple_touch_icon_180_url"`
+		Title       string `yaml:"title"`
+		ShortName   string `yaml:"short_name"`
+		Description string `yaml:"description"`
+		LogoURL     string `yaml:"logo_url"`
+		FaviconURL  string `yaml:"favicon_url"`
 	} `yaml:"branding"`
 	Server struct {
 		HTTPPort                 string `yaml:"http_port"`
@@ -299,10 +291,6 @@ type Config struct {
 	BrandDescription             string
 	BrandLogoURL                 string
 	BrandFaviconURL              string
-	BrandPWAIcon192URL           string
-	BrandPWAIcon512URL           string
-	BrandPWAMaskableIcon512URL   string
-	BrandAppleTouchIcon180URL    string
 	HTTPPort                     string
 	CORSAllowOrigin              string
 	TrustedProxies               string
@@ -532,10 +520,6 @@ func Load() Config {
 		BrandDescription:             valueOrDefault(yc.Branding.Description, defaultBrandDescription),
 		BrandLogoURL:                 strings.TrimSpace(yc.Branding.LogoURL),
 		BrandFaviconURL:              valueOrDefault(yc.Branding.FaviconURL, defaultBrandFaviconURL),
-		BrandPWAIcon192URL:           valueOrDefault(yc.Branding.PWAIcon192URL, defaultBrandPWAIcon192URL),
-		BrandPWAIcon512URL:           valueOrDefault(yc.Branding.PWAIcon512URL, defaultBrandPWAIcon512URL),
-		BrandPWAMaskableIcon512URL:   valueOrDefault(yc.Branding.PWAMaskableIcon512URL, defaultBrandPWAMaskableIcon512URL),
-		BrandAppleTouchIcon180URL:    valueOrDefault(yc.Branding.AppleTouchIcon180URL, defaultBrandAppleTouchIcon180URL),
 		HTTPPort:                     envOr("HTTP_PORT", yc.Server.HTTPPort, "8080"),
 		CORSAllowOrigin:              envOr("CORS_ALLOW_ORIGIN", yc.Server.CORSAllowOrigin, "http://127.0.0.1:8080,http://localhost:8080"),
 		TrustedProxies:               envOr("TRUSTED_PROXIES", yc.Server.TrustedProxies, ""),

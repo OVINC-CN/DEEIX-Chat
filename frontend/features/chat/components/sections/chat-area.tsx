@@ -208,17 +208,17 @@ function ChatScreenshotBrandMark({ placement }: { placement: "top" | "bottom" })
     >
       {placement === "top" ? (
         <>
-          <AppLogo width={65} height={20} className="h-5 w-auto opacity-75" />
+          <AppLogo width={86} height={20} className="h-5 w-auto opacity-75" />
           {branding.logoURL ? <PoweredByDeeix className="text-[10px]" /> : null}
         </>
       ) : branding.logoURL ? (
         <>
-          <AppLogo width={65} height={20} className="h-5 w-auto opacity-75" />
+          <AppLogo width={86} height={20} className="h-5 w-auto opacity-75" />
           <span aria-hidden="true" className="h-4 w-px bg-border" />
-          <DeeixLogo width={65} height={20} className="h-5 w-auto opacity-75" />
+          <DeeixLogo width={86} height={20} className="h-5 w-auto opacity-75" />
         </>
       ) : (
-        <DeeixLogo width={65} height={20} className="h-5 w-auto opacity-75" />
+        <DeeixLogo width={86} height={20} className="h-5 w-auto opacity-75" />
       )}
     </div>
   );

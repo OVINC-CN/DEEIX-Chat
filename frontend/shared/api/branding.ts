@@ -6,10 +6,6 @@ export type BrandingDTO = {
   description: string;
   logoURL: string;
   faviconURL: string;
-  pwaIcon192URL: string;
-  pwaIcon512URL: string;
-  pwaMaskableIcon512URL: string;
-  appleTouchIcon180URL: string;
 };
 
 export function getPublicBranding(): Promise<BrandingDTO> {

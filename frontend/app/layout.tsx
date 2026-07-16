@@ -20,10 +20,6 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-  },
   formatDetection: {
     telephone: false,
   },

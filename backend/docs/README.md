@@ -1,4 +1,4 @@
-# DEEIX Chat Backend Documentation
+# OVINC Chat Backend Documentation
 
 This directory contains generated backend API documentation.
 

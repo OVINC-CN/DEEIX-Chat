@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./frontend/public/logo-white.svg" />
-    <img src="./frontend/public/logo-black.svg" alt="DEEIX Chat" width="160" />
-  </picture>
+  <img src="./frontend/public/favicon.png" alt="OVINC Chat" width="128" />
 </p>
 
 <p align="center">
@@ -26,11 +23,11 @@
 
 ## Overview
 
-DEEIX Chat is an open-source, deployable AI platform for individuals, teams, and enterprises that need long-term, stable, and unified access to multiple model providers. It provides one clear entry point for multiple upstream models and providers, integrating multimodal chat, model routing, files and RAG, MCP tools, usage billing, identity, audit logs, and operational controls into one product.
+OVINC Chat is an open-source, deployable AI platform for individuals, teams, and enterprises that need long-term, stable, and unified access to multiple model providers. It provides one clear entry point for multiple upstream models and providers, integrating multimodal chat, model routing, files and RAG, MCP tools, usage billing, identity, audit logs, and operational controls into one product.
 
 The system is designed around simple deployment, efficient static delivery, and a low runtime resource footprint: lightweight without feeling limited, restrained without losing capability, and open without becoming disorderly.
 
-![DEEIX Chat workspace](./frontend/public/DEEIX-Chat.jpg)
+![OVINC Chat workspace](./frontend/public/DEEIX-Chat.jpg)
 
 ## Features
 
@@ -48,19 +45,19 @@ The system is designed around simple deployment, efficient static delivery, and 
 | Deployment and operations | Single-runtime frontend/API serving, Docker deployment, SQLite or PostgreSQL, in-memory cache or Redis, S3-compatible storage, Swagger, structured logs, version endpoint, GeoIP, and OpenTelemetry. |
 
 <p align="center">
-  <img src="./frontend/public/DEEIX-Chat-Image.png" alt="DEEIX Chat image generation" width="49.45%" />
-  <img src="./frontend/public/DEEIX-Chat-Dark.png" alt="DEEIX Chat dark mode" width="49.45%" />
+  <img src="./frontend/public/DEEIX-Chat-Image.png" alt="OVINC Chat image generation" width="49.45%" />
+  <img src="./frontend/public/DEEIX-Chat-Dark.png" alt="OVINC Chat dark mode" width="49.45%" />
 </p>
 
 <p align="center">
-  <img src="./frontend/public/DEEIX-Chat-Usage.png" alt="DEEIX Chat usage and billing" width="32.3%" />
-  <img src="./frontend/public/DEEIX-Chat-Artifacts.png" alt="DEEIX Chat artifacts" width="32.3%" />
-  <img src="./frontend/public/DEEIX-Chat-Html.png" alt="DEEIX Chat HTML rendering" width="32.3%" />
+  <img src="./frontend/public/DEEIX-Chat-Usage.png" alt="OVINC Chat usage and billing" width="32.3%" />
+  <img src="./frontend/public/DEEIX-Chat-Artifacts.png" alt="OVINC Chat artifacts" width="32.3%" />
+  <img src="./frontend/public/DEEIX-Chat-Html.png" alt="OVINC Chat HTML rendering" width="32.3%" />
 </p>
 
 ## Architecture and Tech Stack
 
-DEEIX Chat uses a split frontend/backend development model with a single-runtime deployment path. The frontend is built into static assets and served by the Go service, while APIs, authorization, model routing, files, billing, and audit capabilities run in the same backend runtime. Heavy document extraction and OCR capabilities are optional services, keeping the base deployment lightweight.
+OVINC Chat uses a split frontend/backend development model with a single-runtime deployment path. The frontend is built into static assets and served by the Go service, while APIs, authorization, model routing, files, billing, and audit capabilities run in the same backend runtime. Heavy document extraction and OCR capabilities are optional services, keeping the base deployment lightweight.
 
 ```mermaid
 flowchart TB
@@ -417,7 +414,7 @@ Authentication, registration, conversation settings, model option policies, file
 
 ## Acknowledgements
 
-DEEIX Chat is built on the open-source ecosystem. Thanks to all maintainers and communities in the AI tooling ecosystem.
+OVINC Chat is built on the open-source ecosystem. Thanks to all maintainers and communities in the AI tooling ecosystem.
 
 - [Next.js](https://nextjs.org)
 - [Go](https://go.dev)
@@ -433,4 +430,4 @@ DEEIX Chat is built on the open-source ecosystem. Thanks to all maintainers and 
 
 ## License
 
-DEEIX Chat is licensed under the [Apache License 2.0](./LICENSE).
+OVINC Chat is licensed under the [Apache License 2.0](./LICENSE).

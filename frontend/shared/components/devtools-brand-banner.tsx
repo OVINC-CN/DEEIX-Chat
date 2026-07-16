@@ -1,14 +1,14 @@
 const BANNER = String.raw`
- ____  _____ _____ _____  __  ____ _   _    _  _____
-|  _ \| ____| ____|_ _\ \/ / / ___| | | |  / \|_   _|
-| | | |  _| |  _|  | | \  / | |   | |_| | / _ \ | |
-| |_| | |___| |___ | | /  \ | |___|  _  |/ ___ \| |
-|____/|_____|_____|___/_/\_\ \____|_| |_/_/   \_\_|
+  ___  __     _____ _   _  ____    ____ _   _    _  _____
+ / _ \ \ \   / /_ _| \ | |/ ___|  / ___| | | |  / \|_   _|
+| | | | \ \ / / | ||  \| | |     | |   | |_| | / _ \ | |
+| |_| |  \ V /  | || |\  | |___  | |___|  _  |/ ___ \| |
+ \___/    \_/  |___|_| \_|\____|  \____|_| |_/_/   \_\_|
 `;
 
 const BANNER_SCRIPT = `
 (() => {
-  const key = "__DEEIX_CHAT_DEVTOOLS_BANNER__";
+  const key = "__OVINC_CHAT_DEVTOOLS_BANNER__";
   if (globalThis[key]) return;
   globalThis[key] = true;
   const banner = ${JSON.stringify(BANNER)};
@@ -31,7 +31,7 @@ const BANNER_SCRIPT = `
 export function DevtoolsBrandBanner() {
   return (
     <script
-      id="deeix-devtools-brand"
+      id="ovinc-devtools-brand"
       dangerouslySetInnerHTML={{ __html: BANNER_SCRIPT }}
     />
   );
