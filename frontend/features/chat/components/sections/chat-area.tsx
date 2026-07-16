@@ -52,7 +52,7 @@ function CompactDivider({ summaryPreview }: { summaryPreview: string }) {
         <div className="h-px flex-1 bg-border/50" />
         <button
           type="button"
-          className="shrink-0 cursor-pointer text-[11px] text-muted-foreground/60 hover:text-muted-foreground"
+          className="shrink-0 cursor-default text-[11px] text-muted-foreground/60 hover:text-muted-foreground"
           onClick={() => setExpanded((v) => !v)}
         >
           {t("contextCompressed")}
@@ -628,7 +628,7 @@ export function ChatArea({
                   const rowContent = selectable ? (
                     <div
                       data-screenshot-selectable="true"
-                      className="chat-screenshot-selectable group relative cursor-pointer rounded-lg outline-none"
+                      className="chat-screenshot-selectable group relative cursor-default rounded-lg outline-none"
                       role="checkbox"
                       tabIndex={0}
                       aria-checked={isSelected}

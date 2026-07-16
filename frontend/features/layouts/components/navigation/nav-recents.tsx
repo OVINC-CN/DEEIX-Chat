@@ -215,7 +215,7 @@ export function NavRecents() {
           <SidebarGroup className="px-2 py-2">
             <SidebarGroupLabel
               asChild
-              className="w-fit max-w-full self-start cursor-pointer gap-1 pr-1 transition-[color,margin,opacity] hover:text-sidebar-foreground"
+              className="w-fit max-w-full self-start cursor-default gap-1 pr-1 transition-[color,margin,opacity] hover:text-sidebar-foreground"
             >
               <Button
                 type="button"

@@ -393,7 +393,7 @@ function ProjectDefaultSelector({
               return (
                 <label
                   key={option.id}
-                  className="flex min-h-9 w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-accent"
+                  className="flex min-h-9 w-full cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-accent"
                 >
                   <Checkbox
                     checked={selected}

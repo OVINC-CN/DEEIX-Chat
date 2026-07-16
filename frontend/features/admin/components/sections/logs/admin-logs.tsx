@@ -1021,7 +1021,7 @@ function AuditLogTable({ onOpenDetail }: { onOpenDetail: (item: AdminAuditLogDTO
           {logs.loading && logs.auditLogs.length === 0 ? <TableLoadingRow colSpan={7} /> : null}
           {logs.auditLogs.length > 0 ? <VirtualTablePaddingRow colSpan={7} height={virtualRows.paddingTop} /> : null}
           {logs.auditLogs.length > 0 ? virtualRows.rows.map(({ item }) => (
-            <TableRow key={item.id} className="cursor-pointer" onClick={() => onOpenDetail(item)}>
+            <TableRow key={item.id} className="cursor-default" onClick={() => onOpenDetail(item)}>
               <TableCell className="font-mono text-xs text-foreground">{item.id}</TableCell>
               <TableCell className="whitespace-nowrap text-muted-foreground">
                 {resolveUserDisplayName(item.actorLabel, item.actorUsername, item.actorUserID)}
@@ -1131,7 +1131,7 @@ function AuthLogTable({ onOpenDetail }: { onOpenDetail: (item: AdminUserAuthEven
           {logs.loading && logs.sortedEvents.length === 0 ? <TableLoadingRow colSpan={8} /> : null}
           {logs.sortedEvents.length > 0 ? <VirtualTablePaddingRow colSpan={8} height={virtualRows.paddingTop} /> : null}
           {logs.sortedEvents.length > 0 ? virtualRows.rows.map(({ item }) => (
-            <TableRow key={item.id} className="cursor-pointer" onClick={() => onOpenDetail(item)}>
+            <TableRow key={item.id} className="cursor-default" onClick={() => onOpenDetail(item)}>
               <TableCell className="font-mono text-xs text-foreground">{item.id}</TableCell>
               <TableCell className="whitespace-nowrap text-muted-foreground">
                 {resolveUserDisplayName(item.userLabel, item.username, item.userID)}
@@ -1255,7 +1255,7 @@ function SystemEventTable({ onOpenDetail }: { onOpenDetail: (item: AdminSystemEv
           {logs.loading && logs.events.length === 0 ? <TableLoadingRow colSpan={8} /> : null}
           {logs.events.length > 0 ? <VirtualTablePaddingRow colSpan={8} height={virtualRows.paddingTop} /> : null}
           {logs.events.length > 0 ? virtualRows.rows.map(({ item }) => (
-            <TableRow key={item.id} className="cursor-pointer" onClick={() => onOpenDetail(item)}>
+            <TableRow key={item.id} className="cursor-default" onClick={() => onOpenDetail(item)}>
               <TableCell className="font-mono text-xs text-foreground">{item.id}</TableCell>
               <TableCell className="whitespace-nowrap text-muted-foreground">{item.level || "-"}</TableCell>
               <TableCell>
@@ -1384,7 +1384,7 @@ function UsageLogTable({ onOpenDetail }: { onOpenDetail: (item: AdminUsageLogDTO
           {logs.loading && logs.logs.length === 0 ? <TableLoadingRow colSpan={7} /> : null}
           {logs.logs.length > 0 ? <VirtualTablePaddingRow colSpan={7} height={virtualRows.paddingTop} /> : null}
           {logs.logs.length > 0 ? virtualRows.rows.map(({ item }) => (
-            <TableRow key={item.id} className="cursor-pointer" onClick={() => onOpenDetail(item)}>
+            <TableRow key={item.id} className="cursor-default" onClick={() => onOpenDetail(item)}>
               <TableCell className="font-mono text-xs text-foreground">{item.id}</TableCell>
               <TableCell>
                 <span className="block max-w-[10rem] truncate whitespace-nowrap text-muted-foreground" title={`${resolveUserDisplayName(item.userLabel, item.username, item.userID)} (#${item.userID})`}>
@@ -1540,7 +1540,7 @@ function PaymentOrderTable({ onOpenDetail }: { onOpenDetail: (item: AdminPayment
           {logs.loading && logs.orders.length === 0 ? <TableLoadingRow colSpan={8} /> : null}
           {logs.orders.length > 0 ? <VirtualTablePaddingRow colSpan={8} height={virtualRows.paddingTop} /> : null}
           {logs.orders.length > 0 ? virtualRows.rows.map(({ item }) => (
-            <TableRow key={item.id} className="cursor-pointer" onClick={() => onOpenDetail(item)}>
+            <TableRow key={item.id} className="cursor-default" onClick={() => onOpenDetail(item)}>
               <TableCell className="font-mono text-xs text-foreground">{item.id}</TableCell>
               <TableCell className="whitespace-nowrap text-muted-foreground">
                 {resolveUserDisplayName(item.userLabel, item.username, item.userID)}
@@ -1690,7 +1690,7 @@ function ConversationEventTable({ onOpenDetail }: { onOpenDetail: (item: AdminCo
           {logs.loading && logs.events.length === 0 ? <TableLoadingRow colSpan={9} /> : null}
           {logs.events.length > 0 ? <VirtualTablePaddingRow colSpan={9} height={virtualRows.paddingTop} /> : null}
           {logs.events.length > 0 ? virtualRows.rows.map(({ item }) => (
-            <TableRow key={item.id} className="cursor-pointer" onClick={() => onOpenDetail(item)}>
+            <TableRow key={item.id} className="cursor-default" onClick={() => onOpenDetail(item)}>
               <TableCell className="font-mono text-xs text-foreground">{item.id}</TableCell>
               <TableCell className="whitespace-nowrap text-muted-foreground">
                 {resolveUserDisplayName(item.userLabel, item.username, item.userID)}

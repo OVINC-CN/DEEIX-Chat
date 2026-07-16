@@ -32,7 +32,7 @@ export function DeleteFilesOption({
       />
       <label
         htmlFor={id}
-        className={cn("cursor-pointer space-y-1", disabled && "cursor-not-allowed opacity-60")}
+        className={cn("cursor-default space-y-1", disabled && "cursor-not-allowed opacity-60")}
       >
         <span className="block text-xs font-medium text-foreground">{t("deleteFilesLabel")}</span>
         <span className="block text-xs leading-5 text-muted-foreground">{t("deleteFilesDescription")}</span>

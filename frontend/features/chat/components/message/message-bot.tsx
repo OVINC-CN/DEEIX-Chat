@@ -455,7 +455,8 @@ export function ChatInlineAlertCard({
         className={cn(
           "col-start-2 flex w-full min-w-0 max-w-full items-start gap-3 text-left",
           "rounded-sm outline-none transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/35",
-          hasDetails ? "cursor-pointer hover:text-destructive" : "cursor-default",
+          "cursor-default",
+          hasDetails && "hover:text-destructive",
         )}
         onClick={() => {
           if (hasDetails) {
