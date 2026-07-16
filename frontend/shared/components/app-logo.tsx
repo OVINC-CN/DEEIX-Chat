@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 
+import { useTheme } from "@/shared/components/theme-provider";
 import { useBranding } from "@/shared/config/branding-provider";
 
 type AppLogoProps = {
@@ -20,10 +21,14 @@ export function AppLogo({
   className,
 }: AppLogoProps) {
   const branding = useBranding();
+  const { resolvedTheme } = useTheme();
 
   return (
     <Image
-      src={branding.logoURL || "/logo.png"}
+      src={
+        branding.logoURL ||
+        (resolvedTheme === "dark" ? "/logo-white.png" : "/logo.png")
+      }
       alt={alt ?? branding.title}
       width={width}
       height={height}
@@ -40,9 +45,11 @@ export function DeeixLogo({
   priority,
   className,
 }: AppLogoProps) {
+  const { resolvedTheme } = useTheme();
+
   return (
     <Image
-      src="/logo.png"
+      src={resolvedTheme === "dark" ? "/logo-white.png" : "/logo.png"}
       alt={alt}
       width={width}
       height={height}

@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
-
 import { cn } from "@/lib/utils";
+import { DeeixLogo } from "@/shared/components/app-logo";
 import { useBranding } from "@/shared/config/branding-provider";
 
 export function PoweredByDeeix({ className }: { className?: string }) {
@@ -21,10 +20,8 @@ export function PoweredByDeeix({ className }: { className?: string }) {
         aria-label="OVINC Chat on GitHub"
         className="inline-flex shrink-0 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2"
       >
-        <Image
-          src="/logo.png"
+        <DeeixLogo
           alt=""
-          aria-hidden="true"
           width={60}
           height={14}
           className="h-3.5 w-auto opacity-65"
