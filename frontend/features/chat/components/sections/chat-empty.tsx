@@ -45,7 +45,7 @@ export function ChatEmptyState({ greetingTitle, badgeLabel, badgeTooltip, conten
             exit={{ opacity: 0, y: -6 }}
             transition={CHAT_EMPTY_TEXT_TRANSITION}
           >
-            <h1 className="min-w-0 text-balance text-xl font-medium leading-[1.12] tracking-[-0.005em] text-foreground [font-family:var(--font-economist)] md:text-2xl">
+            <h1 className="min-w-0 text-balance text-xl font-normal leading-[1.12] tracking-[-0.005em] text-foreground [font-family:var(--font-economist)] md:text-2xl">
               {greetingTitle}
             </h1>
             {badge && badgeTooltip ? (
