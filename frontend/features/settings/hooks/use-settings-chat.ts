@@ -13,18 +13,13 @@ import {
 import { dispatchUserSettingsUpdated } from "@/features/settings/events/user-settings-events";
 import { useAuthSession } from "@/shared/auth/auth-session-context";
 import { listPublicModels } from "@/shared/api/model";
-import { getBillingConfig } from "@/shared/api/billing";
-import { getChatContextPolicy } from "@/shared/api/settings";
 import { getUserSettings, patchUserSettings } from "@/shared/api/user-settings";
 import type { PublicModelDTO } from "@/shared/api/model.types";
-import type { BillingMode } from "@/shared/api/billing.types";
 import { useLocalizedErrorMessage } from "@/i18n/use-localized-error";
 
 type UseSettingsChatResult = {
   settings: ChatSettings;
   loading: boolean;
-  billingMode: BillingMode;
-  contextCompressionEnabled: boolean;
   vendorGroups: ReturnType<typeof groupModelsByVendor>;
   handleBool: (key: string, field: keyof ChatSettings) => (checked: boolean) => void;
   handleEnum: (key: string, field: keyof ChatSettings) => (value: string) => void;
@@ -38,8 +33,6 @@ export function useSettingsChat(): UseSettingsChatResult {
   const [settings, setSettings] = React.useState<ChatSettings>(DEFAULT_CHAT_SETTINGS);
   const [models, setModels] = React.useState<PublicModelDTO[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [billingMode, setBillingMode] = React.useState<BillingMode>("self");
-  const [contextCompressionEnabled, setContextCompressionEnabled] = React.useState(false);
   const settingRequestSeqRef = React.useRef<Record<string, number>>({});
 
   React.useEffect(() => {
@@ -47,11 +40,9 @@ export function useSettingsChat(): UseSettingsChatResult {
 
     void (async () => {
       try {
-        const [map, modelList, billingConfig, contextPolicy] = await Promise.all([
+        const [map, modelList] = await Promise.all([
           getUserSettings(accessToken),
           listPublicModels(accessToken).catch((): PublicModelDTO[] => []),
-          getBillingConfig(accessToken).catch(() => null),
-          getChatContextPolicy(accessToken).catch(() => ({ contextCompactEnabled: false })),
         ]);
 
         if (cancelled) {
@@ -60,8 +51,6 @@ export function useSettingsChat(): UseSettingsChatResult {
 
         setSettings(parseChatSettings(map));
         setModels(modelList);
-        setBillingMode(billingConfig?.config.mode ?? "self");
-        setContextCompressionEnabled(contextPolicy.contextCompactEnabled);
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -134,8 +123,6 @@ export function useSettingsChat(): UseSettingsChatResult {
   return {
     settings,
     loading,
-    billingMode,
-    contextCompressionEnabled,
     vendorGroups,
     handleBool,
     handleEnum,

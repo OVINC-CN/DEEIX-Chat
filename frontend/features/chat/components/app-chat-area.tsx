@@ -58,7 +58,6 @@ import type { MCPToolDTO } from "@/shared/api/mcp.types";
 import { useTheme } from "@/shared/components/theme-provider";
 import { cn } from "@/lib/utils";
 
-const MODEL_OPTIONS_STORAGE_PREFIX = "deeix-chat:chat-model-options:";
 const DEFAULT_MCP_TOOLS_SETTING_KEY = "chat.default_mcp_tool_ids";
 const EMPTY_CONVERSATION_OPTIONS: ConversationOptions = {};
 const TOP_LOAD_OLDER_MESSAGES_THRESHOLD_PX = 48;
@@ -69,48 +68,6 @@ function dragEventContainsFiles(event: React.DragEvent<HTMLElement>): boolean {
 
 function droppedFiles(event: React.DragEvent<HTMLElement>): File[] {
   return Array.from(event.dataTransfer.files ?? []).filter((file) => file.name.trim() || file.size > 0);
-}
-
-function modelOptionsStorageKey(platformModelName: string): string {
-  return `${MODEL_OPTIONS_STORAGE_PREFIX}${encodeURIComponent(platformModelName)}`;
-}
-
-function readCachedModelOptions(platformModelName: string): ConversationOptions | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
-  try {
-    const raw = window.localStorage.getItem(modelOptionsStorageKey(platformModelName));
-    if (!raw) {
-      return null;
-    }
-    const parsed = JSON.parse(raw) as unknown;
-    return isConversationOptionsObject(parsed) ? sanitizeConversationOptions(parsed) : null;
-  } catch {
-    return null;
-  }
-}
-
-function writeCachedModelOptions(platformModelName: string, options: ConversationOptions): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-  try {
-    window.localStorage.setItem(modelOptionsStorageKey(platformModelName), JSON.stringify(sanitizeConversationOptions(options)));
-  } catch {
-    // localStorage may be unavailable in private browsing or strict environments.
-  }
-}
-
-function removeCachedModelOptions(platformModelName: string): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-  try {
-    window.localStorage.removeItem(modelOptionsStorageKey(platformModelName));
-  } catch {
-    // localStorage may be unavailable in private browsing or strict environments.
-  }
 }
 
 function parseDefaultMCPToolIDs(raw: string | null | undefined): number[] {
@@ -209,11 +166,7 @@ export function AppChatArea() {
   }, [requestNewConversation, routeProjectID, router]);
   const activeGenerationRunsRef = React.useRef<Set<string>>(new Set());
   const failedGenerationRunsRef = React.useRef<Set<string>>(new Set());
-  const {
-    deleteFilesByDefault,
-    loaded: chatPreferencesLoaded,
-    reuseModelOptions,
-  } = useSettingsChatPreferences();
+  const { deleteFilesByDefault } = useSettingsChatPreferences();
   const {
     items,
     projects,
@@ -389,10 +342,16 @@ export function AppChatArea() {
   });
   const htmlVisualPrompt = useChatVisualPrompt();
   const { resolvedTheme } = useTheme();
-  const initializedOptionsModelRef = React.useRef("");
+  const initializedOptionsKeyRef = React.useRef("");
   const selectedModelDefaultOptionsRef = React.useRef<ConversationOptions>({});
   const fileDragDepthRef = React.useRef(0);
   const [fileDragActive, setFileDragActive] = React.useState(false);
+  const modelOptionsConversationKey = React.useMemo(() => {
+    if (locallyCreatedConversationID && conversationID === locallyCreatedConversationID) {
+      return `new:${newConversationRevision}:${newConversationProjectID || "unassigned"}`;
+    }
+    return conversationID ?? `new:${newConversationRevision}:${newConversationProjectID || "unassigned"}`;
+  }, [conversationID, locallyCreatedConversationID, newConversationProjectID, newConversationRevision]);
 
   React.useEffect(() => {
     setSelectedToolIDs((current) => {
@@ -406,21 +365,18 @@ export function AppChatArea() {
   React.useEffect(() => {
     const platformModelName = selectedModel?.platformModelName.trim() || "";
     if (!platformModelName) {
-      initializedOptionsModelRef.current = "";
+      initializedOptionsKeyRef.current = "";
       selectedModelDefaultOptionsRef.current = {};
       setOptions({});
       return;
     }
-    if (!chatPreferencesLoaded) {
-      return;
-    }
     const nextDefaultOptions = cloneConversationOptions(selectedModel.defaultOptions);
     const previousDefaultOptions = selectedModelDefaultOptionsRef.current;
-    if (initializedOptionsModelRef.current !== platformModelName) {
-      initializedOptionsModelRef.current = platformModelName;
+    const initializationKey = `${modelOptionsConversationKey}:${platformModelName}`;
+    if (initializedOptionsKeyRef.current !== initializationKey) {
+      initializedOptionsKeyRef.current = initializationKey;
       selectedModelDefaultOptionsRef.current = nextDefaultOptions;
-      const cachedOptions = reuseModelOptions ? readCachedModelOptions(platformModelName) : null;
-      setOptions(cloneConversationOptions(cachedOptions ?? nextDefaultOptions));
+      setOptions(cloneConversationOptions(nextDefaultOptions));
       return;
     }
     selectedModelDefaultOptionsRef.current = nextDefaultOptions;
@@ -432,32 +388,22 @@ export function AppChatArea() {
       if (JSON.stringify(currentOptions) !== previousDefaultOptionsJSON) {
         return currentOptions;
       }
-      removeCachedModelOptions(platformModelName);
       return cloneConversationOptions(nextDefaultOptions);
     });
-  }, [chatPreferencesLoaded, reuseModelOptions, selectedModel]);
+  }, [modelOptionsConversationKey, selectedModel]);
 
   const setModelOptions = React.useCallback(
     (action: React.SetStateAction<ConversationOptions>) => {
       setOptions((previous) => {
         const next = typeof action === "function" ? action(previous) : action;
-        const normalized = isConversationOptionsObject(next) ? sanitizeConversationOptions(next) : {};
-        const platformModelName = selectedModel?.platformModelName.trim() || "";
-        if (platformModelName) {
-          writeCachedModelOptions(platformModelName, normalized);
-        }
-        return normalized;
+        return isConversationOptionsObject(next) ? sanitizeConversationOptions(next) : {};
       });
     },
-    [selectedModel?.platformModelName],
+    [],
   );
 
   const resetModelOptions = React.useCallback((defaults?: ConversationOptions) => {
-    const platformModelName = selectedModel?.platformModelName.trim() || "";
     const nextDefaults = cloneConversationOptions(defaults ?? selectedModel?.defaultOptions ?? {});
-    if (platformModelName) {
-      removeCachedModelOptions(platformModelName);
-    }
     setOptions(nextDefaults);
   }, [selectedModel]);
 

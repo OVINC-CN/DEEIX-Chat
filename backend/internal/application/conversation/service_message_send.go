@@ -22,7 +22,7 @@ import (
 	"go.uber.org/zap"
 )
 
-const reasoningContentPassbackSettingKey = "chat.reasoning_content_passback"
+const fixedChatFileMode = "full_context"
 
 // SendMessage 发送消息并调用上游渠道对话接口，支持多模态附件。
 func (s *Service) SendMessage(ctx context.Context, input SendMessageInput) (result *SendMessageResult, retErr error) {
@@ -41,12 +41,8 @@ func (s *Service) StreamMessage(
 	return s.sendMessageInternal(ctx, input, onDelta, true)
 }
 
-func (s *Service) reasoningContentPassbackEnabled(ctx context.Context, userID uint, route *channel.ResolvedRoute) bool {
-	if route == nil || !route.ReasoningContentPassback {
-		return false
-	}
-	value, err := s.getUserSettingCached(ctx, userID, reasoningContentPassbackSettingKey)
-	return err == nil && value != "false"
+func (s *Service) reasoningContentPassbackEnabled(route *channel.ResolvedRoute) bool {
+	return route != nil && route.ReasoningContentPassback
 }
 
 // emitEvent 统一处理可选事件回调，调用方无需重复判断 nil。
@@ -404,7 +400,7 @@ func (s *Service) sendMessageInternal(
 		return nil, err
 	}
 	resolvedRoute = route
-	reasoningContentPassback := s.reasoningContentPassbackEnabled(ctx, input.UserID, route)
+	reasoningContentPassback := s.reasoningContentPassbackEnabled(route)
 	if modelChanged || strings.TrimSpace(conversation.Model) != strings.TrimSpace(route.PlatformModelName) {
 		conversation.Model = strings.TrimSpace(route.PlatformModelName)
 		conversation.Provider = inferProvider(conversation.Model)
@@ -430,7 +426,7 @@ func (s *Service) sendMessageInternal(
 	// 构建完整活跃分支路径；压缩裁剪先于模型预算截断，避免摘要和全量历史重复发送。
 	contextMessages := buildBranchMessagePath(branchState, userMessage)
 	cfg := s.cfg.Snapshot()
-	compactPolicy := s.resolveContextCompactionPolicy(ctx, cfg, input.UserID)
+	compactPolicy := s.resolveContextCompactionPolicy(cfg)
 
 	// 并行预取：Snapshot + UserMemory 提前加载，隐藏 DB 延迟。
 	type prefetchData struct {
@@ -462,12 +458,9 @@ func (s *Service) sendMessageInternal(
 		}()
 	}
 
-	// 读取用户的文件处理模式偏好（auto / full_context / rag）。
-	fileMode := "auto"
+	// 文件处理固定使用全文注入模式。
+	fileMode := fixedChatFileMode
 	capability := s.resolveChatFileCapability(ctx)
-	if fm, fmErr := s.getUserSettingCached(ctx, input.UserID, "chat.file_mode"); fmErr == nil && fm != "" {
-		fileMode = fm
-	}
 
 	// 收集并行预取结果，再规划本轮可发送的 PromptScope。
 	prefetch := <-prefetchCh
@@ -1401,7 +1394,7 @@ func (s *Service) sendMessageInternal(
 	compactMessages[len(compactMessages)-1] = *userMessage
 	compactMessages = append(compactMessages, *assistantMessage)
 	compactCfg := s.cfg.Snapshot()
-	compactPolicy = s.resolveContextCompactionPolicy(ctx, compactCfg, input.UserID)
+	compactPolicy = s.resolveContextCompactionPolicy(compactCfg)
 	compactInput := appcompact.MaybeCompactConversationInput{
 		ConversationID:      input.ConversationID,
 		UserID:              input.UserID,
@@ -1411,7 +1404,7 @@ func (s *Service) sendMessageInternal(
 	}
 	var postBillingCompaction *postBillingCompactionTask
 	if !compactPolicy.EffectiveEnabled() {
-		// 用户已关闭自动压缩，仅完成 trace 记录
+		// 自动压缩已固定关闭，仅完成 trace 记录。
 		if traceRecorder != nil {
 			traceRecorder.complete()
 			traceRecorder.attachToMessage(assistantMessage)
