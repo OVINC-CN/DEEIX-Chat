@@ -442,7 +442,7 @@ export function TableToolbar({
           aria-label={refreshLabel ?? t("refresh")}
           title={refreshLabel ?? t("refresh")}
         >
-          <RefreshCw className={cn("size-3.5 stroke-1", (refreshLoading ?? loading) && "animate-spin")} />
+          <RefreshCw className="size-3.5 stroke-1" />
         </ToolbarButton>
         {children}
       </div>

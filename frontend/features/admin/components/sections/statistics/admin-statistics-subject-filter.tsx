@@ -219,7 +219,7 @@ export function AdminStatisticsSubjectFilter({
           disabled={disabled}
         >
           {mode === "user" && loading ? (
-            <LoaderCircle className="pointer-events-none absolute right-3 size-3.5 animate-spin text-muted-foreground" />
+            <LoaderCircle className="pointer-events-none absolute right-3 size-3.5 text-muted-foreground" />
           ) : null}
         </ComboboxInput>
         <ComboboxEmpty>{mode === "user" ? t("emptyUsers") : t("emptyPermissionGroups")}</ComboboxEmpty>

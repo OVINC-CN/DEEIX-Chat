@@ -258,6 +258,14 @@ html[data-branding-pending] body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
   }
+
+  .lucide,
+  .lucide *,
+  .icon-no-motion,
+  .icon-no-motion * {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 @layer components {

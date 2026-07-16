@@ -95,7 +95,7 @@ function AdminUpdateCheck() {
         onClick={() => void handleCheckUpdate()}
         disabled={checking}
       >
-        <RefreshCw className={cn("size-3", checking && "animate-spin")} />
+        <RefreshCw className="size-3" />
         <span>{checking ? t("checkingUpdate") : t("checkUpdate")}</span>
       </button>
       <UpdateResultDialog

@@ -83,7 +83,7 @@ export function NavMainItem({
             <Icon
               aria-hidden
               strokeWidth={1.6}
-              className={cn("size-4 text-current", isHovered && "scale-105")}
+              className="size-4 text-current"
               animate={isHovered ? "default" : undefined}
             />
           </span>
