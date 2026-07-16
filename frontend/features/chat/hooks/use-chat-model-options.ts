@@ -340,10 +340,6 @@ export function useChatModelOptions({
   const [preserveConversationDrafts, setPreserveConversationDrafts] = React.useState(true);
   const [inputHeight, setInputHeight] = React.useState<"compact" | "standard" | "loose">("standard");
   const [contentWidth, setContentWidth] = React.useState<ChatContentWidth>(DEFAULT_CHAT_CONTENT_WIDTH);
-  const [markdownRender, setMarkdownRender] = React.useState(true);
-  const [showModelInfo, setShowModelInfo] = React.useState(true);
-  const [showLatency, setShowLatency] = React.useState(true);
-  const [showTokenUsage, setShowTokenUsage] = React.useState(true);
   const [showBillingCost, setShowBillingCost] = React.useState(false);
   const [billingDisplayCurrency, setBillingDisplayCurrency] = React.useState<BillingDisplayCurrency>("USD");
   const [billingDisplayUsdToCnyRate, setBillingDisplayUsdToCnyRate] = React.useState<number | null>(null);
@@ -436,11 +432,7 @@ export function useChatModelOptions({
         setSendShortcut(parseSendShortcut(settings["chat.send_on_enter"]));
         setRestoreDraftOnFailure(settings["chat.restore_draft_on_failure"] !== "false");
         setPreserveConversationDrafts(settings["chat.preserve_conversation_drafts"] !== "false");
-        setMarkdownRender(settings["chat.markdown_render"] !== "false");
-        setShowModelInfo(settings["chat.show_model_info"] !== "false");
-        setShowLatency(settings["chat.show_latency"] !== "false");
-        setShowTokenUsage(settings["chat.show_token_usage"] !== "false");
-        setShowBillingCost((billingConfig?.config.mode ?? "self") !== "self" && settings["chat.show_billing_cost"] !== "false");
+        setShowBillingCost((billingConfig?.config.mode ?? "self") !== "self");
         setBillingDisplayCurrency(normalizeBillingDisplayCurrency(billingConfig?.config.displayCurrency));
         setBillingDisplayUsdToCnyRate(billingConfig?.config.usdToCNYRate ?? null);
         setInputHeight(
@@ -577,10 +569,10 @@ export function useChatModelOptions({
     preserveConversationDrafts,
     inputHeight,
     contentWidth,
-    markdownRender,
-    showModelInfo,
-    showLatency,
-    showTokenUsage,
+    markdownRender: true,
+    showModelInfo: true,
+    showLatency: true,
+    showTokenUsage: true,
     showBillingCost,
     billingDisplayCurrency,
     billingDisplayUsdToCnyRate,

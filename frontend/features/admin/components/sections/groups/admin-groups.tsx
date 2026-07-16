@@ -316,7 +316,7 @@ export function AdminGroupsPage() {
             ? pagedGroups.map((group) => (
                 <TableRow
                   key={group.id}
-                  className="cursor-pointer"
+                  className="cursor-default"
                   onClick={() => setEditing(group)}
                 >
                   <TableCell className="py-1.5 whitespace-nowrap">

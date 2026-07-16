@@ -41,6 +41,19 @@ var allowedKeys = map[string]string{
 	"chat.default_mcp_tool_ids":                 "[]",
 }
 
+// fixedSettings 保留旧客户端设置键兼容性，但不再允许用户值改变运行行为。
+var fixedSettings = map[string]string{
+	"chat.file_mode":                  "full_context",
+	"chat.show_token_usage":           "true",
+	"chat.show_model_info":            "true",
+	"chat.show_latency":               "true",
+	"chat.show_billing_cost":          "true",
+	"chat.context_compact_auto":       "false",
+	"chat.markdown_render":            "true",
+	"chat.reuse_model_options":        "false",
+	"chat.reasoning_content_passback": "true",
+}
+
 // boolKeys 取值只能是 "true" / "false"。
 var boolKeys = map[string]bool{
 	"chat.show_token_usage":                     true,
@@ -136,6 +149,10 @@ func (s *Service) ListSettings(ctx context.Context, userID uint) (map[string]str
 			result[row.Key] = row.Value
 		}
 	}
+	// 固定项最后覆盖，确保历史记录不会改变当前行为。
+	for key, value := range fixedSettings {
+		result[key] = value
+	}
 	return result, nil
 }
 
@@ -150,6 +167,9 @@ func (s *Service) PatchSettings(ctx context.Context, userID uint, patches map[st
 		}
 		if err := validateValue(key, value); err != nil {
 			return nil, err
+		}
+		if fixedValue, ok := fixedSettings[key]; ok {
+			value = fixedValue
 		}
 		items = append(items, domainusersettings.UserSetting{
 			UserID:    userID,

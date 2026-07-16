@@ -95,7 +95,7 @@ function AdminUpdateCheck() {
         onClick={() => void handleCheckUpdate()}
         disabled={checking}
       >
-        <RefreshCw className={cn("size-3", checking && "animate-spin")} />
+        <RefreshCw className="size-3" />
         <span>{checking ? t("checkingUpdate") : t("checkUpdate")}</span>
       </button>
       <UpdateResultDialog
@@ -212,13 +212,6 @@ export function AdminAboutPage() {
       versionBadgeTooltip={<AdminUpdateTooltipContent updateRelease={updateRelease} />}
       versionActions={<AdminUpdateCheck />}
       labels={{
-        details: t("details"),
-        official: t("official"),
-        website: t("website"),
-        repository: t("repository"),
-        social: t("social"),
-        blog: t("blog"),
-        contact: t("contact"),
         copyright: t("copyright"),
         license: t("license"),
       }}

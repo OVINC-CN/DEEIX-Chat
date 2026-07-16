@@ -208,9 +208,6 @@ func NewEngine(cfg *config.Runtime, log *zap.Logger, modules Modules, hc HealthC
 	if modules.StartupLog != nil {
 		modules.StartupLog(log)
 	}
-	if modules.Settings != nil {
-		modules.Settings.RegisterFrontendRoutes(engine)
-	}
 	registerFrontendStatic(engine, snapshot.FrontendDistDir, log)
 
 	return engine, nil
@@ -291,6 +288,7 @@ func cleanFrontendPath(rawPath string) string {
 func isBackendOnlyPath(requestPath string) bool {
 	return requestPath == "/api" ||
 		strings.HasPrefix(requestPath, "/api/") ||
+		requestPath == "/manifest.webmanifest" ||
 		requestPath == "/swagger" ||
 		strings.HasPrefix(requestPath, "/swagger/") ||
 		requestPath == "/healthz" ||

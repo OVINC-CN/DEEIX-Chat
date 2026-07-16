@@ -3,7 +3,6 @@
 import Image from "next/image";
 
 import { useBranding } from "@/shared/config/branding-provider";
-import { useTheme } from "@/shared/components/theme-provider";
 
 type AppLogoProps = {
   alt?: string;
@@ -21,11 +20,10 @@ export function AppLogo({
   className,
 }: AppLogoProps) {
   const branding = useBranding();
-  const { resolvedTheme } = useTheme();
 
   return (
     <Image
-      src={branding.logoURL || (resolvedTheme === "dark" ? "/logo-white.svg" : "/logo.svg")}
+      src={branding.logoURL || "/logo.png"}
       alt={alt ?? branding.title}
       width={width}
       height={height}
@@ -36,17 +34,15 @@ export function AppLogo({
 }
 
 export function DeeixLogo({
-  alt = "DEEIX Chat",
+  alt = "OVINC Chat",
   width,
   height,
   priority,
   className,
 }: AppLogoProps) {
-  const { resolvedTheme } = useTheme();
-
   return (
     <Image
-      src={resolvedTheme === "dark" ? "/logo-white.svg" : "/logo.svg"}
+      src="/logo.png"
       alt={alt}
       width={width}
       height={height}

@@ -136,7 +136,7 @@ export function AuthCallbackPage() {
     <main className="flex min-h-screen items-center justify-center px-4 py-8 text-foreground">
       <div className="w-full max-w-[360px]">
         <div className="flex flex-col items-center text-center">
-          <AppLogo width={32} height={32} priority className="h-9 w-auto" />
+          <AppLogo width={154} height={36} priority className="h-9 w-auto" />
         </div>
 
         {error ? (

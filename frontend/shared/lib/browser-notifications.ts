@@ -99,7 +99,7 @@ export function notifyResponseCompletion(input: ResponseCompletionNotificationIn
   const notification = new Notification(conversationTitle || branding.title, {
     body: normalizeNotificationBody(normalizeString(input.content)),
     tag: normalizeString(input.conversationPublicID, `response-completion:${Date.now()}`),
-    icon: branding.pwaIcon192URL,
+    icon: branding.faviconURL,
   });
 
   notification.onclick = () => {

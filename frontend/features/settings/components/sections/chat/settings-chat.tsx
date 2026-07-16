@@ -27,16 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { ChatContentWidth } from "@/shared/model/chat-content-width";
-import { useAppearancePreferencesPersistence } from "@/features/settings/hooks/use-appearance-preferences-persistence";
 import { useSettingsChat } from "@/features/settings/hooks/use-settings-chat";
-import {
-  type ChatFontOption,
-  type ChatFontWeightOption,
-  useChatFontPreference,
-  useChatFontWeightPreference,
-  writeChatFontPreference,
-  writeChatFontWeightPreference,
-} from "@/features/settings/utils/chat-font";
 import { useLocalizedErrorMessage } from "@/i18n/use-localized-error";
 import { resolveAccessToken } from "@/shared/auth/resolve-access-token";
 import { listUserMemories, upsertUserMemory, deleteUserMemory } from "@/shared/api/memory";
@@ -424,17 +415,11 @@ export function SettingsChat() {
   const {
     settings,
     loading,
-    billingMode,
-    contextCompressionEnabled,
     vendorGroups,
     handleBool,
     handleEnum,
     handleDefaultModel,
   } = useSettingsChat();
-  const billingEnabled = billingMode !== "self";
-  const chatFont = useChatFontPreference();
-  const chatFontWeight = useChatFontWeightPreference();
-  const persistAppearancePreferences = useAppearancePreferencesPersistence();
   const [modifierLabel, setModifierLabel] = React.useState<"Command" | "Ctrl">("Ctrl");
   const [modifierShortcut, setModifierShortcut] = React.useState<Exclude<SendShortcut, "enter">>("ctrl_enter");
   const modelOptions = React.useMemo<ModelOption[]>(
@@ -463,16 +448,6 @@ export function SettingsChat() {
   }, []);
 
   const sendShortcutLabel = settings.sendShortcut === "enter" ? "Enter" : `${modifierLabel}+Enter`;
-
-  const handleChatFontChange = React.useCallback((value: ChatFontOption) => {
-    writeChatFontPreference(value);
-    persistAppearancePreferences({ chatFont: value });
-  }, [persistAppearancePreferences]);
-
-  const handleChatFontWeightChange = React.useCallback((value: ChatFontWeightOption) => {
-    writeChatFontWeightPreference(value);
-    persistAppearancePreferences({ chatFontWeight: value });
-  }, [persistAppearancePreferences]);
 
   const handleContentWidthChange = React.useCallback((value: ChatContentWidth) => {
     handleEnum("chat.content_width", "contentWidth")(value);
@@ -586,19 +561,6 @@ export function SettingsChat() {
           </div>
           <div className="pt-4">
             <SettingsFieldRow
-              title={t("input.reuseModelOptionsTitle")}
-              description={t("input.reuseModelOptionsDescription")}
-            >
-              <Switch
-                checked={settings.reuseModelOptions}
-                onCheckedChange={handleBool("chat.reuse_model_options", "reuseModelOptions")}
-                disabled={loading}
-                aria-label={t("input.reuseModelOptionsTitle")}
-              />
-            </SettingsFieldRow>
-          </div>
-          <div className="pt-4">
-            <SettingsFieldRow
               title={t("input.deleteFilesDefaultTitle")}
               description={t("input.deleteFilesDefaultDescription")}
             >
@@ -618,151 +580,12 @@ export function SettingsChat() {
       <SettingsSection title={t("display.sectionTitle")}>
         <SettingsFieldList>
           <div>
-            <SettingsFieldRow
-              title={t("display.markdownTitle")}
-              description={t("display.markdownDescription")}
-            >
-              <Switch
-                checked={settings.markdownRender}
-                onCheckedChange={handleBool("chat.markdown_render", "markdownRender")}
-                disabled={loading}
-                aria-label={t("display.markdownTitle")}
-              />
-            </SettingsFieldRow>
-          </div>
-
-          <div className="pt-4">
-            <SettingsFieldRow
-              title={t("display.modelTitle")}
-              description={t("display.modelDescription")}
-            >
-              <Switch
-                checked={settings.showModelInfo}
-                onCheckedChange={handleBool("chat.show_model_info", "showModelInfo")}
-                disabled={loading}
-                aria-label={t("display.modelTitle")}
-              />
-            </SettingsFieldRow>
-          </div>
-
-          <div className="pt-4">
-            <SettingsFieldRow
-              title={t("display.tokenTitle")}
-              description={t("display.tokenDescription")}
-            >
-              <Switch
-                checked={settings.showTokenUsage}
-                onCheckedChange={handleBool("chat.show_token_usage", "showTokenUsage")}
-                disabled={loading}
-                aria-label={t("display.tokenTitle")}
-              />
-            </SettingsFieldRow>
-          </div>
-
-          <div className="pt-4">
-            <SettingsFieldRow
-              title={t("display.latencyTitle")}
-              description={t("display.latencyDescription")}
-            >
-              <Switch
-                checked={settings.showLatency}
-                onCheckedChange={handleBool("chat.show_latency", "showLatency")}
-                disabled={loading}
-                aria-label={t("display.latencyTitle")}
-              />
-            </SettingsFieldRow>
-          </div>
-
-          <div className="pt-4">
-            <SettingsFieldRow
-              title={t("display.costTitle")}
-              description={billingEnabled ? t("display.costDescription") : t("display.costDescriptionSelfMode")}
-            >
-              <Switch
-                checked={billingEnabled && settings.showBillingCost}
-                onCheckedChange={handleBool("chat.show_billing_cost", "showBillingCost")}
-                disabled={loading || !billingEnabled}
-                aria-label={t("display.costTitle")}
-              />
-            </SettingsFieldRow>
-          </div>
-
-          <div className="pt-4">
             <ChatDisplayAppearance
               contentWidth={settings.contentWidth}
-              chatFont={chatFont}
-              chatFontWeight={chatFontWeight}
               onContentWidthChange={handleContentWidthChange}
-              onChatFontChange={handleChatFontChange}
-              onChatFontWeightChange={handleChatFontWeightChange}
               disabled={loading}
             />
           </div>
-        </SettingsFieldList>
-      </SettingsSection>
-
-      <SettingsSectionSeparator />
-
-      <SettingsSection title={t("context.sectionTitle")}>
-        <SettingsFieldList>
-          {contextCompressionEnabled ? (
-            <SettingsFieldRow
-              title={t("context.autoCompactTitle")}
-              description={t("context.autoCompactDescription")}
-            >
-              <Switch
-                checked={settings.contextCompactAuto}
-                onCheckedChange={handleBool("chat.context_compact_auto", "contextCompactAuto")}
-                disabled={loading}
-                aria-label={t("context.autoCompactTitle")}
-              />
-            </SettingsFieldRow>
-          ) : null}
-          <div className={contextCompressionEnabled ? "pt-4" : undefined}>
-            <SettingsFieldRow
-              title={t("context.reasoningPassbackTitle")}
-              description={t("context.reasoningPassbackDescription")}
-            >
-              <Switch
-                checked={settings.reasoningContentPassback}
-                onCheckedChange={handleBool("chat.reasoning_content_passback", "reasoningContentPassback")}
-                disabled={loading}
-                aria-label={t("context.reasoningPassbackTitle")}
-              />
-            </SettingsFieldRow>
-          </div>
-        </SettingsFieldList>
-      </SettingsSection>
-
-      <SettingsSectionSeparator />
-
-      <SettingsSection title={t("file.sectionTitle")}>
-        <SettingsFieldList>
-          <SettingsFieldRow
-            title={t("file.modeTitle")}
-            description={
-              settings.fileMode === "auto"
-                ? t("file.modeDescription.auto")
-                : settings.fileMode === "full_context"
-                  ? t("file.modeDescription.fullContext")
-                  : t("file.modeDescription.rag")
-            }
-          >
-            <Select
-              value={settings.fileMode}
-              onValueChange={handleEnum("chat.file_mode", "fileMode")}
-              disabled={loading}
-            >
-              <SelectTrigger size="sm" className="text-left md:text-right *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:justify-start md:*:data-[slot=select-value]:justify-end">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent align="start">
-                <SelectItem value="auto">{t("file.mode.auto")}</SelectItem>
-                <SelectItem value="full_context">{t("file.mode.fullContext")}</SelectItem>
-                <SelectItem value="rag">{t("file.mode.rag")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </SettingsFieldRow>
         </SettingsFieldList>
       </SettingsSection>
 

@@ -52,7 +52,7 @@ function CompactDivider({ summaryPreview }: { summaryPreview: string }) {
         <div className="h-px flex-1 bg-border/50" />
         <button
           type="button"
-          className="shrink-0 cursor-pointer text-[11px] text-muted-foreground/60 hover:text-muted-foreground"
+          className="shrink-0 cursor-default text-[11px] text-muted-foreground/60 hover:text-muted-foreground"
           onClick={() => setExpanded((v) => !v)}
         >
           {t("contextCompressed")}
@@ -208,17 +208,17 @@ function ChatScreenshotBrandMark({ placement }: { placement: "top" | "bottom" })
     >
       {placement === "top" ? (
         <>
-          <AppLogo width={65} height={20} className="h-5 w-auto opacity-75" />
+          <AppLogo width={86} height={20} className="h-5 w-auto opacity-75" />
           {branding.logoURL ? <PoweredByDeeix className="text-[10px]" /> : null}
         </>
       ) : branding.logoURL ? (
         <>
-          <AppLogo width={65} height={20} className="h-5 w-auto opacity-75" />
+          <AppLogo width={86} height={20} className="h-5 w-auto opacity-75" />
           <span aria-hidden="true" className="h-4 w-px bg-border" />
-          <DeeixLogo width={65} height={20} className="h-5 w-auto opacity-75" />
+          <DeeixLogo width={86} height={20} className="h-5 w-auto opacity-75" />
         </>
       ) : (
-        <DeeixLogo width={65} height={20} className="h-5 w-auto opacity-75" />
+        <DeeixLogo width={86} height={20} className="h-5 w-auto opacity-75" />
       )}
     </div>
   );
@@ -628,7 +628,7 @@ export function ChatArea({
                   const rowContent = selectable ? (
                     <div
                       data-screenshot-selectable="true"
-                      className="chat-screenshot-selectable group relative cursor-pointer rounded-lg outline-none"
+                      className="chat-screenshot-selectable group relative cursor-default rounded-lg outline-none"
                       role="checkbox"
                       tabIndex={0}
                       aria-checked={isSelected}

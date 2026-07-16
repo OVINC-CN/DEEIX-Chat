@@ -353,7 +353,7 @@ export function useChatAttachments({
     uploading,
     uploadingAttachments,
     maxFilesPerMessage,
-    fileMode: chatFilePolicy?.fileMode ?? "auto",
+    fileMode: "full_context" as const,
     releaseAttachments,
     onRemoveAttachment,
     onUploadFiles,

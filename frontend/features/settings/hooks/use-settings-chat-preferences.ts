@@ -9,7 +9,6 @@ import { useAuthSession } from "@/shared/auth/auth-session-context";
 type ChatPreferences = {
   autoGenerateTitle: boolean;
   deleteFilesByDefault: boolean;
-  reuseModelOptions: boolean;
 };
 
 type ChatPreferencesState = ChatPreferences & {
@@ -19,7 +18,6 @@ type ChatPreferencesState = ChatPreferences & {
 const DEFAULT_CHAT_PREFERENCES: ChatPreferences = {
   autoGenerateTitle: true,
   deleteFilesByDefault: false,
-  reuseModelOptions: true,
 };
 
 let cachedAccessToken: string | null = null;
@@ -31,7 +29,6 @@ function resolveChatPreferences(settings: Record<string, string>): ChatPreferenc
   return {
     autoGenerateTitle: settings["chat.auto_generate_title"] !== "false",
     deleteFilesByDefault: settings["chat.delete_conversation_files_by_default"] === "true",
-    reuseModelOptions: settings["chat.reuse_model_options"] !== "false",
   };
 }
 

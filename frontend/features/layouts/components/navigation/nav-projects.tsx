@@ -130,7 +130,7 @@ function ProjectGroupHeader({
     <div className="group/project-create flex h-8 items-center gap-1">
       <SidebarGroupLabel
         asChild
-        className="w-fit max-w-full self-start cursor-pointer gap-1 pr-1 transition-[color,margin,opacity] hover:text-sidebar-foreground"
+        className="w-fit max-w-full self-start cursor-default gap-1 pr-1 transition-[color,margin,opacity] hover:text-sidebar-foreground"
       >
         <Button
           type="button"
@@ -602,17 +602,17 @@ export function NavProjects() {
       await updateProject(draft.publicID, {
         name,
         systemPrompt: draft.systemPrompt.trim(),
-        mcpDefaultMode: draft.mcpDefaultMode,
-        defaultMCPToolIDs: draft.mcpDefaultMode === "custom" ? draft.defaultMCPToolIDs : [],
-        defaultSkillIDs: draft.defaultSkillIDs,
+        mcpDefaultMode: "inherit",
+        defaultMCPToolIDs: [],
+        defaultSkillIDs: [],
       });
     } else {
       await createProject({
         name,
         systemPrompt: draft.systemPrompt.trim(),
-        mcpDefaultMode: draft.mcpDefaultMode,
-        defaultMCPToolIDs: draft.mcpDefaultMode === "custom" ? draft.defaultMCPToolIDs : [],
-        defaultSkillIDs: draft.defaultSkillIDs,
+        mcpDefaultMode: "inherit",
+        defaultMCPToolIDs: [],
+        defaultSkillIDs: [],
       });
     }
     closeDraft();
@@ -692,9 +692,6 @@ export function NavProjects() {
                 onCreate={() => setDraft({
                   name: "",
                   systemPrompt: "",
-                  mcpDefaultMode: "inherit",
-                  defaultMCPToolIDs: [],
-                  defaultSkillIDs: [],
                 })}
                 onOpenChange={setProjectsOpen}
                 toggleLabel={projectsOpen ? t("collapseSection") : t("expandSection")}
@@ -723,9 +720,6 @@ export function NavProjects() {
               onCreate={() => setDraft({
                 name: "",
                 systemPrompt: "",
-                mcpDefaultMode: "inherit",
-                defaultMCPToolIDs: [],
-                defaultSkillIDs: [],
               })}
               onOpenChange={setProjectsOpen}
               toggleLabel={projectsOpen ? t("collapseSection") : t("expandSection")}
@@ -834,9 +828,6 @@ export function NavProjects() {
                                           publicID: project.publicID,
                                           name: project.name,
                                           systemPrompt: project.systemPrompt ?? "",
-                                          mcpDefaultMode: project.mcpDefaultMode ?? "inherit",
-                                          defaultMCPToolIDs: project.defaultMCPToolIDs ?? [],
-                                          defaultSkillIDs: project.defaultSkillIDs ?? [],
                                         });
                                       }}
                                     >
@@ -994,7 +985,7 @@ export function NavProjects() {
                 className="mt-0.5"
                 onCheckedChange={(checked) => setDeleteProjectConversations(checked === true)}
               />
-              <label htmlFor={deleteProjectConversationsID} className="cursor-pointer space-y-1">
+              <label htmlFor={deleteProjectConversationsID} className="cursor-default space-y-1">
                 <span className="block text-xs font-medium text-foreground">{t("deleteConversationsLabel")}</span>
                 <span className="block text-xs leading-5 text-muted-foreground">{t("deleteConversationsDescription")}</span>
               </label>

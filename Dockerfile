@@ -14,7 +14,6 @@ COPY VERSION /src/VERSION
 COPY scripts /src/scripts
 COPY frontend/package.json frontend/pnpm-lock.yaml ./
 COPY frontend/scripts ./scripts
-COPY frontend/public/pwa ./public/pwa
 
 RUN corepack enable
 

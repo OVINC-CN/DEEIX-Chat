@@ -387,7 +387,7 @@ const ModelTableRow = React.memo(function ModelTableRow({
   return (
     <React.Fragment>
       <TableRow
-        className={cn("cursor-pointer", muted && "text-muted-foreground")}
+        className={cn("cursor-default", muted && "text-muted-foreground")}
         tone={muted ? "muted" : undefined}
         selected={selected}
         aria-expanded={expanded && !collapsing}

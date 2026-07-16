@@ -11,7 +11,7 @@ import {
   useFontSizePreference,
   writeFontSizePreference,
 } from "@/features/settings/utils/font-size";
-import type { ProfileDraft, ThemeMode } from "@/features/settings/types/settings";
+import type { ProfileDraft } from "@/features/settings/types/settings";
 import {
   createDraftFromUser,
   isProfileDraftEqual,
@@ -44,7 +44,6 @@ import {
   SettingsPage,
   SettingsSectionSeparator,
 } from "@/shared/components/settings-layout";
-import { useTheme } from "@/shared/components/theme-provider";
 import { GeneralAppearanceSection } from "./general-appearance";
 import { GeneralNotificationsSection } from "./general-notifications";
 import { GeneralProfileSection } from "./general-profile";
@@ -72,7 +71,6 @@ type AvatarUploadPreview = {
 export function SettingsGeneral() {
   const t = useTranslations("settings");
   const { accessToken, user, userStatus } = useAuthSession();
-  const { preset, resolvedTheme, setPreset, setTheme, theme } = useTheme();
   const [viewer, setViewer] = React.useState<UserDTO | null>(null);
   const [draft, setDraft] = React.useState<ProfileDraft>(() => createDraftFromUser());
   const [initialDraft, setInitialDraft] = React.useState<ProfileDraft>(() => createDraftFromUser());
@@ -80,7 +78,6 @@ export function SettingsGeneral() {
   const [avatarDialogValue, setAvatarDialogValue] = React.useState("");
   const [avatarUploading, setAvatarUploading] = React.useState(false);
   const [avatarUploadPreview, setAvatarUploadPreview] = React.useState<AvatarUploadPreview | null>(null);
-  const [themeRuntimeReady, setThemeRuntimeReady] = React.useState(false);
   const fontSize = useFontSizePreference();
   const [notificationRuntimeReady, setNotificationRuntimeReady] = React.useState(false);
   const [notificationSupported, setNotificationSupported] = React.useState(false);
@@ -113,7 +110,6 @@ export function SettingsGeneral() {
   }, [user, userStatus]);
 
   React.useEffect(() => {
-    setThemeRuntimeReady(true);
     setNotificationRuntimeReady(true);
     setNotificationSupported(isBrowserNotificationSupported());
     setResponseCompletionNotificationsEnabled(readResponseCompletionNotificationsEnabled());
@@ -164,11 +160,6 @@ export function SettingsGeneral() {
   const normalizedUsernameDraft = usernameDraft.trim().toLowerCase();
   const hasUsernameEdit = canEditUsername && normalizedUsernameDraft !== "" && normalizedUsernameDraft !== viewer?.username;
   const hasEdits = hasProfileEdits || hasUsernameEdit;
-  const activeThemeMode = themeRuntimeReady
-    ? ((theme as ThemeMode | undefined) ?? "system")
-    : "system";
-  const activeThemePreset = themeRuntimeReady ? preset : "default";
-
   React.useEffect(() => {
     if (viewer?.initialUsernameRequired && !initialUsernameToastShownRef.current) {
       initialUsernameToastShownRef.current = true;
@@ -401,22 +392,6 @@ export function SettingsGeneral() {
     return t("generalPage.notifications.defaultHelp");
   }, [notificationPermission, notificationRuntimeReady, notificationSupported, t]);
 
-  const handleThemeModeChange = React.useCallback(
-    (mode: ThemeMode) => {
-      setTheme(mode);
-      persistAppearancePreferences({ theme: mode });
-    },
-    [persistAppearancePreferences, setTheme],
-  );
-
-  const handleThemePresetChange = React.useCallback(
-    (nextPreset: typeof preset) => {
-      setPreset(nextPreset);
-      persistAppearancePreferences({ preset: nextPreset });
-    },
-    [persistAppearancePreferences, setPreset],
-  );
-
   const handleFontSizeChange = React.useCallback((value: FontSizeOption) => {
     writeFontSizePreference(value);
     persistAppearancePreferences({ fontSize: value });
@@ -463,12 +438,7 @@ export function SettingsGeneral() {
       <SettingsSectionSeparator />
 
       <GeneralAppearanceSection
-        resolvedTheme={resolvedTheme}
-        activeThemeMode={activeThemeMode}
-        activeThemePreset={activeThemePreset}
         fontSize={fontSize}
-        onThemeModeChange={handleThemeModeChange}
-        onThemePresetChange={handleThemePresetChange}
         onFontSizeChange={handleFontSizeChange}
       />
     </SettingsPage>

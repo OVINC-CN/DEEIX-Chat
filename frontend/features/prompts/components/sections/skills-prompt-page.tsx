@@ -34,12 +34,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  SkillsSection,
-  type SkillsSectionHandle,
-} from "@/features/prompts/components/sections/skills-section";
 import {
   promptPresetKey,
   useSkillsPromptPage,
@@ -78,7 +73,7 @@ function PromptPresetCard({
       tabIndex={0}
       className={cn(
         "group flex min-h-16 min-w-0 items-center gap-2.5 rounded-lg bg-muted/35 px-3 py-2.5 text-left transition-colors hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/45",
-        "cursor-pointer",
+        "cursor-default",
         !item.enabled && "text-muted-foreground",
       )}
       onClick={() => onOpen(item)}
@@ -150,8 +145,6 @@ export function SkillsPromptPage() {
   const t = useTranslations("prompts");
   const commonActionsT = useTranslations("common.actions");
   const commonStatesT = useTranslations("common.states");
-  const [activeTab, setActiveTab] = React.useState("skills");
-  const skillsSectionRef = React.useRef<SkillsSectionHandle>(null);
   const {
     items,
     filteredItems,
@@ -237,58 +230,32 @@ export function SkillsPromptPage() {
         <header className="ml-0 md:ml-13 md:w-[calc(100%-3.25rem)]">
           <div className="flex items-start justify-between gap-4">
             <h1 className="min-w-0 text-xl font-semibold tracking-[-0.03em] text-foreground md:text-2xl">{t("pageTitle")}</h1>
-            {activeTab === "skills" ? (
-              <Button
-                size="sm"
-                variant="default"
-                className="shrink-0"
-                onClick={() => skillsSectionRef.current?.openCreate()}
-              >
-                <Plus className="size-4" />
-                {t("add")}
-              </Button>
-            ) : (
-              <Button size="sm" variant="default" className="shrink-0" disabled={loading} onClick={openCreate}>
-                <Plus className="size-4" />
-                {t("add")}
-              </Button>
-            )}
+            <Button size="sm" variant="default" className="shrink-0" disabled={loading} onClick={openCreate}>
+              <Plus className="size-4" />
+              {t("add")}
+            </Button>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-5">
-            <TabsList>
-              <TabsTrigger value="skills">{t("skillsTab")}</TabsTrigger>
-              <TabsTrigger value="prompts">{t("promptsTab")}</TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          <div className="relative mt-5 md:mt-8">
+          <div className="relative mt-5">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder={activeTab === "skills" ? t("skillsSearchPlaceholder") : t("searchPlaceholder")}
+              placeholder={t("searchPlaceholder")}
               className="rounded-xl bg-background pl-9"
             />
           </div>
         </header>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="min-h-0 flex-1">
-          <TabsContent value="skills" className="flex h-full min-h-0">
-            <SkillsSection ref={skillsSectionRef} query={query} />
-          </TabsContent>
-          <TabsContent value="prompts" className="flex h-full min-h-0">
-            <section className="mt-6 flex min-h-0 flex-1 flex-col overflow-hidden">
-              {loading ? (
-                <div className="h-full min-h-0 flex-1 overflow-y-auto pr-2">
-                  <PromptPresetListSkeleton />
-                </div>
-              ) : (
-                listContent
-              )}
-            </section>
-          </TabsContent>
-        </Tabs>
+        <section className="mt-6 flex min-h-0 flex-1 flex-col overflow-hidden">
+          {loading ? (
+            <div className="h-full min-h-0 flex-1 overflow-y-auto pr-2">
+              <PromptPresetListSkeleton />
+            </div>
+          ) : (
+            listContent
+          )}
+        </section>
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={(open) => !saving && setDialogOpen(open)}>

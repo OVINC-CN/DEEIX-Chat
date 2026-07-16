@@ -380,11 +380,11 @@ export function PublicSharePage() {
         <header className="flex items-center border-b border-border/50 pb-3">
           {branding.logoURL ? (
             <span className="inline-flex h-8 shrink-0 items-center">
-              <AppLogo width={78} height={24} priority className="h-6 w-auto" />
+              <AppLogo width={103} height={24} priority className="h-6 w-auto" />
             </span>
           ) : (
             <Link href="/" aria-label={branding.title} className="inline-flex h-8 shrink-0 items-center">
-              <AppLogo width={78} height={24} priority className="h-6 w-auto" />
+              <AppLogo width={103} height={24} priority className="h-6 w-auto" />
             </Link>
           )}
         </header>
@@ -416,7 +416,7 @@ export function PublicSharePage() {
             {branding.logoURL ? (
               <>
                 <span className="inline-flex h-8 shrink-0 items-center">
-                  <AppLogo width={78} height={24} className="h-6 w-auto opacity-75" />
+                  <AppLogo width={103} height={24} className="h-6 w-auto opacity-75" />
                 </span>
                 <span aria-hidden="true" className="h-4 w-px bg-border" />
               </>
@@ -425,10 +425,10 @@ export function PublicSharePage() {
               href="https://github.com/DEEIX-AI/DEEIX-Chat"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="DEEIX Chat on GitHub"
+              aria-label="OVINC Chat on GitHub"
               className="inline-flex h-8 shrink-0 items-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2"
             >
-              <DeeixLogo width={78} height={24} className="h-6 w-auto opacity-75" />
+              <DeeixLogo width={103} height={24} className="h-6 w-auto opacity-75" />
             </a>
           </div>
         </div>

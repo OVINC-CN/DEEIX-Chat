@@ -1,6 +1,6 @@
-# Contributing to DEEIX Chat
+# Contributing to OVINC Chat
 
-Thank you for contributing to DEEIX Chat.
+Thank you for contributing to OVINC Chat.
 
 ## Before You Start
 

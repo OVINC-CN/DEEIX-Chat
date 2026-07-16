@@ -93,7 +93,7 @@ function SkillCard({
       role="button"
       tabIndex={0}
       className={cn(
-        "group flex min-h-16 min-w-0 cursor-pointer items-center gap-2.5 rounded-lg bg-muted/35 px-3 py-2.5 text-left transition-colors hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/45",
+        "group flex min-h-16 min-w-0 cursor-default items-center gap-2.5 rounded-lg bg-muted/35 px-3 py-2.5 text-left transition-colors hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/45",
         !item.enabled && "text-muted-foreground",
       )}
       onClick={() => onOpen(item)}

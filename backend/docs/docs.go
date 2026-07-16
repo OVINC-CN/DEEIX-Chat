@@ -6788,25 +6788,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/branding/manifest.webmanifest": {
-            "get": {
-                "produces": [
-                    "application/manifest+json"
-                ],
-                "tags": [
-                    "settings"
-                ],
-                "summary": "查询品牌 Web App Manifest",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/internal_transport_http_settings.BrandingManifestResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/context-artifacts/{id}": {
             "get": {
                 "security": [
@@ -18196,79 +18177,9 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_transport_http_settings.BrandingManifestIcon": {
-            "type": "object",
-            "properties": {
-                "purpose": {
-                    "type": "string"
-                },
-                "sizes": {
-                    "type": "string"
-                },
-                "src": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_transport_http_settings.BrandingManifestResponse": {
-            "type": "object",
-            "properties": {
-                "background_color": {
-                    "type": "string"
-                },
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "description": {
-                    "type": "string"
-                },
-                "display": {
-                    "type": "string"
-                },
-                "icons": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/internal_transport_http_settings.BrandingManifestIcon"
-                    }
-                },
-                "id": {
-                    "type": "string"
-                },
-                "lang": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "orientation": {
-                    "type": "string"
-                },
-                "scope": {
-                    "type": "string"
-                },
-                "short_name": {
-                    "type": "string"
-                },
-                "start_url": {
-                    "type": "string"
-                },
-                "theme_color": {
-                    "type": "string"
-                }
-            }
-        },
         "internal_transport_http_settings.BrandingResponse": {
             "type": "object",
             "properties": {
-                "appleTouchIcon180URL": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -18276,15 +18187,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "logoURL": {
-                    "type": "string"
-                },
-                "pwaIcon192URL": {
-                    "type": "string"
-                },
-                "pwaIcon512URL": {
-                    "type": "string"
-                },
-                "pwaMaskableIcon512URL": {
                     "type": "string"
                 },
                 "shortName": {
@@ -18616,8 +18518,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "DEEIX Chat API",
-	Description:      "DEEIX Chat 后端 API 文档",
+	Title:            "OVINC Chat API",
+	Description:      "OVINC Chat 后端 API 文档",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

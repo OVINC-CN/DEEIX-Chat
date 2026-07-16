@@ -301,7 +301,7 @@ function MultiCheckField({ field, value, disabled, onChange }: MultiCheckFieldPr
             className={cn(
               "flex min-h-6 min-w-0 items-center justify-between gap-2 text-[12px] text-muted-foreground",
               checked && "text-foreground",
-              optionDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
+              optionDisabled ? "cursor-not-allowed opacity-60" : "cursor-default",
             )}
           >
             <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
@@ -546,7 +546,7 @@ export function SettingsFieldEditor({
                         disabled={disabled || action.disabled}
                         onClick={action.onClick}
                       >
-                        {Icon ? <Icon className={cn("size-3.5 stroke-1", action.spinning ? "animate-spin" : "")} /> : null}
+                        {Icon ? <Icon className="size-3.5 stroke-1" /> : null}
                         {action.label}
                       </Button>
                     );
@@ -593,7 +593,7 @@ export function SettingsFieldEditor({
                         disabled={disabled || action.disabled}
                         onClick={action.onClick}
                       >
-                        {Icon ? <Icon className={cn("size-3.5 stroke-1", action.spinning ? "animate-spin" : "")} /> : null}
+                        {Icon ? <Icon className="size-3.5 stroke-1" /> : null}
                       </Button>
                     );
                   })}

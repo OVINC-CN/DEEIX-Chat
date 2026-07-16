@@ -1283,7 +1283,7 @@ export function ChatModelConfig({
                     return (
                       <label
                         key={`${tool.protocol}:${tool.toolKey}:${tool.type}`}
-                        className="flex min-w-0 cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50"
+                        className="flex min-w-0 cursor-default items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50"
                       >
                         <Checkbox
                           checked={checked}

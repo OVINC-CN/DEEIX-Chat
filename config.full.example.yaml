@@ -1,5 +1,5 @@
 app:
-  name: DEEIX Chat
+  name: OVINC Chat
   # Required. Use prod and replace security values before public deployment.
   env: dev
 
@@ -33,15 +33,11 @@ security:
 
 branding:
   # Optional. Frontend product branding; changes take effect after restarting the app.
-  title: DEEIX Chat
-  short_name: DEEIX
-  description: DEEIX Chat is a multi-model AI conversation system.
+  title: OVINC Chat
+  short_name: OVINC
+  description: OVINC Chat is a multi-model AI conversation system.
   logo_url: ""
-  favicon_url: /favicon.ico
-  pwa_icon_192_url: /pwa/icon-192.png
-  pwa_icon_512_url: /pwa/icon-512.png
-  pwa_maskable_icon_512_url: /pwa/icon-maskable-512.png
-  apple_touch_icon_180_url: /pwa/apple-touch-icon.png
+  favicon_url: /favicon.png
   
 database:
   # Required. PostgreSQL is used for this profile.

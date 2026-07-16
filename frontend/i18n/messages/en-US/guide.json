@@ -22,22 +22,20 @@
     "accountNavigation": "Account setup navigation",
     "twoFactorNavigation": "Two-factor setup navigation",
     "twoFactorQRCode": "Two-factor authentication QR code",
-    "themePresetNavigation": "Theme selection navigation",
     "personalizationNavigation": "Personalization step navigation",
     "finishNavigation": "Finish onboarding navigation"
   },
   "bootstrapTitle": "Admin setup",
-  "adminWelcomeTitle": "Welcome to DEEIX Chat Admin",
-  "userWelcomeTitle": "Welcome to DEEIX Chat",
+  "adminWelcomeTitle": "Welcome to OVINC Chat Admin",
+  "userWelcomeTitle": "Welcome to OVINC Chat",
   "adminWelcomeDescription": "Finish admin account security first, then configure upstreams, platform models, billing, logs, identity providers, and system policies.",
   "userWelcomeDescription": "Finish your profile and security setup before using chats, files, tools, memory, and sharing.",
   "adminAccountTitle": "Complete admin account",
   "userAccountTitle": "Set up account",
   "adminTwoFactorTitle": "Protect admin account",
   "userTwoFactorTitle": "Set up 2FA",
-  "themePresetDescription": "Choose an interface theme. You can change it later in settings.",
   "personalizationTitle": "Personalization",
-  "personalizationDescription": "Confirm your regional timezone and color mode.",
+  "personalizationDescription": "Confirm your regional timezone.",
   "bootstrapReadyDescription": "Use the new administrator credentials to sign in again.",
   "adminReadyDescription": "You can now enter the admin console.",
   "userReadyDescription": "You are ready to start.",
@@ -48,8 +46,6 @@
     "language": "Language",
     "region": "Region",
     "timezone": "Timezone",
-    "themePreset": "Theme",
-    "theme": "Color mode",
     "manualSecret": "Manual key",
     "otp": "Verification code",
     "recoveryCodes": "Recovery codes"
@@ -66,21 +62,6 @@
     "copySecret": "Copy key",
     "copySecretTitle": "Copy key",
     "copyRecoveryCodes": "Copy codes"
-  },
-  "theme": {
-    "light": "Light",
-    "system": "System",
-    "dark": "Dark"
-  },
-  "themePreset": {
-    "default": "Default",
-    "azure": "Azure",
-    "cobalt": "Cobalt",
-    "graphite": "Graphite",
-    "lagoon": "Lagoon",
-    "ink": "Ink",
-    "ochre": "Ochre",
-    "sepia": "Sepia"
   },
   "states": {
     "twoFactorUnavailable": "Two-factor authentication is not enabled in this environment.",

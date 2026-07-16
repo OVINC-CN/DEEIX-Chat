@@ -471,7 +471,7 @@ function GroupAccessTable({
                     key={item.id}
                     interactive
                     selected={checked}
-                    className={cn("cursor-pointer", busy && "pointer-events-none opacity-60")}
+                    className={cn("cursor-default", busy && "pointer-events-none opacity-60")}
                     onClick={() => toggle(item.id)}
                   >
                     <TableCell

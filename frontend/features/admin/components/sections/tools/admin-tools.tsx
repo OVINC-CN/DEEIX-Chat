@@ -866,7 +866,7 @@ export function AdminToolsPage() {
                             title={t("toolbar.syncTools")}
                             aria-label={t("toolbar.syncTools")}
                           >
-                            <RefreshCw className={cn("size-3.5 stroke-1", syncingServerID === server.id ? "animate-spin" : "")} />
+                            <RefreshCw className="size-3.5 stroke-1" />
                           </Button>
                           <Button type="button" size="icon-xs" variant="ghost" className="text-muted-foreground shadow-none" onClick={() => openEditServerDialog(server)} title={t("toolbar.editServer")} aria-label={t("toolbar.editServer")}>
                             <Pencil className="size-3.5 stroke-1" />
@@ -962,7 +962,7 @@ export function AdminToolsPage() {
                   disabled={syncingServerID === toolSheetServer.id}
                   onClick={() => void syncTools(toolSheetServer.id)}
                 >
-                  <RefreshCw className={cn("size-3.5 stroke-1", syncingServerID === toolSheetServer.id ? "animate-spin" : "")} />
+                  <RefreshCw className="size-3.5 stroke-1" />
                   {t("toolbar.sync")}
                 </Button>
               ) : null}

@@ -753,7 +753,7 @@ export function BillingPricesSection({ models, pricingItems, setPricingItems, lo
                       aria-label={t("modelPricing.officialPricingSync")}
                       title={t("modelPricing.officialPricingSync")}
                     >
-                      <RefreshCw className={cn("size-3.5 stroke-1", officialPricingCatalogLoading && "animate-spin")} />
+                      <RefreshCw className="size-3.5 stroke-1" />
                       {t("modelPricing.officialPricingSync")}
                     </Button>
                   </div>
@@ -795,7 +795,7 @@ export function BillingPricesSection({ models, pricingItems, setPricingItems, lo
                           role="button"
                           tabIndex={0}
                           aria-label={`${displayName} ${t("modelPricing.officialPricingImport")}`}
-                          className="cursor-pointer transition-colors hover:bg-muted/70 focus-visible:bg-muted/70 focus-visible:outline-none"
+                          className="cursor-default transition-colors hover:bg-muted/70 focus-visible:bg-muted/70 focus-visible:outline-none"
                           onClick={() => openOfficialPricingImportDialog(suggestion)}
                           onKeyDown={(event) => {
                             if (event.key === "Enter" || event.key === " ") {

@@ -8,9 +8,9 @@ import (
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/shared/buildinfo"
 )
 
-// @title DEEIX Chat API
+// @title OVINC Chat API
 // @version 0.3.2
-// @description DEEIX Chat 后端 API 文档
+// @description OVINC Chat 后端 API 文档
 // @BasePath /api/v1
 // @securityDefinitions.apikey BearerAuth
 // @in header

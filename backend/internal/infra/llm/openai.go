@@ -16,7 +16,7 @@ import (
 
 const (
 	openRouterDefaultAttributionReferer = "https://deeix.com"
-	openRouterDefaultAttributionTitle   = "DEEIX Chat"
+	openRouterDefaultAttributionTitle   = "OVINC Chat"
 	openRouterDefaultCategories         = "general-chat"
 )
 

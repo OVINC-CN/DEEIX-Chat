@@ -176,7 +176,7 @@ export function ContentHeader({
           aria-label={t("actions.delete")}
           title={t("actions.delete")}
         >
-          {deleting ? <LoaderCircle className="size-3.5 animate-spin" strokeWidth={1.6} /> : <Trash2 className="size-3.5" strokeWidth={1.6} />}
+          {deleting ? <LoaderCircle className="size-3.5" strokeWidth={1.6} /> : <Trash2 className="size-3.5" strokeWidth={1.6} />}
         </Button>
       </div>
     </div>

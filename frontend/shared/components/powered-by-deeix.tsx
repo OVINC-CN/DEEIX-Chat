@@ -18,24 +18,16 @@ export function PoweredByDeeix({ className }: { className?: string }) {
         href="https://github.com/DEEIX-AI/DEEIX-Chat"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="DEEIX Chat on GitHub"
+        aria-label="OVINC Chat on GitHub"
         className="inline-flex shrink-0 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2"
       >
         <Image
-          src="/logo.svg"
+          src="/logo.png"
           alt=""
           aria-hidden="true"
-          width={58}
-          height={18}
-          className="h-3.5 w-auto opacity-65 dark:hidden"
-        />
-        <Image
-          src="/logo-white.svg"
-          alt=""
-          aria-hidden="true"
-          width={58}
-          height={18}
-          className="hidden h-3.5 w-auto opacity-65 dark:block"
+          width={60}
+          height={14}
+          className="h-3.5 w-auto opacity-65"
         />
       </a>
     </span>

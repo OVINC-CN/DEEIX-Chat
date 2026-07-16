@@ -455,7 +455,8 @@ export function ChatInlineAlertCard({
         className={cn(
           "col-start-2 flex w-full min-w-0 max-w-full items-start gap-3 text-left",
           "rounded-sm outline-none transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/35",
-          hasDetails ? "cursor-pointer hover:text-destructive" : "cursor-default",
+          "cursor-default",
+          hasDetails && "hover:text-destructive",
         )}
         onClick={() => {
           if (hasDetails) {
@@ -578,7 +579,7 @@ export function AssistantMessageSkeleton({ fileProc, label }: { fileProc?: boole
   if (fileProc) {
     return (
       <div className="flex items-center gap-2 pt-1 text-[13px] text-muted-foreground">
-        <span className="inline-block size-3.5 animate-spin rounded-full border-2 border-muted border-t-foreground/50" />
+        <span className="inline-block size-3.5 rounded-full border-2 border-muted border-t-foreground/50" />
         {label?.trim() || t("processing")}
       </div>
     );
@@ -609,7 +610,7 @@ export function AssistantImageGenerationSkeleton({
   return (
     <div className={cn("my-4 w-full space-y-2.5", frameClassName)}>
       <div className="flex items-center gap-2 pt-1 text-[13px] text-muted-foreground">
-        <span className="inline-block size-3.5 animate-spin rounded-full border-2 border-muted border-t-foreground/50" />
+        <span className="inline-block size-3.5 rounded-full border-2 border-muted border-t-foreground/50" />
         {label?.trim() || t("processing")}
       </div>
       <div className={cn("relative w-full overflow-hidden rounded-xl bg-muted/20 text-primary", aspectClassName)}>
@@ -640,7 +641,7 @@ export function AssistantVideoGenerationSkeleton({ label }: { label?: string }) 
   return (
     <div className="my-4 w-full max-w-[32rem] space-y-2.5">
       <div className="flex items-center gap-2 pt-1 text-[13px] text-muted-foreground">
-        <span className="inline-block size-3.5 animate-spin rounded-full border-2 border-muted border-t-foreground/50" />
+        <span className="inline-block size-3.5 rounded-full border-2 border-muted border-t-foreground/50" />
         {label?.trim() || t("processing")}
       </div>
       <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-muted/20 text-primary">

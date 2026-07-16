@@ -181,7 +181,7 @@ function RecentConversationRow({
           <div
             role="button"
             tabIndex={0}
-            className="min-w-0 flex-1 cursor-pointer"
+            className="min-w-0 flex-1 cursor-default"
             onClick={() => onToggleSelected(item.publicID)}
             onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {

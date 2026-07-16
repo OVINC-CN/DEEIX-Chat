@@ -610,7 +610,7 @@ export function PreviewMedia({ kind, source, alt, contentType, toolbarContainer,
                           max={Math.max(duration, 0)}
                           step={0.1}
                           value={Math.min(currentTime, duration || 0)}
-                          className="absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0"
+                          className="absolute inset-0 h-full w-full cursor-default appearance-none opacity-0"
                           onChange={(event) => handleSeek(event.target.value)}
                         />
                       </div>
@@ -682,7 +682,7 @@ export function PreviewMedia({ kind, source, alt, contentType, toolbarContainer,
                       max={Math.max(duration, 0)}
                       step={0.1}
                       value={Math.min(currentTime, duration || 0)}
-                      className="absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0"
+                      className="absolute inset-0 h-full w-full cursor-default appearance-none opacity-0"
                       onChange={(event) => handleSeek(event.target.value)}
                     />
                   </div>
