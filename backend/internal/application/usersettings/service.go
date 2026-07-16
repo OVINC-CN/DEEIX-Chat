@@ -53,6 +53,7 @@ var fixedSettings = map[string]string{
 	"chat.markdown_render":            "true",
 	"chat.reuse_model_options":        "false",
 	"chat.reasoning_content_passback": "true",
+	"chat.input_height":               "standard",
 }
 
 // boolKeys 取值只能是 "true" / "false"。

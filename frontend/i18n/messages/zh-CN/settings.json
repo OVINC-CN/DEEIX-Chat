@@ -309,13 +309,6 @@
       "sectionTitle": "输入与发送",
       "shortcutTitle": "发送快捷键",
       "shortcutDescription": "当前平台使用 {shortcut} 提交消息。",
-      "heightTitle": "输入区域高度",
-      "heightDescription": "控制输入框自动扩展时允许占用的最大高度。",
-      "height": {
-        "compact": "紧凑",
-        "standard": "标准",
-        "loose": "宽松"
-      },
       "restoreDraftTitle": "自动恢复草稿",
       "restoreDraftDescription": "控制发送失败时是否自动恢复本次发送的文字和附件。",
       "preserveDraftTitle": "保留会话草稿",

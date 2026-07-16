@@ -309,13 +309,6 @@
       "sectionTitle": "Input and sending",
       "shortcutTitle": "Send shortcut",
       "shortcutDescription": "This platform uses {shortcut} to submit messages.",
-      "heightTitle": "Input area height",
-      "heightDescription": "Controls the maximum height allowed when the input box auto-expands.",
-      "height": {
-        "compact": "Compact",
-        "standard": "Standard",
-        "loose": "Loose"
-      },
       "restoreDraftTitle": "Restore draft on failure",
       "restoreDraftDescription": "Controls whether failed sends automatically restore the text and attachments from that attempt.",
       "preserveDraftTitle": "Preserve conversation drafts",

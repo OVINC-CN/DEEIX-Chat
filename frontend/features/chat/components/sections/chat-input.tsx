@@ -83,7 +83,6 @@ type ChatInputProps = {
   maxFilesPerMessage: number;
   fileMode?: "auto" | "full_context" | "rag";
   sendShortcut?: SendShortcut;
-  inputHeight?: "compact" | "standard" | "loose";
   attachments: PendingAttachment[];
   uploadingAttachments: UploadingAttachment[];
   modelOptions: ChatModelOption[];
@@ -223,7 +222,6 @@ function ChatInputComponent({
   isConversationMode,
   fileMode,
   sendShortcut = "ctrl_enter",
-  inputHeight = "standard",
   attachments,
   uploadingAttachments,
   modelOptions,
@@ -286,8 +284,6 @@ function ChatInputComponent({
   const hasDraftText = draft.trim().length > 0;
   const hasSubmitContent = hasDraftText || attachments.length > 0;
   const canSend = hasSubmitContent && !loading && !uploading;
-  const inputHeightClassName =
-    inputHeight === "compact" ? "max-h-32" : inputHeight === "loose" ? "max-h-64" : "max-h-44";
 
   // Only relevant in RAG mode: all document attachments opted out of RAG.
   const docAttachments = attachments.filter((a) => a.fileCategory !== "image");
@@ -736,7 +732,7 @@ function ChatInputComponent({
             className={cn(
               "rounded-3xl min-h-12 overflow-y-auto px-5 text-[15px] leading-6 placeholder:text-muted-foreground placeholder:font-[inherit] placeholder:leading-[inherit]",
               showSelectedSkills || hasComposerAttachments ? "pt-2" : "pt-4",
-              inputHeightClassName,
+              "max-h-44",
             )}
             onFocus={handleMentionFocus}
             onBlur={handleMentionBlur}

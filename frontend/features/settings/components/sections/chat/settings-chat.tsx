@@ -459,27 +459,6 @@ export function SettingsChat() {
           </SettingsFieldRow>
           <div className="pt-4">
             <SettingsFieldRow
-              title={t("input.heightTitle")}
-              description={t("input.heightDescription")}
-            >
-              <Select
-                value={settings.inputHeight}
-                onValueChange={handleEnum("chat.input_height", "inputHeight")}
-                disabled={loading}
-              >
-                <SelectTrigger size="sm" className="text-left md:text-right *:data-[slot=select-value]:flex-1 *:data-[slot=select-value]:justify-start md:*:data-[slot=select-value]:justify-end">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent align="start">
-                  <SelectItem value="compact">{t("input.height.compact")}</SelectItem>
-                  <SelectItem value="standard">{t("input.height.standard")}</SelectItem>
-                  <SelectItem value="loose">{t("input.height.loose")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </SettingsFieldRow>
-          </div>
-          <div className="pt-4">
-            <SettingsFieldRow
               title={t("input.restoreDraftTitle")}
               description={t("input.restoreDraftDescription")}
             >

@@ -327,7 +327,6 @@ export function useChatModelOptions({
   const [sendShortcut, setSendShortcut] = React.useState<SendShortcut>("ctrl_enter");
   const [restoreDraftOnFailure, setRestoreDraftOnFailure] = React.useState(true);
   const [preserveConversationDrafts, setPreserveConversationDrafts] = React.useState(true);
-  const [inputHeight, setInputHeight] = React.useState<"compact" | "standard" | "loose">("standard");
   const [showBillingCost, setShowBillingCost] = React.useState(false);
   const [billingDisplayCurrency, setBillingDisplayCurrency] = React.useState<BillingDisplayCurrency>("USD");
   const [billingDisplayUsdToCnyRate, setBillingDisplayUsdToCnyRate] = React.useState<number | null>(null);
@@ -451,11 +450,6 @@ export function useChatModelOptions({
         setShowBillingCost((billingConfig?.config.mode ?? "self") !== "self");
         setBillingDisplayCurrency(normalizeBillingDisplayCurrency(billingConfig?.config.displayCurrency));
         setBillingDisplayUsdToCnyRate(billingConfig?.config.usdToCNYRate ?? null);
-        setInputHeight(
-          settings["chat.input_height"] === "compact" || settings["chat.input_height"] === "loose"
-            ? settings["chat.input_height"]
-            : "standard",
-        );
       } catch {
         if (!cancelled) {
           setModelsErrorMsg(t("loadFailed"));
@@ -594,7 +588,6 @@ export function useChatModelOptions({
     sendShortcut,
     restoreDraftOnFailure,
     preserveConversationDrafts,
-    inputHeight,
     markdownRender: true,
     showModelInfo: true,
     showLatency: true,
