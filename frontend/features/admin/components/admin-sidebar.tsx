@@ -24,9 +24,7 @@ const ADMIN_SECTION_LABEL_KEYS: Record<AdminSection, string> = {
   upstreams: "sections.upstreams",
   models: "sections.models",
   groups: "sections.groups",
-  "tool-settings": "sections.toolSettings",
   billing: "sections.billing",
-  announcements: "sections.announcements",
   logs: "sections.logs",
   "login-settings": "sections.loginSettings",
   "conversation-settings": "sections.conversationSettings",
@@ -34,14 +32,14 @@ const ADMIN_SECTION_LABEL_KEYS: Record<AdminSection, string> = {
   about: "sections.about",
 };
 
-function resolveActiveSectionFromPath(pathname: string, basePath: string): AdminSection {
+function resolveActiveSectionFromPath(pathname: string, basePath: string): AdminSection | null {
   const normalizedBasePath = basePath.replace(/\/$/, "");
   const section = ADMIN_SECTIONS.find((item) => {
     const href = `${normalizedBasePath}${item.href}`;
     return pathname === href || pathname.startsWith(`${href}/`);
   });
 
-  return section?.id ?? "statistics";
+  return section?.id ?? null;
 }
 
 export function AdminSidebar({

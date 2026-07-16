@@ -28,7 +28,6 @@ import { SpinnerLabel } from "@/components/ui/spinner";
 import { logout } from "@/shared/api/auth";
 import { useAuthSession } from "@/shared/auth/auth-session-context";
 import { clearSessionAndRedirectToLogin } from "@/shared/auth/session";
-import { dispatchOpenAnnouncements, getAnnouncementUnread, subscribeAnnouncementUnreadChanged } from "@/shared/events/announcement-events";
 
 export function NavUser({
   user,
@@ -45,11 +44,8 @@ export function NavUser({
   const { accessToken } = useAuthSession();
   const [open, setOpen] = React.useState(false);
   const [loggingOut, setLoggingOut] = React.useState(false);
-  const [hasUnreadAnnouncement, setHasUnreadAnnouncement] = React.useState(() => getAnnouncementUnread());
   const skipTriggerFocusRef = React.useRef(false);
   const isAdmin = user.role === "admin" || user.role === "superadmin";
-
-  React.useEffect(() => subscribeAnnouncementUnreadChanged(setHasUnreadAnnouncement), []);
 
   const onLogout = React.useCallback(async () => {
     if (loggingOut) {
@@ -77,13 +73,6 @@ export function NavUser({
     },
     [router],
   );
-
-  const openAnnouncementsFromMenu = React.useCallback((event: Event) => {
-    event.preventDefault();
-    skipTriggerFocusRef.current = true;
-    setOpen(false);
-    dispatchOpenAnnouncements();
-  }, []);
 
   return (
     <SidebarMenu className="group-data-[collapsible=icon]:items-center">
@@ -131,12 +120,6 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem onSelect={navigateFromMenu("/setting/general")}>
                 {t("settings")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={openAnnouncementsFromMenu}>
-                <span className="min-w-0 flex-1 truncate">{t("announcements")}</span>
-                <span className="ml-auto flex size-4 shrink-0 items-center justify-center">
-                  {hasUnreadAnnouncement ? <span aria-hidden="true" className="size-1.5 rounded-full bg-destructive" /> : null}
-                </span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
