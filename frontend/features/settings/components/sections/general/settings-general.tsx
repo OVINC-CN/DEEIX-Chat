@@ -5,12 +5,6 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { dispatchUserProfileUpdated } from "@/features/settings/events/user-profile-events";
-import { useAppearancePreferencesPersistence } from "@/features/settings/hooks/use-appearance-preferences-persistence";
-import {
-  type FontSizeOption,
-  useFontSizePreference,
-  writeFontSizePreference,
-} from "@/features/settings/utils/font-size";
 import type { ProfileDraft } from "@/features/settings/types/settings";
 import {
   createDraftFromUser,
@@ -44,7 +38,6 @@ import {
   SettingsPage,
   SettingsSectionSeparator,
 } from "@/shared/components/settings-layout";
-import { GeneralAppearanceSection } from "./general-appearance";
 import { GeneralNotificationsSection } from "./general-notifications";
 import { GeneralProfileSection } from "./general-profile";
 
@@ -78,7 +71,6 @@ export function SettingsGeneral() {
   const [avatarDialogValue, setAvatarDialogValue] = React.useState("");
   const [avatarUploading, setAvatarUploading] = React.useState(false);
   const [avatarUploadPreview, setAvatarUploadPreview] = React.useState<AvatarUploadPreview | null>(null);
-  const fontSize = useFontSizePreference();
   const [notificationRuntimeReady, setNotificationRuntimeReady] = React.useState(false);
   const [notificationSupported, setNotificationSupported] = React.useState(false);
   const [responseCompletionNotificationsEnabled, setResponseCompletionNotificationsEnabled] = React.useState(false);
@@ -87,7 +79,6 @@ export function SettingsGeneral() {
   const [saving, setSaving] = React.useState(false);
   const [usernameDraft, setUsernameDraft] = React.useState("");
   const initialUsernameToastShownRef = React.useRef(false);
-  const persistAppearancePreferences = useAppearancePreferencesPersistence();
 
   React.useEffect(() => {
     if (userStatus === "loading") {
@@ -392,11 +383,6 @@ export function SettingsGeneral() {
     return t("generalPage.notifications.defaultHelp");
   }, [notificationPermission, notificationRuntimeReady, notificationSupported, t]);
 
-  const handleFontSizeChange = React.useCallback((value: FontSizeOption) => {
-    writeFontSizePreference(value);
-    persistAppearancePreferences({ fontSize: value });
-  }, [persistAppearancePreferences]);
-
   return (
     <SettingsPage>
       <GeneralProfileSection
@@ -433,13 +419,6 @@ export function SettingsGeneral() {
         responseCompletionNotificationsEnabled={responseCompletionNotificationsEnabled}
         notificationHelpText={notificationHelpText}
         onResponseCompletionNotificationsChange={handleResponseCompletionNotificationsChange}
-      />
-
-      <SettingsSectionSeparator />
-
-      <GeneralAppearanceSection
-        fontSize={fontSize}
-        onFontSizeChange={handleFontSizeChange}
       />
     </SettingsPage>
   );

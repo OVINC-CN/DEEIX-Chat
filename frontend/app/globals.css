@@ -343,21 +343,6 @@ html[data-branding-pending] body {
   }
 }
 
-:root[data-font-size="small"] {
-  --ui-font-scale: 0.88;
-  --chat-font-scale: 0.88;
-}
-
-:root[data-font-size="medium"] {
-  --ui-font-scale: 1.12;
-  --chat-font-scale: 1.12;
-}
-
-:root[data-font-size="large"] {
-  --ui-font-scale: 1.24;
-  --chat-font-scale: 1.24;
-}
-
 @layer utilities {
   @media (hover: none), (pointer: coarse), (any-hover: none), (any-pointer: coarse) {
     .chat-message-meta[data-hover-actions="true"] {

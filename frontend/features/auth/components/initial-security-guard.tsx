@@ -14,10 +14,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SpinnerLabel } from "@/components/ui/spinner";
 import { dispatchUserProfileUpdated } from "@/features/settings/events/user-profile-events";
 import {
-  readLocalAppearancePreferences,
-  serializeAppearancePreferences,
-} from "@/features/settings/utils/appearance-preferences";
-import {
   cancelCurrentTwoFactorSetup,
   completeOnboarding,
   confirmCurrentTwoFactorSetup,
@@ -438,24 +434,15 @@ export function InitialSecurityGuard() {
     }
   }, [accessToken, locale, resolveErrorMessage, savingLocale, t, tCommonErrors, viewer]);
 
-  const currentAppearancePreferences = React.useCallback(
-    () => serializeAppearancePreferences(readLocalAppearancePreferences()),
-    [],
-  );
-
   const savePersonalizationStep = React.useCallback(async () => {
     if (!viewer || savingPersonalization) {
       return;
     }
     const nextTimezone = timezone.trim() || currentTimeZone;
     const profilePayload: Parameters<typeof patchMe>[1] = {};
-    const appearancePreferences = currentAppearancePreferences();
 
     if (nextTimezone !== (viewer.timezone.trim() || "Etc/UTC")) {
       profilePayload.timezone = nextTimezone;
-    }
-    if (appearancePreferences !== (viewer.appearancePreferences?.trim() ?? "")) {
-      profilePayload.appearancePreferences = appearancePreferences;
     }
 
     if (Object.keys(profilePayload).length === 0) {
@@ -476,7 +463,7 @@ export function InitialSecurityGuard() {
     } finally {
       setSavingPersonalization(false);
     }
-  }, [accessToken, currentAppearancePreferences, currentTimeZone, resolveErrorMessage, savingPersonalization, t, tCommonErrors, timezone, viewer]);
+  }, [accessToken, currentTimeZone, resolveErrorMessage, savingPersonalization, t, tCommonErrors, timezone, viewer]);
 
   const finishInitialSecurity = React.useCallback(async () => {
     if (!viewer || finishing) {

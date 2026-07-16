@@ -1,5 +1,3 @@
-import type { FontSizeOption } from "@/features/settings/utils/font-size";
-
 export type SendShortcut = "enter" | "ctrl_enter" | "meta_enter";
 export type ChatInputHeight = "compact" | "standard" | "loose";
 export type ChatSettings = {
@@ -16,10 +14,4 @@ export type ProfileDraft = {
   timezone: string;
   locale: string;
   profilePreferences: string;
-};
-
-export type FontSizePreview = {
-  label: string;
-  value: FontSizeOption;
-  scale: number;
 };

@@ -16,7 +16,6 @@
     "copyright": "© 2026 OVINC. OVINC Chat.",
     "license": "Code licensed under the Apache License 2.0."
   },
-  "appearance": "Appearance",
   "language": "Language",
   "languageDescription": "Choose the interface language for this browser and your account.",
   "generalPage": {
@@ -58,15 +57,6 @@
       "unsupportedHelp": "This browser does not support system notifications.",
       "deniedHelp": "Notifications are blocked by the browser. Allow them manually in browser settings.",
       "grantedHelp": "Browser notifications are enabled. When a model reply finishes, a notification will appear."
-    },
-    "appearance": {
-      "fontSize": "Font size",
-      "fontSizeOption": {
-        "small": "Small",
-        "standard": "Standard",
-        "medium": "Medium",
-        "large": "Large"
-      }
     },
     "avatarDialog": {
       "title": "Edit avatar",

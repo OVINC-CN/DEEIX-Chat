@@ -16,7 +16,6 @@
     "copyright": "© 2026 OVINC. OVINC Chat.",
     "license": "代码遵循 Apache License 2.0 授权。"
   },
-  "appearance": "外观",
   "language": "语言",
   "languageDescription": "选择当前浏览器和账户使用的界面语言。",
   "generalPage": {
@@ -58,15 +57,6 @@
       "unsupportedHelp": "当前浏览器不支持系统通知。",
       "deniedHelp": "浏览器已阻止通知，请在浏览器设置中手动允许。",
       "grantedHelp": "已启用浏览器通知。开启后，模型回复完成时会弹出提醒。"
-    },
-    "appearance": {
-      "fontSize": "字体大小",
-      "fontSizeOption": {
-        "small": "小号",
-        "standard": "标准",
-        "medium": "中号",
-        "large": "大号"
-      }
     },
     "avatarDialog": {
       "title": "编辑头像",
