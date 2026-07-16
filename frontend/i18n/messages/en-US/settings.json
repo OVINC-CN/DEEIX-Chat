@@ -67,24 +67,7 @@
       "grantedHelp": "Browser notifications are enabled. When a model reply finishes, a notification will appear."
     },
     "appearance": {
-      "colorMode": "Color mode",
-      "themePreset": "Theme",
       "fontSize": "Font size",
-      "preset": {
-        "default": "Default",
-        "azure": "Azure",
-        "cobalt": "Cobalt",
-        "graphite": "Graphite",
-        "lagoon": "Lagoon",
-        "ink": "Ink",
-        "ochre": "Ochre",
-        "sepia": "Sepia"
-      },
-      "theme": {
-        "light": "Light",
-        "system": "System",
-        "dark": "Dark"
-      },
       "fontSizeOption": {
         "small": "Small",
         "standard": "Standard",
@@ -385,20 +368,6 @@
         "compact": "Compact",
         "standard": "Standard",
         "wide": "Wide"
-      },
-      "chatFont": "Chat font",
-      "chatFontWeight": "Chat font weight",
-      "font": {
-        "default": "Default",
-        "songti": "Serif",
-        "heiti": "Sans",
-        "mono": "Mono"
-      },
-      "fontWeight": {
-        "regular": "Regular",
-        "medium": "Medium",
-        "semibold": "Semibold",
-        "bold": "Bold"
       }
     },
     "context": {

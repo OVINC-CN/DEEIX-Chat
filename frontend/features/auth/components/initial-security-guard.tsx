@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MapPinned, Monitor, Moon, ShieldCheck, Sun } from "lucide-react";
+import { MapPinned, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -43,7 +43,6 @@ import { useLocalizedErrorMessage } from "@/i18n/use-localized-error";
 import { AppLogo } from "@/shared/components/app-logo";
 import { CopyActionButton } from "@/shared/components/copy-action";
 import { TimeZoneSelect } from "@/shared/components/time-zone-select";
-import { useTheme, type ThemePreset } from "@/shared/components/theme-provider";
 import { createQRCodeSVG } from "@/shared/lib/qr-code";
 import { detectCurrentTimeZone } from "@/shared/lib/time-zone";
 import { cn } from "@/lib/utils";
@@ -117,17 +116,6 @@ const ONBOARDING_LOGO_ITEMS: LogoCarouselLogo[] = [
   src: `/vendor/lobehub-icons/${slug}.svg`,
 }));
 
-const ONBOARDING_THEME_PRESETS: ThemePreset[] = [
-  "default",
-  "azure",
-  "cobalt",
-  "graphite",
-  "lagoon",
-  "ink",
-  "ochre",
-  "sepia",
-];
-
 function OnboardingFeatureCarousel({
   activeIndex,
   logos,
@@ -189,7 +177,6 @@ export function InitialSecurityGuard() {
   const tCommonErrors = useTranslations("common.errors");
   const resolveErrorMessage = useLocalizedErrorMessage();
   const { locale, setLocale } = useAppLocale();
-  const { preset, setPreset, theme, setTheme } = useTheme();
   const { accessToken, user, refreshUser } = useAuthSession();
   const [viewer, setViewer] = React.useState<UserDTO | null>(null);
   const [step, setStep] = React.useState(1);
@@ -203,7 +190,6 @@ export function InitialSecurityGuard() {
   const [savingAccount, setSavingAccount] = React.useState(false);
   const [savingTwoFactor, setSavingTwoFactor] = React.useState(false);
   const [savingLocale, setSavingLocale] = React.useState<AppLocale | null>(null);
-  const [savingThemePreset, setSavingThemePreset] = React.useState(false);
   const [savingPersonalization, setSavingPersonalization] = React.useState(false);
   const [finishing, setFinishing] = React.useState(false);
   const [twoFactorSetup, setTwoFactorSetup] = React.useState<TwoFactorSetupStartData | null>(null);
@@ -448,37 +434,9 @@ export function InitialSecurityGuard() {
   }, [accessToken, locale, resolveErrorMessage, savingLocale, t, tCommonErrors, viewer]);
 
   const currentAppearancePreferences = React.useCallback(
-    () => serializeAppearancePreferences({
-      ...readLocalAppearancePreferences(),
-      theme,
-      preset,
-    }),
-    [preset, theme],
+    () => serializeAppearancePreferences(readLocalAppearancePreferences()),
+    [],
   );
-
-  const saveThemePresetStep = React.useCallback(async () => {
-    if (!viewer || savingThemePreset) return;
-    const appearancePreferences = currentAppearancePreferences();
-
-    if (appearancePreferences === (viewer.appearancePreferences?.trim() ?? "")) {
-      setStep(5);
-      return;
-    }
-
-    setSavingThemePreset(true);
-    try {
-      const nextViewer = await patchMe(accessToken, { appearancePreferences });
-      setViewer(nextViewer);
-      dispatchUserProfileUpdated(nextViewer);
-      setStep(5);
-    } catch (error) {
-      toast.error(t("toasts.savePersonalizationFailed"), {
-        description: resolveErrorMessage(error, tCommonErrors("unknown")),
-      });
-    } finally {
-      setSavingThemePreset(false);
-    }
-  }, [accessToken, currentAppearancePreferences, resolveErrorMessage, savingThemePreset, t, tCommonErrors, viewer]);
 
   const savePersonalizationStep = React.useCallback(async () => {
     if (!viewer || savingPersonalization) return;
@@ -494,7 +452,7 @@ export function InitialSecurityGuard() {
     }
 
     if (Object.keys(profilePayload).length === 0) {
-      setStep(6);
+      setStep(5);
       return;
     }
 
@@ -503,7 +461,7 @@ export function InitialSecurityGuard() {
       const nextViewer = await patchMe(accessToken, profilePayload);
       setViewer(nextViewer);
       dispatchUserProfileUpdated(nextViewer);
-      setStep(6);
+      setStep(5);
     } catch (error) {
       toast.error(t("toasts.savePersonalizationFailed"), {
         description: resolveErrorMessage(error, tCommonErrors("unknown")),
@@ -564,7 +522,7 @@ export function InitialSecurityGuard() {
       <Onboarding
         value={step}
         onValueChange={setStep}
-        totalSteps={6}
+        totalSteps={5}
         role="dialog"
         aria-modal="true"
         aria-label={t("aria.onboarding")}
@@ -823,49 +781,6 @@ export function InitialSecurityGuard() {
               <div className="w-full space-y-5">
                 <Onboarding.Header className="text-left">
                   <div className="space-y-2">
-                    <h2 className="text-2xl font-semibold tracking-normal">{t("labels.themePreset")}</h2>
-                    <p className="text-xs leading-5 text-muted-foreground">
-                      {t("themePresetDescription")}
-                    </p>
-                  </div>
-                </Onboarding.Header>
-
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {ONBOARDING_THEME_PRESETS.map((item) => (
-                    <Button
-                      key={item}
-                      type="button"
-                      variant="outline"
-                      className={cn(
-                        "h-8 justify-center px-2 text-xs shadow-none",
-                        preset === item && "border-primary/45 bg-muted text-foreground hover:bg-muted hover:text-foreground",
-                      )}
-                      onClick={() => {
-                        setPreset(item);
-                      }}
-                    >
-                      {t(`themePreset.${item}`)}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <Onboarding.Navigation aria-label={t("aria.themePresetNavigation")} className="mt-auto justify-end pt-6">
-              <Button type="button" variant="ghost" className="shadow-none" disabled={savingThemePreset} onClick={() => setStep(3)}>
-                {t("back")}
-              </Button>
-              <Button type="button" disabled={savingThemePreset} onClick={() => void saveThemePresetStep()}>
-                {savingThemePreset ? <SpinnerLabel>{t("saving")}</SpinnerLabel> : t("continue")}
-              </Button>
-            </Onboarding.Navigation>
-          </Onboarding.Step>
-
-          <Onboarding.Step step={5} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
-            <div className="flex flex-1 items-center">
-              <div className="w-full space-y-5">
-                <Onboarding.Header className="text-left">
-                  <div className="space-y-2">
                     <h2 className="text-2xl font-semibold tracking-normal">{t("personalizationTitle")}</h2>
                     <p className="text-xs leading-5 text-muted-foreground">
                       {t("personalizationDescription")}
@@ -902,40 +817,12 @@ export function InitialSecurityGuard() {
                     </div>
                   </label>
 
-                  <div className="space-y-1.5">
-                    <span className="flex items-center text-xs font-medium">
-                      {t("labels.theme")}
-                    </span>
-                    <div className="grid grid-cols-3 gap-2">
-                      {([
-                        ["light", Sun],
-                        ["system", Monitor],
-                        ["dark", Moon],
-                      ] as const).map(([mode, Icon]) => (
-                        <Button
-                          key={mode}
-                          type="button"
-                          variant="outline"
-                          className={cn(
-                            "h-8 justify-center gap-1.5 px-2 text-xs shadow-none",
-                            theme === mode && "border-foreground/80 bg-muted text-foreground hover:bg-muted hover:text-foreground",
-                          )}
-                          onClick={() => {
-                            setTheme(mode);
-                          }}
-                        >
-                          <Icon className="size-3.5 stroke-1" />
-                          {t(`theme.${mode}`)}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
 
             <Onboarding.Navigation aria-label={t("aria.personalizationNavigation")} className="mt-auto justify-end pt-6">
-              <Button type="button" variant="ghost" className="shadow-none" disabled={savingPersonalization} onClick={() => setStep(4)}>
+              <Button type="button" variant="ghost" className="shadow-none" disabled={savingPersonalization} onClick={() => setStep(3)}>
                 {t("back")}
               </Button>
               <Button type="button" disabled={savingPersonalization} onClick={() => void savePersonalizationStep()}>
@@ -944,7 +831,7 @@ export function InitialSecurityGuard() {
             </Onboarding.Navigation>
           </Onboarding.Step>
 
-          <Onboarding.Step step={6} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
+          <Onboarding.Step step={5} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
             <div className="flex flex-1 items-center">
               <div className="w-full space-y-5">
                 <Onboarding.Header className="text-left">
@@ -982,7 +869,7 @@ export function InitialSecurityGuard() {
             </div>
 
             <Onboarding.Navigation aria-label={t("aria.finishNavigation")} className="mt-auto justify-end pt-6">
-              <Button type="button" variant="ghost" className="shadow-none" disabled={finishing} onClick={() => setStep(5)}>
+              <Button type="button" variant="ghost" className="shadow-none" disabled={finishing} onClick={() => setStep(4)}>
                 {t("back")}
               </Button>
               <Button type="button" disabled={finishing} onClick={() => void finishInitialSecurity()}>

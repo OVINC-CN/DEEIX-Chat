@@ -1,7 +1,5 @@
 import type { ChatContentWidth } from "@/shared/model/chat-content-width";
-import type { ChatFontOption, ChatFontWeightOption } from "@/features/settings/utils/chat-font";
 import type { FontSizeOption } from "@/features/settings/utils/font-size";
-import type { ThemePreset } from "@/shared/components/theme-provider";
 import type { PublicModelDTO } from "@/shared/api/model.types";
 
 export type SendShortcut = "enter" | "ctrl_enter" | "meta_enter";
@@ -35,41 +33,6 @@ export type ProfileDraft = {
   timezone: string;
   locale: string;
   profilePreferences: string;
-};
-
-export type ThemeMode = "light" | "system" | "dark";
-
-export type ThemePresetPreview = {
-  label: string;
-  tone: "cool" | "neutral" | "warm";
-  value: ThemePreset;
-  light: ThemePreviewPalette;
-  dark: ThemePreviewPalette;
-};
-
-export type ThemePreviewPalette = {
-  background: string;
-  sidebar: string;
-  sidebarBorder: string;
-  surface: string;
-  surfaceBorder: string;
-  textStrong: string;
-  textSoft: string;
-  accent: string;
-};
-
-export type ChatFontPreview = {
-  label: string;
-  value: ChatFontOption;
-  fontFamily: string;
-  sampleText: string;
-};
-
-export type ChatFontWeightPreview = {
-  label: string;
-  value: ChatFontWeightOption;
-  fontWeight: number;
-  sampleText: string;
 };
 
 export type FontSizePreview = {

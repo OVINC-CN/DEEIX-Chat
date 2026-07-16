@@ -67,24 +67,7 @@
       "grantedHelp": "已启用浏览器通知。开启后，模型回复完成时会弹出提醒。"
     },
     "appearance": {
-      "colorMode": "颜色模式",
-      "themePreset": "主题",
       "fontSize": "字体大小",
-      "preset": {
-        "default": "默认",
-        "azure": "Azure",
-        "cobalt": "Cobalt",
-        "graphite": "Graphite",
-        "lagoon": "Lagoon",
-        "ink": "Ink",
-        "ochre": "Ochre",
-        "sepia": "Sepia"
-      },
-      "theme": {
-        "light": "浅色",
-        "system": "跟随系统",
-        "dark": "深色"
-      },
       "fontSizeOption": {
         "small": "小号",
         "standard": "标准",
@@ -385,20 +368,6 @@
         "compact": "紧凑",
         "standard": "标准",
         "wide": "宽屏"
-      },
-      "chatFont": "对话字体",
-      "chatFontWeight": "对话字重",
-      "font": {
-        "default": "默认",
-        "songti": "衬线",
-        "heiti": "无衬线",
-        "mono": "等宽"
-      },
-      "fontWeight": {
-        "regular": "常规",
-        "medium": "中等",
-        "semibold": "半粗",
-        "bold": "粗体"
       }
     },
     "context": {

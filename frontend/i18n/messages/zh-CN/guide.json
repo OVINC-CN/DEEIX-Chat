@@ -22,7 +22,6 @@
     "accountNavigation": "账户设置步骤导航",
     "twoFactorNavigation": "两步验证步骤导航",
     "twoFactorQRCode": "两步验证二维码",
-    "themePresetNavigation": "主题选择步骤导航",
     "personalizationNavigation": "个性化步骤导航",
     "finishNavigation": "完成引导步骤导航"
   },
@@ -35,9 +34,8 @@
   "userAccountTitle": "设置账户",
   "adminTwoFactorTitle": "保护管理账户",
   "userTwoFactorTitle": "设置 2FA",
-  "themePresetDescription": "选择界面主题，稍后可在设置中修改。",
   "personalizationTitle": "个性化",
-  "personalizationDescription": "确认地区时区和颜色模式。",
+  "personalizationDescription": "确认地区时区。",
   "bootstrapReadyDescription": "完成后请使用新的管理员凭据重新登录。",
   "adminReadyDescription": "完成后即可进入后台管理系统配置。",
   "userReadyDescription": "完成后即可开始使用。",
@@ -48,8 +46,6 @@
     "language": "语言",
     "region": "地区",
     "timezone": "时区",
-    "themePreset": "主题",
-    "theme": "颜色模式",
     "manualSecret": "手动密钥",
     "otp": "验证码",
     "recoveryCodes": "恢复码"
@@ -66,21 +62,6 @@
     "copySecret": "复制两步验证密钥",
     "copySecretTitle": "复制密钥",
     "copyRecoveryCodes": "复制恢复码"
-  },
-  "theme": {
-    "light": "浅色",
-    "system": "跟随系统",
-    "dark": "深色"
-  },
-  "themePreset": {
-    "default": "默认",
-    "azure": "Azure",
-    "cobalt": "Cobalt",
-    "graphite": "Graphite",
-    "lagoon": "Lagoon",
-    "ink": "Ink",
-    "ochre": "Ochre",
-    "sepia": "Sepia"
   },
   "states": {
     "twoFactorUnavailable": "当前环境未启用两步验证。",
