@@ -29,6 +29,7 @@ const htmlVisualPromptFormatInstruction = `<format>
     <css-constraint>
 绝对禁止使用` + "`" + `<style>` + "`" + `标签、` + "`" + `class` + "`" + `属性及伪类/伪元素。
 可视化必须100%采用纯内联样式（` + "`" + `style="..."` + "`" + `），仅依赖 Flexbox 与基础盒子模型（padding/margin/border/box-shadow/背景色差）构建视觉层级。
+绝对禁止定义或引用任何变量，包括 CSS 自定义属性（--*）、var() 以及 JavaScript 变量；所有样式值与内容必须直接写入最终 HTML。
     </css-constraint>
     <default-trigger>
       遇到以下情形，必须放弃纯 Markdown 列表或表格的敷衍表达，主动切入 HTML 内嵌排版：
