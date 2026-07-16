@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 interface CommonControlledStateProps<T> {
   value?: T;
@@ -17,7 +17,9 @@ export function useControlledState<T>(
   );
 
   React.useEffect(() => {
-    if (value !== undefined) setInternalState(value);
+    if (value !== undefined) {
+      setInternalState(value);
+    }
   }, [value]);
 
   const setState = React.useCallback(

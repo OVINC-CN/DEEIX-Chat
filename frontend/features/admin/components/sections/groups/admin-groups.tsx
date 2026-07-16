@@ -314,65 +314,65 @@ export function AdminGroupsPage() {
           ) : null}
           {!loading
             ? pagedGroups.map((group) => (
-                <TableRow
-                  key={group.id}
-                  className="cursor-default"
-                  onClick={() => setEditing(group)}
-                >
-                  <TableCell className="py-1.5 whitespace-nowrap">
-                    {group.name}
-                    {group.isDefault ? (
-                      <Badge variant="secondary" className="ml-2">
-                        {t("default")}
-                      </Badge>
-                    ) : null}
-                  </TableCell>
-                  <TableCell className="max-w-xs truncate py-1.5 text-muted-foreground">
-                    {group.description}
-                  </TableCell>
-                  <TableCell className="py-1.5 text-right whitespace-nowrap">
-                    {(group.rateMultiplierPercent || 100) / 100}
-                  </TableCell>
-                  <TableCell className="py-1.5 text-right whitespace-nowrap">
-                    <div className="space-y-0.5">
-                      <div>{group.modelCount ?? 0}</div>
-                      <div className="text-[11px] text-muted-foreground">
-                        {t("groupModelBreakdown", {
-                          manual: group.manualModelCount ?? 0,
-                          automatic: group.ruleModelCount ?? 0,
+              <TableRow
+                key={group.id}
+                className="cursor-default"
+                onClick={() => setEditing(group)}
+              >
+                <TableCell className="py-1.5 whitespace-nowrap">
+                  {group.name}
+                  {group.isDefault ? (
+                    <Badge variant="secondary" className="ml-2">
+                      {t("default")}
+                    </Badge>
+                  ) : null}
+                </TableCell>
+                <TableCell className="max-w-xs truncate py-1.5 text-muted-foreground">
+                  {group.description}
+                </TableCell>
+                <TableCell className="py-1.5 text-right whitespace-nowrap">
+                  {(group.rateMultiplierPercent || 100) / 100}
+                </TableCell>
+                <TableCell className="py-1.5 text-right whitespace-nowrap">
+                  <div className="space-y-0.5">
+                    <div>{group.modelCount ?? 0}</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      {t("groupModelBreakdown", {
+                        manual: group.manualModelCount ?? 0,
+                        automatic: group.ruleModelCount ?? 0,
+                      })}
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="py-1.5 text-right whitespace-nowrap">
+                  <div className="space-y-0.5">
+                    <div>{group.userCount ?? 0}</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      {group.isDefault
+                        ? t("defaultCoverage")
+                        : t("groupCoverageBreakdown", {
+                          manual: group.manualUserCount ?? 0,
+                          subscription: group.subscriptionUserCount ?? 0,
                         })}
-                      </div>
                     </div>
-                  </TableCell>
-                  <TableCell className="py-1.5 text-right whitespace-nowrap">
-                    <div className="space-y-0.5">
-                      <div>{group.userCount ?? 0}</div>
-                      <div className="text-[11px] text-muted-foreground">
-                        {group.isDefault
-                          ? t("defaultCoverage")
-                          : t("groupCoverageBreakdown", {
-                              manual: group.manualUserCount ?? 0,
-                              subscription: group.subscriptionUserCount ?? 0,
-                            })}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-1.5 text-right whitespace-nowrap">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      disabled={group.isDefault}
-                      title={group.isDefault ? t("cannotDeleteDefault") : t("deleteGroup")}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setDeleting(group);
-                      }}
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
+                  </div>
+                </TableCell>
+                <TableCell className="py-1.5 text-right whitespace-nowrap">
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    disabled={group.isDefault}
+                    title={group.isDefault ? t("cannotDeleteDefault") : t("deleteGroup")}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setDeleting(group);
+                    }}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
             : null}
         </TableBody>
       </Table>
@@ -417,10 +417,10 @@ export function AdminGroupsPage() {
             <AlertDialogDescription>
               {stableDeleting
                 ? t("confirmDeleteWithImpact", {
-                    models: stableDeleting.manualModelCount ?? 0,
-                    rules: stableDeleting.ruleModelCount ?? 0,
-                    users: stableDeleting.manualUserCount ?? 0,
-                  })
+                  models: stableDeleting.manualModelCount ?? 0,
+                  rules: stableDeleting.ruleModelCount ?? 0,
+                  users: stableDeleting.manualUserCount ?? 0,
+                })
                 : null}
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -1081,9 +1081,9 @@ function GroupEditSheet({
                     isDefaultGroup
                       ? t("defaultGroupAllUsers", { count: groupUserCount })
                       : t("groupUserAccessEditingSummary", {
-                          manual: userIDs.size,
-                          subscription: subscriptionUserCount,
-                        })
+                        manual: userIDs.size,
+                        subscription: subscriptionUserCount,
+                      })
                   }
                   loading={selectionLoading}
                   onConfigure={isDefaultGroup ? undefined : () => setAccessDialog("users")}

@@ -44,8 +44,12 @@ function userSecondaryLabel(user: UserDTO): string {
 }
 
 function subjectLabel(subject: AdminStatisticsSubject, allUsersLabel: string): string {
-  if (subject.type === "user") return userPrimaryLabel(subject.user);
-  if (subject.type === "permission-group") return subject.permissionGroup.name;
+  if (subject.type === "user") {
+    return userPrimaryLabel(subject.user);
+  }
+  if (subject.type === "permission-group") {
+    return subject.permissionGroup.name;
+  }
   return allUsersLabel;
 }
 
@@ -79,14 +83,18 @@ export function AdminStatisticsSubjectFilter({
   }, [query]);
 
   React.useEffect(() => {
-    if (!open || mode !== "user") return;
+    if (!open || mode !== "user") {
+      return;
+    }
     const requestSequence = requestSequenceRef.current + 1;
     requestSequenceRef.current = requestSequence;
     setLoading(true);
     void (async () => {
       try {
         const token = await resolveAccessToken();
-        if (!token) return;
+        if (!token) {
+          return;
+        }
         const result = await listAdminUsers(token, {
           page: 1,
           pageSize: 20,
@@ -100,7 +108,9 @@ export function AdminStatisticsSubjectFilter({
           toast.error(t("loadFailed"), { description: resolveAdminErrorMessage(error) });
         }
       } finally {
-        if (requestSequence === requestSequenceRef.current) setLoading(false);
+        if (requestSequence === requestSequenceRef.current) {
+          setLoading(false);
+        }
       }
     })();
   }, [debouncedQuery, mode, open, t]);
@@ -110,7 +120,9 @@ export function AdminStatisticsSubjectFilter({
       const normalizedQuery = query.trim().toLocaleLowerCase();
       const groupOptions = permissionGroups
         .filter((group) => {
-          if (!normalizedQuery) return true;
+          if (!normalizedQuery) {
+            return true;
+          }
           return `${group.name} ${group.description}`.toLocaleLowerCase().includes(normalizedQuery);
         })
         .map((permissionGroup) => ({
@@ -126,7 +138,9 @@ export function AdminStatisticsSubjectFilter({
       type: "user",
       user,
     }));
-    if (query.trim()) return userOptions;
+    if (query.trim()) {
+      return userOptions;
+    }
     if (value.type === "user" && !userOptions.some((option) => option.type === "user" && option.user.id === value.user.id)) {
       userOptions.unshift({ key: `user:${value.user.id}`, type: "user", user: value.user });
     }
@@ -137,10 +151,10 @@ export function AdminStatisticsSubjectFilter({
     ? { key: `user:${value.user.id}`, type: "user", user: value.user }
     : value.type === "permission-group"
       ? {
-          key: `permission-group:${value.permissionGroup.id}`,
-          type: "permission-group",
-          permissionGroup: value.permissionGroup,
-        }
+        key: `permission-group:${value.permissionGroup.id}`,
+        type: "permission-group",
+        permissionGroup: value.permissionGroup,
+      }
       : ALL_SUBJECT_OPTION;
 
   return (
@@ -153,8 +167,12 @@ export function AdminStatisticsSubjectFilter({
       autoComplete="none"
       disabled={disabled}
       itemToStringLabel={(option) => {
-        if (option.type === "user") return userSecondaryLabel(option.user);
-        if (option.type === "permission-group") return option.permissionGroup.name;
+        if (option.type === "user") {
+          return userSecondaryLabel(option.user);
+        }
+        if (option.type === "permission-group") {
+          return option.permissionGroup.name;
+        }
         return t("allUsers");
       }}
       isItemEqualToValue={(option, selected) => option.key === selected.key}

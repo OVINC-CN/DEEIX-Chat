@@ -77,11 +77,11 @@ export function resolveLeadingImagePreview(content: string): LeadingImagePreview
   const match = RAW_IMAGE_BASE64_PREFIXES.find((item) => payload.value.startsWith(item.prefix));
   return match
     ? {
-        alt: "",
-        complete: isCompleteImageBase64Payload(match.mimeType, payload.value),
-        source: `data:${match.mimeType};base64,${payload.value}`,
-        rest: payload.rest,
-      }
+      alt: "",
+      complete: isCompleteImageBase64Payload(match.mimeType, payload.value),
+      source: `data:${match.mimeType};base64,${payload.value}`,
+      rest: payload.rest,
+    }
     : null;
 }
 

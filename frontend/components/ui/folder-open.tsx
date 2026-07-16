@@ -39,7 +39,7 @@ const FolderOpenIcon = forwardRef<FolderOpenIconHandle, FolderOpenIconProps>(
         </svg>
       </div>
     );
-  }
+  },
 );
 
 FolderOpenIcon.displayName = "FolderOpenIcon";

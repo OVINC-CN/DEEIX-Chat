@@ -191,7 +191,9 @@ export function SettingsSubscription() {
         monthlyUsage: monthlyUsageData,
       }))
       .then(({ viewer: nextViewer, config, plans, overview, dailyUsage: nextDailyUsage, monthlyUsage: nextMonthlyUsage }) => {
-        if (!mounted) return;
+        if (!mounted) {
+          return;
+        }
         setViewer(nextViewer);
         setBillingConfig(config);
         setBillingPlans(plans);
@@ -200,10 +202,14 @@ export function SettingsSubscription() {
         setMonthlyUsage(nextMonthlyUsage ?? []);
       })
       .catch((error) => {
-        if (mounted) toast.error(t("toasts.subscriptionLoadFailed"), { description: resolveErrorMessage(error, t("toasts.retryLater")) });
+        if (mounted) {
+          toast.error(t("toasts.subscriptionLoadFailed"), { description: resolveErrorMessage(error, t("toasts.retryLater")) });
+        }
       })
       .finally(() => {
-        if (mounted) setBillingLoading(false);
+        if (mounted) {
+          setBillingLoading(false);
+        }
       });
     return () => {
       mounted = false;
@@ -240,7 +246,9 @@ export function SettingsSubscription() {
   }, [paymentProviders, selectedPaymentProvider]);
 
   React.useEffect(() => {
-    if (selectedPaymentProvider !== "epay") return;
+    if (selectedPaymentProvider !== "epay") {
+      return;
+    }
     if (!epayTypes.some((item) => item.type === selectedEPayType)) {
       setSelectedEPayType(epayTypes[0]?.type ?? "alipay");
     }
@@ -339,7 +347,9 @@ export function SettingsSubscription() {
   );
   const paymentDisabled = paymentProviders.length === 0;
   const currentPlan = React.useMemo(() => {
-    if (billingOverview?.plan) return billingOverview.plan;
+    if (billingOverview?.plan) {
+      return billingOverview.plan;
+    }
     return billingPlans.find((plan) => viewer?.subscriptionPlanID === plan.id || viewer?.subscriptionTier === plan.code) ?? null;
   }, [billingOverview?.plan, billingPlans, viewer?.subscriptionPlanID, viewer?.subscriptionTier]);
   const currentPrice = React.useMemo(() => resolveDefaultPrice(currentPlan), [currentPlan]);

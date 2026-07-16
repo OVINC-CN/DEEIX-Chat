@@ -55,7 +55,9 @@ function vendorAliases(vendor: string): string[] {
 function candidateModelIDs(row: Pick<BillingModelPricingRow, "platformModelName" | "vendor">): string[] {
   const rawName = row.platformModelName.trim().toLowerCase();
   const values = new Set<string>();
-  if (!rawName) return [];
+  if (!rawName) {
+    return [];
+  }
   values.add(rawName);
   values.add(normalizeKey(rawName));
   for (const alias of vendorAliases(row.vendor)) {
@@ -68,7 +70,9 @@ function candidateModelIDs(row: Pick<BillingModelPricingRow, "platformModelName"
 }
 
 function tokenSimilarity(left: string[], right: string[]): number {
-  if (left.length === 0 || right.length === 0) return 0;
+  if (left.length === 0 || right.length === 0) {
+    return 0;
+  }
   const rightSet = new Set(right);
   const hits = left.filter((token) => rightSet.has(token)).length;
   return hits / left.length;
@@ -81,8 +85,12 @@ function compactCatalogID(id: string): string {
 
 function queryFieldScore(normalizedQuery: string, field: string): number {
   const normalizedField = normalizeKey(field);
-  if (!normalizedField) return 0;
-  if (normalizedField === normalizedQuery) return 100;
+  if (!normalizedField) {
+    return 0;
+  }
+  if (normalizedField === normalizedQuery) {
+    return 100;
+  }
   const closeness = Math.min(1, normalizedQuery.length / normalizedField.length);
   if (normalizedField.startsWith(`${normalizedQuery}-`)) {
     return Math.round(78 + closeness * 16);
@@ -137,9 +145,13 @@ function scoreCatalogItem(row: BillingModelPricingRow, item: OfficialPricingCata
 }
 
 function pricePerMillion(raw: string): number | null {
-  if (raw === "") return 0;
+  if (raw === "") {
+    return 0;
+  }
   const value = Number(raw);
-  if (!Number.isFinite(value) || value < 0) return null;
+  if (!Number.isFinite(value) || value < 0) {
+    return null;
+  }
   return Number((value * 1_000_000).toFixed(6));
 }
 
@@ -184,9 +196,13 @@ export function findOfficialPricingSuggestions(
   const suggestions: OfficialModelPricingSuggestion[] = [];
   for (const item of catalog) {
     const scored = scoreCatalogItem(row, item);
-    if (!scored) continue;
+    if (!scored) {
+      continue;
+    }
     const payload = officialPricingPayload(row, item);
-    if (!payload) continue;
+    if (!payload) {
+      continue;
+    }
     suggestions.push({ ...scored, payload });
   }
   return suggestions
@@ -207,9 +223,13 @@ export function searchOfficialPricingCatalog(
   const suggestions: OfficialModelPricingSuggestion[] = [];
   for (const item of catalog) {
     const score = searchCatalogItemScore(query, item);
-    if (score < 62) continue;
+    if (score < 62) {
+      continue;
+    }
     const payload = officialPricingPayload(row, item);
-    if (!payload) continue;
+    if (!payload) {
+      continue;
+    }
     suggestions.push({ item, score, reason: score >= 96 ? "exact" : "similar", payload });
   }
   return suggestions

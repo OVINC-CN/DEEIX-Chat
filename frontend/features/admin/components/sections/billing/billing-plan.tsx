@@ -35,7 +35,9 @@ export function BillingPlanSection({ plans, setPlans, permissionGroups, loading 
 
   async function savePlan(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
-    if (!editPlan || !planForm) return;
+    if (!editPlan || !planForm) {
+      return;
+    }
     setSaving(true);
     try {
       const token = await resolveAccessToken();

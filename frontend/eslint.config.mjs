@@ -1,10 +1,146 @@
+import js from "@eslint/js";
+import stylistic from "@stylistic/eslint-plugin";
+import { defineConfig, globalIgnores } from "eslint/config";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import nextTypeScript from "eslint-config-next/typescript";
 
-const eslintConfig = [
+export default defineConfig([
+  globalIgnores([
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "public/pdfjs/**",
+    "public/vendor/**",
+    "shared/generated/**",
+    "next-env.d.ts",
+  ]),
+  js.configs.recommended,
   ...nextCoreWebVitals,
+  ...nextTypeScript,
   {
-    ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"],
+    linterOptions: {
+      reportUnusedDisableDirectives: "error",
+    },
+    plugins: {
+      "@stylistic": stylistic,
+    },
   },
-];
+  {
+    files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
+    rules: {
+      curly: ["error", "all"],
+      eqeqeq: ["error", "always", { null: "ignore" }],
+      "max-depth": ["error", 4],
+      "max-nested-callbacks": ["error", 3],
+      "no-alert": "error",
+      "no-console": ["error", { allow: ["warn", "error"] }],
+      "no-debugger": "error",
+      "no-eval": "error",
+      "no-implied-eval": "error",
+      "no-promise-executor-return": "error",
+      "no-template-curly-in-string": "error",
+      "no-var": "error",
+      "object-shorthand": ["error", "always"],
+      "prefer-const": "error",
+      "prefer-template": "error",
 
-export default eslintConfig;
+      "@stylistic/arrow-spacing": ["error", { before: true, after: true }],
+      "@stylistic/block-spacing": ["error", "always"],
+      "@stylistic/brace-style": ["error", "1tbs", { allowSingleLine: false }],
+      "@stylistic/comma-dangle": [
+        "error",
+        {
+          arrays: "always-multiline",
+          dynamicImports: "always-multiline",
+          enums: "always-multiline",
+          exports: "always-multiline",
+          functions: "always-multiline",
+          generics: "ignore",
+          importAttributes: "always-multiline",
+          imports: "always-multiline",
+          objects: "always-multiline",
+          tuples: "always-multiline",
+        },
+      ],
+      "@stylistic/comma-spacing": ["error", { before: false, after: true }],
+      "@stylistic/computed-property-spacing": ["error", "never"],
+      "@stylistic/eol-last": ["error", "always"],
+      "@stylistic/function-call-spacing": ["error", "never"],
+      "@stylistic/indent": [
+        "error",
+        2,
+        {
+          ArrayExpression: 1,
+          CallExpression: { arguments: 1 },
+          flatTernaryExpressions: false,
+          FunctionDeclaration: { body: 1, parameters: 1, returnType: 1 },
+          FunctionExpression: { body: 1, parameters: 1, returnType: 1 },
+          ignoredNodes: ["TSUnionType", "TSIntersectionType"],
+          ImportDeclaration: 1,
+          MemberExpression: 1,
+          ObjectExpression: 1,
+          outerIIFEBody: 1,
+          SwitchCase: 1,
+          VariableDeclarator: 1,
+        },
+      ],
+      "@stylistic/jsx-indent-props": ["error", 2],
+      "@stylistic/jsx-quotes": ["error", "prefer-double"],
+      "@stylistic/key-spacing": ["error", { beforeColon: false, afterColon: true }],
+      "@stylistic/keyword-spacing": ["error", { before: true, after: true }],
+      "@stylistic/member-delimiter-style": [
+        "error",
+        {
+          multiline: { delimiter: "semi", requireLast: true },
+          singleline: { delimiter: "semi", requireLast: false },
+        },
+      ],
+      "@stylistic/no-multi-spaces": "error",
+      "@stylistic/no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
+      "@stylistic/no-trailing-spaces": "error",
+      "@stylistic/object-curly-spacing": ["error", "always"],
+      "@stylistic/quotes": ["error", "double", { avoidEscape: true }],
+      "@stylistic/rest-spread-spacing": ["error", "never"],
+      "@stylistic/semi": ["error", "always"],
+      "@stylistic/space-before-blocks": ["error", "always"],
+      "@stylistic/space-in-parens": ["error", "never"],
+      "@stylistic/space-infix-ops": "error",
+      "@stylistic/space-unary-ops": ["error", { words: true, nonwords: false }],
+      "@stylistic/template-curly-spacing": ["error", "never"],
+      "@stylistic/type-annotation-spacing": "error",
+      "@stylistic/type-generic-spacing": "error",
+      "@stylistic/type-named-tuple-spacing": "error",
+    },
+  },
+  {
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports", disallowTypeAnnotations: false },
+      ],
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-non-null-assertion": "error",
+      "@typescript-eslint/no-unused-expressions": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          args: "all",
+          argsIgnorePattern: "^_",
+          caughtErrors: "all",
+          ignoreRestSiblings: true,
+        },
+      ],
+      "react/jsx-boolean-value": ["error", "never"],
+      "react/jsx-no-target-blank": ["error", { enforceDynamicLinks: "always" }],
+      "react/self-closing-comp": ["error", { component: true, html: true }],
+    },
+  },
+  {
+    files: ["shared/components/devtools-brand-banner.tsx"],
+    rules: {
+      "no-console": "off",
+    },
+  },
+]);

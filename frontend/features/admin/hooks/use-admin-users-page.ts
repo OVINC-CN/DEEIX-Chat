@@ -195,7 +195,6 @@ export function useAdminUsersPage({
   items,
   total,
   page,
-  pageSize,
   query,
   setQuery,
   viewerRole,
@@ -950,7 +949,7 @@ export function useAdminUsersPage({
       if (failedUsers.length > 0) {
         const failedRollbackUsers = failedUsers.map((item) => ({ item, index: items.findIndex((current) => current.id === item.id) }));
         onSetUsers((current) => restoreManyAt(current, failedRollbackUsers, (item) => item.id));
-        onSetTotal((current) => Math.max(0, total - successCount));
+        onSetTotal(Math.max(0, total - successCount));
         setSelectedUserIDs(new Set(failedUsers.map((item) => item.id)));
         toast.error(t("toast.bulkDeletePartialFailed"), { description: t("toast.bulkPartialDescription", { success: successCount, failed: failedUsers.length }) });
         return;

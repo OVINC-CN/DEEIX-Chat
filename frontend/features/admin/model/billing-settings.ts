@@ -1,5 +1,4 @@
 import type {
-  AdminBillingMode,
   AdminBillingPlanDTO,
   AdminModelPricingDTO,
   UpsertAdminModelPricingRequest,
@@ -179,7 +178,9 @@ export function formatAmountCents(cents: number, currency: string): string {
 }
 
 export function formatCreditUSD(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "$0";
+  if (!Number.isFinite(value) || value <= 0) {
+    return "$0";
+  }
   return `$${value.toLocaleString("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
@@ -187,9 +188,13 @@ export function formatCreditUSD(value: number): string {
 }
 
 export function formatDateTime(value: string, locale = "en-US"): string {
-  if (!value) return "-";
+  if (!value) {
+    return "-";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
   return new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "2-digit",
@@ -204,7 +209,9 @@ function cloneDefaultTieredTiers(): TieredPricingTierForm[] {
 }
 
 function parseTieredPricingJSON(raw: string | undefined): TieredPricingTierForm[] {
-  if (!raw) return cloneDefaultTieredTiers();
+  if (!raw) {
+    return cloneDefaultTieredTiers();
+  }
   try {
     const parsed = JSON.parse(raw) as {
       tiers?: Array<{
@@ -287,7 +294,9 @@ export function parsePrice(value: string): number {
 }
 
 export function normalizePricingMode(value: string | null | undefined): PricingMode {
-  if (value === "call" || value === "duration" || value === "tiered") return value;
+  if (value === "call" || value === "duration" || value === "tiered") {
+    return value;
+  }
   return "token";
 }
 
@@ -544,10 +553,16 @@ export function buildPricingRows(models: AdminLLMModelDTO[], pricingItems: Admin
   const groupedModels = new Map<string, AdminLLMModelDTO>();
 
   for (const model of models) {
-    if (model.status !== "active") continue;
-    if (model.activeSourceCount <= 0) continue;
+    if (model.status !== "active") {
+      continue;
+    }
+    if (model.activeSourceCount <= 0) {
+      continue;
+    }
     const platformModelName = model.platformModelName.trim();
-    if (!platformModelName) continue;
+    if (!platformModelName) {
+      continue;
+    }
     if (!groupedModels.has(platformModelName)) {
       groupedModels.set(platformModelName, model);
     }

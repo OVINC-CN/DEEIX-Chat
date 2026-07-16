@@ -34,7 +34,9 @@ export const DEFAULT_NEW_BINDING: NewBindingFormState = {
 };
 
 export function kindsJsonToDisplay(kindsJson: string): string {
-  if (!kindsJson) return "chat";
+  if (!kindsJson) {
+    return "chat";
+  }
   const kinds = parseKindsJSON(kindsJson);
   return kinds.length > 0 ? kinds.join(",") : "chat";
 }

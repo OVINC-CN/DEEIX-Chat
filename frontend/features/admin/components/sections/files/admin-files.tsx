@@ -127,7 +127,9 @@ export function AdminFilesSettingsPage() {
     setEmbeddingStatusLoading(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       const status = await getAdminEmbeddingStatus(token);
       setEmbeddingStatus(status);
     } catch {
@@ -149,7 +151,9 @@ export function AdminFilesSettingsPage() {
       toast.success(t("toast.reindexSubmitted"), {
         description: t("toast.reindexSubmittedDescription", { count: result.submitted }),
       });
-      setTimeout(() => { void loadEmbeddingStatus(); }, 1500);
+      setTimeout(() => {
+        void loadEmbeddingStatus();
+      }, 1500);
     } catch (error) {
       toast.error(t("toast.reindexFailed"), { description: resolveAdminErrorMessage(error, t("toast.unknownError")) });
     } finally {
@@ -161,7 +165,9 @@ export function AdminFilesSettingsPage() {
     setServiceStates((prev) => ({ ...prev, [name]: { ...prev[name], loading: true } }));
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       const data = await SERVICE_LOADERS[name](token);
       setServiceStates((prev) => ({ ...prev, [name]: { ...prev[name], data, loading: false } }));
     } catch {
@@ -319,18 +325,20 @@ export function AdminFilesSettingsPage() {
       return {
         runtime: state.data
           ? {
-              status: state.data.status,
-              reachable: state.data.reachable,
-              message: state.data.message,
-              details: [{ label: t("runtime.address"), value: state.data.baseURL }],
-            }
+            status: state.data.status,
+            reachable: state.data.reachable,
+            message: state.data.message,
+            details: [{ label: t("runtime.address"), value: state.data.baseURL }],
+          }
           : null,
         loading: state.loading || state.action === "test",
         actionDisabled: settingsDirty || loading || saving || state.loading || state.action === "test",
         pendingAction: state.action,
         actions: [{ key: "test", label: t("runtime.testConnection"), icon: "bugplay", action: "test", spinWhen: "test" }],
         onAction: (action: ServiceRuntimeActionName) => {
-          if (action === "test") void handleServiceAction(action, name);
+          if (action === "test") {
+            void handleServiceAction(action, name);
+          }
         },
       };
     },
@@ -423,7 +431,9 @@ export function AdminFilesSettingsPage() {
           { namespace: "chat", key: "message_embedding_enabled", value: "false" },
           { namespace: "chat", key: "semantic_context_enabled", value: "false" },
         ] as PatchSettingItem[]) {
-          if (!existingKeys.has(`${item.namespace}.${item.key}`)) items.push(item);
+          if (!existingKeys.has(`${item.namespace}.${item.key}`)) {
+            items.push(item);
+          }
         }
       }
 
@@ -434,7 +444,9 @@ export function AdminFilesSettingsPage() {
           { namespace: "extract", key: "tika_base_url", value: nextSettingsMap["extract.tika_base_url"] ?? "" },
           { namespace: "extract", key: "tika_timeout_seconds", value: nextSettingsMap["extract.tika_timeout_seconds"] ?? "60" },
         ] as PatchSettingItem[]) {
-          if (!existingKeys.has(`${item.namespace}.${item.key}`)) items.push(item);
+          if (!existingKeys.has(`${item.namespace}.${item.key}`)) {
+            items.push(item);
+          }
         }
       }
       if (group.fields.some((field) => field.namespace === "extract") && (nextSettingsMap["extract.engine"] ?? "") === EXTRACT_ENGINE_POLICIES.DOCLING) {
@@ -443,7 +455,9 @@ export function AdminFilesSettingsPage() {
           { namespace: "extract", key: "docling_base_url", value: nextSettingsMap["extract.docling_base_url"] ?? "" },
           { namespace: "extract", key: "docling_timeout_seconds", value: nextSettingsMap["extract.docling_timeout_seconds"] ?? "60" },
         ] as PatchSettingItem[]) {
-          if (!existingKeys.has(`${item.namespace}.${item.key}`)) items.push(item);
+          if (!existingKeys.has(`${item.namespace}.${item.key}`)) {
+            items.push(item);
+          }
         }
       }
       if (group.fields.some((field) => field.namespace === "extract") && (nextSettingsMap["extract.engine"] ?? "") === EXTRACT_ENGINE_POLICIES.MINERU) {
@@ -454,7 +468,9 @@ export function AdminFilesSettingsPage() {
           { namespace: "extract", key: "mineru_file_types", value: nextSettingsMap["extract.mineru_file_types"] ?? "" },
           { namespace: "extract", key: "mineru_timeout_seconds", value: nextSettingsMap["extract.mineru_timeout_seconds"] ?? "180" },
         ] as PatchSettingItem[]) {
-          if (!existingKeys.has(`${item.namespace}.${item.key}`)) items.push(item);
+          if (!existingKeys.has(`${item.namespace}.${item.key}`)) {
+            items.push(item);
+          }
         }
       }
       if (group.fields.some((field) => field.namespace === "extract")) {
@@ -462,39 +478,41 @@ export function AdminFilesSettingsPage() {
         const providerDefaults: PatchSettingItem[] =
           ocrEngine === OCR_ENGINES.TESSERACT
             ? [
-                { namespace: "extract", key: "tesseract_ocr_base_url", value: nextSettingsMap["extract.tesseract_ocr_base_url"] ?? "" },
-                { namespace: "extract", key: "tesseract_ocr_timeout_seconds", value: nextSettingsMap["extract.tesseract_ocr_timeout_seconds"] ?? "60" },
-              ]
+              { namespace: "extract", key: "tesseract_ocr_base_url", value: nextSettingsMap["extract.tesseract_ocr_base_url"] ?? "" },
+              { namespace: "extract", key: "tesseract_ocr_timeout_seconds", value: nextSettingsMap["extract.tesseract_ocr_timeout_seconds"] ?? "60" },
+            ]
             : ocrEngine === OCR_ENGINES.RAPIDOCR
-            ? [
+              ? [
                 { namespace: "extract", key: "rapidocr_source", value: TIKA_SERVICE_SOURCES.EXTERNAL },
                 { namespace: "extract", key: "rapidocr_base_url", value: nextSettingsMap["extract.rapidocr_base_url"] ?? "" },
                 { namespace: "extract", key: "rapidocr_timeout_seconds", value: nextSettingsMap["extract.rapidocr_timeout_seconds"] ?? "60" },
               ]
-            : ocrEngine === OCR_ENGINES.PADDLE
-              ? [
+              : ocrEngine === OCR_ENGINES.PADDLE
+                ? [
                   { namespace: "extract", key: "paddle_ocr_timeout_seconds", value: nextSettingsMap["extract.paddle_ocr_timeout_seconds"] ?? "60" },
                 ]
-            : ocrEngine === OCR_ENGINES.TENCENT
-              ? [
-                  { namespace: "extract", key: "tencent_ocr_region", value: nextSettingsMap["extract.tencent_ocr_region"] ?? "ap-guangzhou" },
-                  { namespace: "extract", key: "tencent_ocr_endpoint", value: nextSettingsMap["extract.tencent_ocr_endpoint"] ?? "ocr.tencentcloudapi.com" },
-                  { namespace: "extract", key: "tencent_ocr_timeout_seconds", value: nextSettingsMap["extract.tencent_ocr_timeout_seconds"] ?? "60" },
-                ]
-            : ocrEngine === OCR_ENGINES.ALIYUN
-              ? [
-                  { namespace: "extract", key: "aliyun_ocr_region", value: nextSettingsMap["extract.aliyun_ocr_region"] ?? "cn-hangzhou" },
-                  { namespace: "extract", key: "aliyun_ocr_endpoint", value: nextSettingsMap["extract.aliyun_ocr_endpoint"] ?? "ocr-api.cn-hangzhou.aliyuncs.com" },
-                  { namespace: "extract", key: "aliyun_ocr_timeout_seconds", value: nextSettingsMap["extract.aliyun_ocr_timeout_seconds"] ?? "60" },
-                ]
-            : ocrEngine === OCR_ENGINES.LLM
-              ? [
-                  { namespace: "extract", key: "llm_ocr_model", value: nextSettingsMap["extract.llm_ocr_model"] ?? "" },
-                  { namespace: "extract", key: "llm_ocr_timeout_seconds", value: nextSettingsMap["extract.llm_ocr_timeout_seconds"] ?? "60" },
-                ]
-              : [];
+                : ocrEngine === OCR_ENGINES.TENCENT
+                  ? [
+                    { namespace: "extract", key: "tencent_ocr_region", value: nextSettingsMap["extract.tencent_ocr_region"] ?? "ap-guangzhou" },
+                    { namespace: "extract", key: "tencent_ocr_endpoint", value: nextSettingsMap["extract.tencent_ocr_endpoint"] ?? "ocr.tencentcloudapi.com" },
+                    { namespace: "extract", key: "tencent_ocr_timeout_seconds", value: nextSettingsMap["extract.tencent_ocr_timeout_seconds"] ?? "60" },
+                  ]
+                  : ocrEngine === OCR_ENGINES.ALIYUN
+                    ? [
+                      { namespace: "extract", key: "aliyun_ocr_region", value: nextSettingsMap["extract.aliyun_ocr_region"] ?? "cn-hangzhou" },
+                      { namespace: "extract", key: "aliyun_ocr_endpoint", value: nextSettingsMap["extract.aliyun_ocr_endpoint"] ?? "ocr-api.cn-hangzhou.aliyuncs.com" },
+                      { namespace: "extract", key: "aliyun_ocr_timeout_seconds", value: nextSettingsMap["extract.aliyun_ocr_timeout_seconds"] ?? "60" },
+                    ]
+                    : ocrEngine === OCR_ENGINES.LLM
+                      ? [
+                        { namespace: "extract", key: "llm_ocr_model", value: nextSettingsMap["extract.llm_ocr_model"] ?? "" },
+                        { namespace: "extract", key: "llm_ocr_timeout_seconds", value: nextSettingsMap["extract.llm_ocr_timeout_seconds"] ?? "60" },
+                      ]
+                      : [];
         for (const item of providerDefaults) {
-          if (!existingKeys.has(`${item.namespace}.${item.key}`)) items.push(item);
+          if (!existingKeys.has(`${item.namespace}.${item.key}`)) {
+            items.push(item);
+          }
         }
       }
 

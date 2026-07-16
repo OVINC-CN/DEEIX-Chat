@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Terminal as LucideTerminal } from 'lucide-react';
+import { Terminal as LucideTerminal } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type TerminalProps = IconProps<string>;

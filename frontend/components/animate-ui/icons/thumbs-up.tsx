@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { ThumbsUp as LucideThumbsUp } from 'lucide-react';
+import { ThumbsUp as LucideThumbsUp } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type ThumbsUpProps = IconProps<string>;

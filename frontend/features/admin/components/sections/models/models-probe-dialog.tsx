@@ -42,9 +42,13 @@ type ModelProbeDialogProps = {
 type ModelProbeState = "success" | "error" | "timeout" | "unsupported";
 
 function formatDebugPayload(value: unknown): string {
-  if (typeof value !== "string") return "";
+  if (typeof value !== "string") {
+    return "";
+  }
   const trimmed = value.trim();
-  if (!trimmed) return "";
+  if (!trimmed) {
+    return "";
+  }
   try {
     return JSON.stringify(JSON.parse(trimmed), null, 2);
   } catch {
@@ -53,8 +57,12 @@ function formatDebugPayload(value: unknown): string {
 }
 
 function resolveProbeState(result: AdminLLMModelProbeResult): ModelProbeState {
-  if (result.success) return "success";
-  if (result.status === "unsupported") return "unsupported";
+  if (result.success) {
+    return "success";
+  }
+  if (result.status === "unsupported") {
+    return "unsupported";
+  }
   return result.errorCode === "timeout" ? "timeout" : "error";
 }
 

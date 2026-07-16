@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 
 import { ChevronDown } from "@/components/animate-ui/icons/chevron-down";
 import {
@@ -11,13 +10,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Marker, MarkerContent } from "@/components/ui/marker";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import type { ChatTraceBlock } from "@/features/chat/types/messages";
 import {
   useProcessTraceLabels,
   type ProcessTraceLabels,
 } from "@/features/chat/hooks/use-process-trace-labels";
-import { StreamdownRender } from "@/shared/components/markdown/streamdown-render";
 import { cn } from "@/lib/utils";
 import { TRACE_ROOT_CLASS } from "@/features/chat/components/shared/message-process-trace-shared";
 import type { TraceDisplayEvent } from "@/features/chat/model/message-process-trace";
@@ -46,7 +43,9 @@ const TOOL_DETAIL_COLLAPSED_LINES = 8;
 const TOOL_DETAIL_LINE_HEIGHT_REM = 1.25;
 
 function parseToolTraceCalls(payloadJson: string | undefined): ToolTraceCall[] {
-  if (!payloadJson) return [];
+  if (!payloadJson) {
+    return [];
+  }
   try {
     const parsed = JSON.parse(payloadJson) as { tool_calls?: ToolTraceCall[] };
     return Array.isArray(parsed.tool_calls) ? parsed.tool_calls : [];
@@ -65,13 +64,17 @@ export function hasActiveToolTraceCalls(payloadJson: string | undefined): boolea
 
 function shouldCollapseToolDetail(value: string): boolean {
   const text = value.trim();
-  if (!text) return false;
+  if (!text) {
+    return false;
+  }
   return text.split(/\r?\n/).length > TOOL_DETAIL_COLLAPSED_LINES || text.length > 420;
 }
 
 function formatToolPayload(value: string | undefined): string {
   const text = value?.trim();
-  if (!text) return "";
+  if (!text) {
+    return "";
+  }
   try {
     return JSON.stringify(JSON.parse(text), null, 2);
   } catch {
@@ -81,7 +84,9 @@ function formatToolPayload(value: string | undefined): string {
 
 function parseToolPayload(value: string | undefined): unknown {
   const text = value?.trim();
-  if (!text) return null;
+  if (!text) {
+    return null;
+  }
   try {
     return JSON.parse(text) as unknown;
   } catch {
@@ -102,14 +107,18 @@ function readNumber(value: unknown): number | null {
 }
 
 function readStringList(value: unknown): string[] {
-  if (!Array.isArray(value)) return [];
+  if (!Array.isArray(value)) {
+    return [];
+  }
   return value.map((item) => readString(item)).filter(Boolean);
 }
 
 function firstStringFromRecord(record: Record<string, unknown>, keys: string[]): string {
   for (const key of keys) {
     const value = readString(record[key]);
-    if (value) return value;
+    if (value) {
+      return value;
+    }
   }
   return "";
 }
@@ -117,7 +126,9 @@ function firstStringFromRecord(record: Record<string, unknown>, keys: string[]):
 function firstStringListFromRecord(record: Record<string, unknown>, keys: string[]): string[] {
   for (const key of keys) {
     const values = readStringList(record[key]);
-    if (values.length > 0) return values;
+    if (values.length > 0) {
+      return values;
+    }
   }
   return [];
 }
@@ -127,10 +138,14 @@ function collectToolStrings(value: unknown, keys: string[], result: string[] = [
     value.forEach((item) => collectToolStrings(item, keys, result));
     return result;
   }
-  if (!isRecord(value)) return result;
+  if (!isRecord(value)) {
+    return result;
+  }
   for (const key of keys) {
     const text = readString(value[key]);
-    if (text) result.push(text);
+    if (text) {
+      result.push(text);
+    }
   }
   Object.values(value).forEach((item) => collectToolStrings(item, keys, result));
   return Array.from(new Set(result));
@@ -138,8 +153,12 @@ function collectToolStrings(value: unknown, keys: string[], result: string[] = [
 
 function normalizeImageSource(value: string): string {
   const text = value.trim();
-  if (!text) return "";
-  if (/^(https?:|data:image\/|blob:)/i.test(text)) return text;
+  if (!text) {
+    return "";
+  }
+  if (/^(https?:|data:image\/|blob:)/i.test(text)) {
+    return text;
+  }
   if (/^[A-Za-z0-9+/=\s]+$/.test(text) && text.replace(/\s/g, "").length > 80) {
     return `data:image/png;base64,${text.replace(/\s/g, "")}`;
   }
@@ -149,17 +168,23 @@ function normalizeImageSource(value: string): string {
 function collectToolImageSources(value: unknown, result: string[] = []): string[] {
   if (typeof value === "string") {
     const source = normalizeImageSource(value);
-    if (source) result.push(source);
+    if (source) {
+      result.push(source);
+    }
     return Array.from(new Set(result));
   }
   if (Array.isArray(value)) {
     value.forEach((item) => collectToolImageSources(item, result));
     return Array.from(new Set(result));
   }
-  if (!isRecord(value)) return Array.from(new Set(result));
+  if (!isRecord(value)) {
+    return Array.from(new Set(result));
+  }
   for (const key of ["url", "uri", "image_url", "b64_json", "base64", "partial_image_b64", "result"]) {
     const source = normalizeImageSource(readString(value[key]));
-    if (source) result.push(source);
+    if (source) {
+      result.push(source);
+    }
   }
   Object.values(value).forEach((item) => collectToolImageSources(item, result));
   return Array.from(new Set(result));
@@ -173,10 +198,18 @@ function resolveNativeToolKind(call: ToolTraceCall): NativeToolKind {
   const name = normalizeToolName(call.name);
   const type = normalizeToolName(call.type);
   const value = `${name} ${type}`;
-  if (value.includes("web_search") || value.includes("google_search") || value.includes("url_context")) return "web_search";
-  if (value.includes("code_interpreter") || value.includes("code_execution")) return "code_interpreter";
-  if (value.includes("image_generation")) return "image_generation";
-  if (value.includes("shell")) return "shell";
+  if (value.includes("web_search") || value.includes("google_search") || value.includes("url_context")) {
+    return "web_search";
+  }
+  if (value.includes("code_interpreter") || value.includes("code_execution")) {
+    return "code_interpreter";
+  }
+  if (value.includes("image_generation")) {
+    return "image_generation";
+  }
+  if (value.includes("shell")) {
+    return "shell";
+  }
   return "generic";
 }
 
@@ -290,7 +323,9 @@ function ToolMiniLabel({ children }: { children: React.ReactNode }) {
 }
 
 function ToolPre({ children, failed }: { children: string; failed?: boolean }) {
-  if (!children.trim()) return null;
+  if (!children.trim()) {
+    return null;
+  }
   return (
     <pre
       className={cn(
@@ -314,7 +349,9 @@ function safeURLHostname(url: string): string {
 
 function ToolSourceLinks({ urls, labels }: { urls: string[]; labels: ProcessTraceLabels }) {
   const unique = Array.from(new Set(urls.map((item) => item.trim()).filter(Boolean))).slice(0, 8);
-  if (unique.length === 0) return null;
+  if (unique.length === 0) {
+    return null;
+  }
   return (
     <div className="flex flex-wrap gap-1.5">
       {unique.map((url, index) => (
@@ -340,7 +377,9 @@ function ToolPreviewImage({ src, alt }: { src: string; alt: string }) {
 
 function ToolImageGrid({ urls, labels }: { urls: string[]; labels: ProcessTraceLabels }) {
   const unique = Array.from(new Set(urls.map((item) => item.trim()).filter(Boolean))).slice(0, 4);
-  if (unique.length === 0) return null;
+  if (unique.length === 0) {
+    return null;
+  }
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-[repeat(auto-fit,minmax(120px,180px))]">
       {unique.map((url, index) => (
@@ -420,7 +459,6 @@ function ToolDetailText({
   );
 }
 
-
 function toolInputRecord(call: ToolTraceCall): Record<string, unknown> {
   const input = toolInputPayload(call);
   return isRecord(input) ? input : {};
@@ -455,21 +493,33 @@ function toolOutputText(call: ToolTraceCall, keys: string[]): string {
 }
 
 function geminiWebSearchQuery(output: unknown): string {
-  if (!isRecord(output)) return "";
+  if (!isRecord(output)) {
+    return "";
+  }
   return firstStringListFromRecord(output, ["queries", "webSearchQueries"]).join(", ");
 }
 
 function geminiWebSearchSummary(output: unknown): string {
-  if (!isRecord(output)) return "";
+  if (!isRecord(output)) {
+    return "";
+  }
   const chunks = Array.isArray(output.groundingChunks) ? output.groundingChunks.length : 0;
   const supports = Array.isArray(output.groundingSupports) ? output.groundingSupports.length : 0;
   const supportCount = readNumber(output.support_count);
   const urls = collectToolStrings(output, ["url", "uri", "retrievedUrl"]);
   const parts = [];
-  if (chunks > 0) parts.push(`${chunks} sources`);
-  if (supportCount !== null && supportCount > 0) parts.push(`${supportCount} grounding supports`);
-  if (supportCount === null && supports > 0) parts.push(`${supports} grounding supports`);
-  if (urls.length > 0) parts.push(urls.slice(0, 4).map(safeURLHostname).join(", "));
+  if (chunks > 0) {
+    parts.push(`${chunks} sources`);
+  }
+  if (supportCount !== null && supportCount > 0) {
+    parts.push(`${supportCount} grounding supports`);
+  }
+  if (supportCount === null && supports > 0) {
+    parts.push(`${supports} grounding supports`);
+  }
+  if (urls.length > 0) {
+    parts.push(urls.slice(0, 4).map(safeURLHostname).join(", "));
+  }
   return parts.join(" · ");
 }
 
@@ -668,13 +718,17 @@ function toolTraceStatusRank(status: string | undefined): number {
 }
 
 function sameToolChainCall(left: ToolChainStep, right: ToolChainStep): boolean {
-  if (left.toolCallID && right.toolCallID) return left.toolCallID === right.toolCallID;
+  if (left.toolCallID && right.toolCallID) {
+    return left.toolCallID === right.toolCallID;
+  }
   const leftName = left.toolName?.trim() || "";
   const rightName = right.toolName?.trim() || "";
   const leftType = left.toolType?.trim() || "";
   const rightType = right.toolType?.trim() || "";
   const sameKind = leftName && rightName ? leftName === rightName : Boolean(leftType && rightType && leftType === rightType);
-  if (!sameKind) return false;
+  if (!sameKind) {
+    return false;
+  }
   const leftInput = left.toolInput?.trim() || "";
   const rightInput = right.toolInput?.trim() || "";
   return !leftInput || !rightInput || leftInput === rightInput;
@@ -744,7 +798,9 @@ function buildToolChainStepsFromBlock(block: ChatTraceBlock | undefined, labels:
   const calls = parseToolTraceCalls(block.payloadJson);
   if (calls.length === 0) {
     const detail = block.contentMarkdown?.trim() || block.summary?.trim() || block.title?.trim() || "";
-    if (!detail) return [];
+    if (!detail) {
+      return [];
+    }
     return [
       {
         key: "active-tool",
@@ -776,7 +832,9 @@ function buildToolChainStepsFromBlock(block: ChatTraceBlock | undefined, labels:
 function ToolChainRows({ steps, labels }: { steps: ToolChainStep[]; labels: ProcessTraceLabels }) {
   const [expanded, setExpanded] = React.useState<Set<string>>(() => new Set());
 
-  if (steps.length === 0) return null;
+  if (steps.length === 0) {
+    return null;
+  }
 
   return (
     <ol className="space-y-0.5">

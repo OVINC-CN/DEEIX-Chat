@@ -475,7 +475,9 @@ export function resolveVisibleConversationFields(
 
 function normalizeConversationPromptValue(value: string): string {
   const normalized = value.trim();
-  if (!normalized) return "";
+  if (!normalized) {
+    return "";
+  }
   return value;
 }
 

@@ -25,11 +25,17 @@ function skillListPath(basePath: string, options: SkillListOptions = {}): string
     page: String(options.page ?? 1),
     page_size: String(options.pageSize ?? 50),
   });
-  if (options.query?.trim()) params.set("q", options.query.trim());
-  for (const id of options.ids ?? []) {
-    if (Number.isInteger(id) && id > 0) params.append("id", String(id));
+  if (options.query?.trim()) {
+    params.set("q", options.query.trim());
   }
-  if (typeof options.enabled === "boolean") params.set("enabled", String(options.enabled));
+  for (const id of options.ids ?? []) {
+    if (Number.isInteger(id) && id > 0) {
+      params.append("id", String(id));
+    }
+  }
+  if (typeof options.enabled === "boolean") {
+    params.set("enabled", String(options.enabled));
+  }
   return `${basePath}?${params.toString()}`;
 }
 

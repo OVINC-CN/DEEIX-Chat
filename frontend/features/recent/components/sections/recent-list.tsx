@@ -100,7 +100,6 @@ function RecentConversationRow({
   onRename,
   onArchive,
   onShare,
-  onRevokeShare,
   onSetProject,
   onExport,
   onDelete,
@@ -120,7 +119,6 @@ function RecentConversationRow({
   onRename: (item: ConversationDTO) => void;
   onArchive: (publicID: string, archived: boolean) => void;
   onShare: (item: ConversationDTO) => void;
-  onRevokeShare: (publicID: string) => void | Promise<void>;
   onSetProject: (publicID: string, projectID?: string) => void | Promise<void>;
   onExport: (item: ConversationDTO) => void | Promise<void>;
   onDelete: (item: ConversationDTO) => void;
@@ -221,7 +219,6 @@ function RecentConversationRow({
             </div>
           </Link>
         )}
- 
 
         <DropdownMenu modal={false} open={menuOpen} onOpenChange={setMenuOpen}>
           <DropdownMenuTrigger asChild>
@@ -330,7 +327,6 @@ type RecentListProps = {
   onRename: (item: ConversationDTO) => void;
   onArchive: (publicID: string, archived: boolean) => void;
   onShare: (item: ConversationDTO) => void;
-  onRevokeShare: (publicID: string) => void | Promise<void>;
   onSetProject: (publicID: string, projectID?: string) => void | Promise<void>;
   onExport: (item: ConversationDTO) => void | Promise<void>;
   onDelete: (item: ConversationDTO) => void;
@@ -418,7 +414,6 @@ export function RecentList({
   onRename,
   onArchive,
   onShare,
-  onRevokeShare,
   onSetProject,
   onExport,
   onDelete,
@@ -496,7 +491,6 @@ export function RecentList({
                     onRename={onRename}
                     onArchive={onArchive}
                     onShare={onShare}
-                    onRevokeShare={onRevokeShare}
                     onSetProject={onSetProject}
                     onExport={onExport}
                     onDelete={onDelete}

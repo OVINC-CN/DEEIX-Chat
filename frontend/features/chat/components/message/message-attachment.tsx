@@ -92,7 +92,9 @@ export function MessageAttachmentRow({
 
   const handleOpenChange = React.useCallback((v: boolean) => {
     setDialogOpen(v);
-    if (!v) setActiveAtt(null);
+    if (!v) {
+      setActiveAtt(null);
+    }
   }, []);
 
   return (

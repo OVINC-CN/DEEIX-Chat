@@ -191,7 +191,6 @@ export function MessageTraceEventBlocks({
   );
 }
 
-
 export function MessageUpstreamThink({
   block,
   streaming,

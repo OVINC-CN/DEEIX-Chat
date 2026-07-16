@@ -276,112 +276,112 @@ export function NavStarred() {
         >
           <Collapsible open={starredOpen} onOpenChange={setStarredOpen}>
             <SidebarGroup className="px-2 py-2">
-            <SidebarGroupLabel
-              asChild
-              className="w-fit max-w-full self-start cursor-default gap-1 pr-1 transition-[color,margin,opacity] hover:text-sidebar-foreground"
-            >
-              <Button
-                type="button"
-                variant="ghost"
-                className="h-8 gap-1 py-0 pl-2 pr-1 text-xs hover:bg-transparent has-[>svg]:pl-2 has-[>svg]:pr-1 dark:hover:bg-transparent"
-                aria-controls={starredContentID}
-                aria-expanded={starredOpen}
-                aria-label={starredOpen ? t("collapseStarredSection") : t("expandStarredSection")}
-                onClick={() => setStarredOpen((open) => !open)}
+              <SidebarGroupLabel
+                asChild
+                className="w-fit max-w-full self-start cursor-default gap-1 pr-1 transition-[color,margin,opacity] hover:text-sidebar-foreground"
               >
-                <span className="min-w-0 truncate text-left">{t("starred")}</span>
-                <ChevronDown
-                  aria-hidden
-                  className={cn(
-                    "!size-3 stroke-1.5 transition-transform duration-200",
-                    !starredOpen && "-rotate-90",
-                  )}
-                />
-              </Button>
-            </SidebarGroupLabel>
-            <CollapsibleMotionContent id={starredContentID} open={starredOpen}>
-              <div ref={listContainerRef}>
-                <LoadingReveal
-                  loading={showInitialSkeleton}
-                  skeleton={<SidebarConversationSkeleton count={3} widths={STARRED_SKELETON_WIDTHS} prefix="sidebar-starred" />}
-                  className="min-h-0"
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="h-8 gap-1 py-0 pl-2 pr-1 text-xs hover:bg-transparent has-[>svg]:pl-2 has-[>svg]:pr-1 dark:hover:bg-transparent"
+                  aria-controls={starredContentID}
+                  aria-expanded={starredOpen}
+                  aria-label={starredOpen ? t("collapseStarredSection") : t("expandStarredSection")}
+                  onClick={() => setStarredOpen((open) => !open)}
                 >
-                  <SidebarMenu className="gap-0.5">
-                    {visibleStarredItems.map((item) => (
-                      <SidebarConversationItem
-                        key={item.publicID}
-                        item={{
-                          ...item,
-                          shareActive: starredItems.some(
-                            (conversation) =>
-                              conversation.publicID === item.publicID &&
+                  <span className="min-w-0 truncate text-left">{t("starred")}</span>
+                  <ChevronDown
+                    aria-hidden
+                    className={cn(
+                      "!size-3 stroke-1.5 transition-transform duration-200",
+                      !starredOpen && "-rotate-90",
+                    )}
+                  />
+                </Button>
+              </SidebarGroupLabel>
+              <CollapsibleMotionContent id={starredContentID} open={starredOpen}>
+                <div ref={listContainerRef}>
+                  <LoadingReveal
+                    loading={showInitialSkeleton}
+                    skeleton={<SidebarConversationSkeleton count={3} widths={STARRED_SKELETON_WIDTHS} prefix="sidebar-starred" />}
+                    className="min-h-0"
+                  >
+                    <SidebarMenu className="gap-0.5">
+                      {visibleStarredItems.map((item) => (
+                        <SidebarConversationItem
+                          key={item.publicID}
+                          item={{
+                            ...item,
+                            shareActive: starredItems.some(
+                              (conversation) =>
+                                conversation.publicID === item.publicID &&
                               conversation.shareStatus === "active" &&
                               Boolean(conversation.shareID?.trim()),
-                          ),
-                        }}
-                        active={activeConversationID === item.publicID}
-                        isTransferring={transferringStarPublicID === item.publicID}
-                        starAction={{
-                          label: t("row.unstar"),
-                          icon: StarOff,
-                          onSelect: onUnstar,
-                        }}
-                        projectMenu={{
-                          label: t("row.moveToProject"),
-                          unassignedLabel: t("projects.unassigned"),
-                          currentProjectID: starredItems.find((conversation) => conversation.publicID === item.publicID)?.projectID,
-                          projects,
-                          onSelect: (targetPublicID, projectID) => {
-                            void setProjectByPublicID(targetPublicID, projectID);
-                          },
-                        }}
-                        onRename={onRename}
-                        isRenaming={renameTarget?.publicID === item.publicID}
-                        renameValue={renameTarget?.publicID === item.publicID ? renameValue : item.title}
-                        onRenameValueChange={setRenameValue}
-                        onRenameCommit={onRenameCommit}
-                        onRenameCancel={onRenameCancel}
-                        onAutoRename={onAutoRename}
-                        isAutoRenaming={autoRenamingPublicID === item.publicID}
-                        onArchive={onArchive}
-                        onShare={onShare}
-                        onExport={onExport}
-                        onDelete={onDelete}
-                        onNavigate={onNavigate}
-                        menuTriggerID={`starred-item-menu-trigger-${item.publicID}`}
-                      />
-                    ))}
+                            ),
+                          }}
+                          active={activeConversationID === item.publicID}
+                          isTransferring={transferringStarPublicID === item.publicID}
+                          starAction={{
+                            label: t("row.unstar"),
+                            icon: StarOff,
+                            onSelect: onUnstar,
+                          }}
+                          projectMenu={{
+                            label: t("row.moveToProject"),
+                            unassignedLabel: t("projects.unassigned"),
+                            currentProjectID: starredItems.find((conversation) => conversation.publicID === item.publicID)?.projectID,
+                            projects,
+                            onSelect: (targetPublicID, projectID) => {
+                              void setProjectByPublicID(targetPublicID, projectID);
+                            },
+                          }}
+                          onRename={onRename}
+                          isRenaming={renameTarget?.publicID === item.publicID}
+                          renameValue={renameTarget?.publicID === item.publicID ? renameValue : item.title}
+                          onRenameValueChange={setRenameValue}
+                          onRenameCommit={onRenameCommit}
+                          onRenameCancel={onRenameCancel}
+                          onAutoRename={onAutoRename}
+                          isAutoRenaming={autoRenamingPublicID === item.publicID}
+                          onArchive={onArchive}
+                          onShare={onShare}
+                          onExport={onExport}
+                          onDelete={onDelete}
+                          onNavigate={onNavigate}
+                          menuTriggerID={`starred-item-menu-trigger-${item.publicID}`}
+                        />
+                      ))}
 
-                    <motion.li
-                      data-sidebar-motion-key="starred-overflow"
-                      layout="position"
-                      initial={false}
-                      transition={SIDEBAR_OVERFLOW_ROW_TRANSITION}
-                      className={cn(
-                        "group/menu-item relative overflow-hidden",
-                        hasOverflowButton ? "" : "pointer-events-none",
-                      )}
-                      animate={{
-                        height: hasOverflowButton ? 32 : 0,
-                        opacity: hasOverflowButton ? 1 : 0,
-                      }}
-                    >
-                      <SidebarMenuButton
-                        tabIndex={hasOverflowButton ? 0 : -1}
-                        onClick={() => {
-                          if (hasOverflowButton) {
-                            setShowAllStarredDialog(true);
-                          }
+                      <motion.li
+                        data-sidebar-motion-key="starred-overflow"
+                        layout="position"
+                        initial={false}
+                        transition={SIDEBAR_OVERFLOW_ROW_TRANSITION}
+                        className={cn(
+                          "group/menu-item relative overflow-hidden",
+                          hasOverflowButton ? "" : "pointer-events-none",
+                        )}
+                        animate={{
+                          height: hasOverflowButton ? 32 : 0,
+                          opacity: hasOverflowButton ? 1 : 0,
                         }}
                       >
-                        <List aria-hidden size={16} strokeWidth={1.4} />
-                        <span className="text-xs text-sidebar-foreground/75">{t("allConversations")}</span>
-                      </SidebarMenuButton>
-                    </motion.li>
-                  </SidebarMenu>
-                </LoadingReveal>
-              </div>
-            </CollapsibleMotionContent>
+                        <SidebarMenuButton
+                          tabIndex={hasOverflowButton ? 0 : -1}
+                          onClick={() => {
+                            if (hasOverflowButton) {
+                              setShowAllStarredDialog(true);
+                            }
+                          }}
+                        >
+                          <List aria-hidden size={16} strokeWidth={1.4} />
+                          <span className="text-xs text-sidebar-foreground/75">{t("allConversations")}</span>
+                        </SidebarMenuButton>
+                      </motion.li>
+                    </SidebarMenu>
+                  </LoadingReveal>
+                </div>
+              </CollapsibleMotionContent>
             </SidebarGroup>
           </Collapsible>
         </motion.div>

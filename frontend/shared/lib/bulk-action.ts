@@ -19,15 +19,15 @@ type RunBulkActionInChunksArgs<TItem, TResult> = {
 
 export type SettledBulkItemResult<TItem, TValue> =
   | {
-      item: TItem;
-      status: "fulfilled";
-      value: TValue;
-    }
+    item: TItem;
+    status: "fulfilled";
+    value: TValue;
+  }
   | {
-      item: TItem;
-      reason: unknown;
-      status: "rejected";
-    };
+    item: TItem;
+    reason: unknown;
+    status: "rejected";
+  };
 
 type RunSettledBulkItemsArgs<TItem, TValue> = {
   chunkSize?: number;

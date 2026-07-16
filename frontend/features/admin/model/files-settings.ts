@@ -41,12 +41,12 @@ export type SettingsGroup = {
 export type VisibleFieldBlock =
   | { kind: "field"; field: SettingsField }
   | {
-      kind: "subgroup";
-      key: string;
-      title: string;
-      description?: string;
-      fields: SettingsField[];
-    };
+    kind: "subgroup";
+    key: string;
+    title: string;
+    description?: string;
+    fields: SettingsField[];
+  };
 
 export type ServiceRuntimeData = AdminServiceRuntimeView;
 
@@ -203,7 +203,7 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
         label: "Attachment limit",
         description: "Maximum number of attachments allowed in one chat message.",
         type: "int",
-        placeholder: "Enter a count"
+        placeholder: "Enter a count",
       },
       {
         namespace: "file",
@@ -211,7 +211,7 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
         label: "Attachment MIME allowlist",
         description: "Allowed attachment MIME types. Separate multiple values with commas.",
         type: "textarea",
-        placeholder: "MIME types, comma separated"
+        placeholder: "MIME types, comma separated",
       },
       { namespace: "storage",
         key: "max_upload_file_bytes",
@@ -219,7 +219,7 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
         description: "Default size limit for a single attachment. The UI uses MB.",
         type: "int",
         valueUnit: "mb",
-        placeholder: "Size limit (MB)"
+        placeholder: "Size limit (MB)",
       },
       {
         namespace: "storage",
@@ -228,7 +228,7 @@ export const SETTINGS_GROUPS: SettingsGroup[] = [
         description: "Maximum total file storage per user. The UI uses MB; set 0 for unlimited.",
         type: "int",
         valueUnit: "mb",
-        placeholder: "0 for unlimited"
+        placeholder: "0 for unlimited",
       },
       {
         namespace: "file",
@@ -955,14 +955,26 @@ export function mergeAllowedMIMETypes(raw: string, items: MinerUMIMERequirement[
 export function resolveActiveServices(settings: Record<string, string>): Set<ServiceName> {
   const active = new Set<ServiceName>();
   const engine = settings["extract.engine"] ?? "";
-  if (engine === EXTRACT_ENGINE_POLICIES.TIKA) active.add("tika");
-  if (engine === EXTRACT_ENGINE_POLICIES.DOCLING) active.add("docling");
-  if (engine === EXTRACT_ENGINE_POLICIES.MINERU) active.add("mineru");
+  if (engine === EXTRACT_ENGINE_POLICIES.TIKA) {
+    active.add("tika");
+  }
+  if (engine === EXTRACT_ENGINE_POLICIES.DOCLING) {
+    active.add("docling");
+  }
+  if (engine === EXTRACT_ENGINE_POLICIES.MINERU) {
+    active.add("mineru");
+  }
   const ocrEnabled = matchesVisibilityRule(OCR_ENABLED_RULE, settings);
   const ocr = ocrEnabled ? resolveOCREngine(settings["extract.ocr_engine"] ?? "") : "";
-  if (ocr === OCR_ENGINES.TESSERACT) active.add("tesseract");
-  if (ocr === OCR_ENGINES.RAPIDOCR) active.add("rapidocr");
-  if (settings["file.embedding_enabled"] === EMBEDDING_MODES.ON) active.add("embedding");
+  if (ocr === OCR_ENGINES.TESSERACT) {
+    active.add("tesseract");
+  }
+  if (ocr === OCR_ENGINES.RAPIDOCR) {
+    active.add("rapidocr");
+  }
+  if (settings["file.embedding_enabled"] === EMBEDDING_MODES.ON) {
+    active.add("embedding");
+  }
   return active;
 }
 

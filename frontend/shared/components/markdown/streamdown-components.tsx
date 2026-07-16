@@ -544,7 +544,7 @@ export function MarkdownLink({ children, className, href, onClick, style, ...pro
 
   if (!href || incomplete || linkKind === "invalid") {
     if (hasBlockChild) {
-      return <StreamdownLinkContext.Provider value={true}>{children}</StreamdownLinkContext.Provider>;
+      return <StreamdownLinkContext.Provider value>{children}</StreamdownLinkContext.Provider>;
     }
     return (
       <span
@@ -575,7 +575,7 @@ export function MarkdownLink({ children, className, href, onClick, style, ...pro
         target={linkKind === "external" ? "_blank" : undefined}
         onClick={(event) => void handleClick(event)}
       >
-        <StreamdownLinkContext.Provider value={true}>
+        <StreamdownLinkContext.Provider value>
           {footnoteBackref ? (
             <FootnoteBackrefContent ariaLabel={props["aria-label"]}>{children}</FootnoteBackrefContent>
           ) : (
@@ -786,7 +786,7 @@ export function MarkdownParagraph({ children, className, node: _node, style, ...
   const footnoteBackrefCount = normalizedChildren.filter(isFootnoteBackrefElement).length;
   const paragraphChildren =
     footnoteBackrefCount > 1 ? (
-      <FootnoteBackrefGroupContext.Provider value={true}>{children}</FootnoteBackrefGroupContext.Provider>
+      <FootnoteBackrefGroupContext.Provider value>{children}</FootnoteBackrefGroupContext.Provider>
     ) : (
       children
     );

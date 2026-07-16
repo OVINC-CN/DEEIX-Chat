@@ -92,7 +92,7 @@ function isPersistedAttachment(value: unknown): value is PersistedAttachment {
 
   const item = value as Record<string, unknown>;
   return (
-      typeof item.fileID === "string" &&
+    typeof item.fileID === "string" &&
       typeof item.fileName === "string" &&
       typeof item.mimeType === "string" &&
       typeof item.sizeBytes === "number"

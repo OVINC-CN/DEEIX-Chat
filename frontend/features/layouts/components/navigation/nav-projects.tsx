@@ -238,7 +238,7 @@ type ProjectInlineActionProps = React.ComponentPropsWithoutRef<"button"> & {
   label: string;
   visible: boolean;
   onHoverChange?: (hovered: boolean) => void;
-}
+};
 
 const ProjectInlineAction = React.forwardRef<HTMLButtonElement, ProjectInlineActionProps>(function ProjectInlineAction({
   label,
@@ -290,7 +290,7 @@ type ProjectSortableRenderProps = {
   attributes: ReturnType<typeof useSortable>["attributes"];
   listeners: ReturnType<typeof useSortable>["listeners"];
   isDragging: boolean;
-}
+};
 
 function ProjectSortableItem({
   children,

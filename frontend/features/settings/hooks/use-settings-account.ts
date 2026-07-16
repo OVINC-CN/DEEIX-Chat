@@ -285,12 +285,16 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   }, [changingPassword, t, translateError]);
 
   const handleSendEmailBootstrapCode = React.useCallback(async (email: string) => {
-    if (sendingEmailCode || emailCodeCooldownSeconds > 0) return;
+    if (sendingEmailCode || emailCodeCooldownSeconds > 0) {
+      return;
+    }
     setSendingEmailCode(true);
     setEmailCodeDebug("");
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const result = await startEmailBootstrap(token, email);
       setEmailCodeDebug(result.debugCode ?? "");
       if (result.sent) {
@@ -305,11 +309,15 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   }, [emailCodeCooldownSeconds, sendingEmailCode, startEmailCodeCooldown, t, translateError]);
 
   const handleCompleteEmailBootstrap = React.useCallback(async (payload: { email: string; code: string }) => {
-    if (changingPassword) return;
+    if (changingPassword) {
+      return;
+    }
     setChangingPassword(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const nextViewer = await completeEmailBootstrap(token, payload);
       setViewer(nextViewer);
       setEmailDialogOpen(false);
@@ -322,12 +330,16 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   }, [changingPassword, t, translateError]);
 
   const handleSendCurrentEmailVerificationCode = React.useCallback(async () => {
-    if (sendingEmailCode || currentEmailCodeCooldownSeconds > 0) return;
+    if (sendingEmailCode || currentEmailCodeCooldownSeconds > 0) {
+      return;
+    }
     setSendingEmailCode(true);
     setCurrentEmailCodeDebug("");
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const result = await startCurrentEmailVerification(token);
       setCurrentEmailCodeDebug(result.debugCode ?? "");
       if (result.sent) {
@@ -342,11 +354,15 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   }, [currentEmailCodeCooldownSeconds, sendingEmailCode, startCurrentEmailCodeCooldown, t, translateError]);
 
   const handleCompleteCurrentEmailVerification = React.useCallback(async (code: string) => {
-    if (changingPassword) return;
+    if (changingPassword) {
+      return;
+    }
     setChangingPassword(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const nextViewer = await completeCurrentEmailVerification(token, code);
       setViewer(nextViewer);
       setCurrentEmailVerificationDialogOpen(false);
@@ -359,12 +375,16 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   }, [changingPassword, t, translateError]);
 
   const handleSendCurrentEmailCode = React.useCallback(async (method: SecurityVerificationMethod) => {
-    if (method !== "email" || sendingEmailCode || currentEmailCodeCooldownSeconds > 0) return;
+    if (method !== "email" || sendingEmailCode || currentEmailCodeCooldownSeconds > 0) {
+      return;
+    }
     setSendingEmailCode(true);
     setCurrentEmailCodeDebug("");
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const result = await startCurrentEmailChange(token, method);
       setCurrentEmailCodeDebug(result.debugCode ?? "");
       if (result.sent) {
@@ -379,12 +399,16 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   }, [currentEmailCodeCooldownSeconds, sendingEmailCode, startCurrentEmailCodeCooldown, t, translateError]);
 
   const handleSendNewEmailCode = React.useCallback(async (email: string) => {
-    if (sendingEmailCode || emailCodeCooldownSeconds > 0) return;
+    if (sendingEmailCode || emailCodeCooldownSeconds > 0) {
+      return;
+    }
     setSendingEmailCode(true);
     setEmailCodeDebug("");
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const result = await startNewEmailChange(token, email);
       setEmailCodeDebug(result.debugCode ?? "");
       if (result.sent) {
@@ -399,11 +423,15 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   }, [emailCodeCooldownSeconds, sendingEmailCode, startEmailCodeCooldown, t, translateError]);
 
   const handleCompleteEmailChange = React.useCallback(async (payload: { email: string; currentVerificationMethod: SecurityVerificationMethod; currentCode: string; newCode: string }) => {
-    if (changingPassword) return;
+    if (changingPassword) {
+      return;
+    }
     setChangingPassword(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const nextViewer = await completeEmailChange(token, {
         email: payload.email,
         currentVerificationMethod: payload.currentVerificationMethod,
@@ -421,12 +449,16 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   }, [changingPassword, t, translateError]);
 
   const handleSendDeleteAccountCode = React.useCallback(async (method: SecurityVerificationMethod) => {
-    if (method !== "email" || sendingDeleteCode || deleteCodeCooldownSeconds > 0) return;
+    if (method !== "email" || sendingDeleteCode || deleteCodeCooldownSeconds > 0) {
+      return;
+    }
     setSendingDeleteCode(true);
     setDeleteCodeDebug("");
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const result = await startAccountDeleteVerification(token, method);
       setDeleteCodeDebug(result.debugCode ?? "");
       if (result.sent) {
@@ -496,7 +528,9 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   const handleDeleteIdentity = React.useCallback(async (identity: UserIdentityDTO) => {
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       await deleteCurrentUserIdentity(token, identity.id);
       const [nextViewer, identityData] = await Promise.all([getMe(token), listCurrentUserIdentities(token)]);
       setViewer(nextViewer);
@@ -510,7 +544,9 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   const handleStartTwoFactorSetup = React.useCallback(async () => {
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const result = await startCurrentTwoFactorSetup(token);
       setTwoFactorSetup(result);
       setTwoFactorRecoveryCodes([]);
@@ -524,7 +560,9 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   const handleConfirmTwoFactorSetup = React.useCallback(async (code: string) => {
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const result = await confirmCurrentTwoFactorSetup(token, code);
       const status = await getCurrentTwoFactorStatus(token);
       setTwoFactorStatus(status);
@@ -539,7 +577,9 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   const handleDisableTwoFactor = React.useCallback(async (code: string) => {
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       await disableCurrentTwoFactor(token, code);
       const status = await getCurrentTwoFactorStatus(token);
       setTwoFactorStatus(status);
@@ -556,7 +596,9 @@ export function useSettingsAccount(): UseSettingsAccountResult {
   const handleRegenerateTwoFactorRecoveryCodes = React.useCallback(async (code: string) => {
     try {
       const token = await resolveAccessToken();
-      if (!token) throw new Error(t("sessionMissing"));
+      if (!token) {
+        throw new Error(t("sessionMissing"));
+      }
       const result = await regenerateCurrentTwoFactorRecoveryCodes(token, code);
       const status = await getCurrentTwoFactorStatus(token);
       setTwoFactorStatus(status);

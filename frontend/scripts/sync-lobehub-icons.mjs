@@ -54,13 +54,13 @@ writeFileSync(
 );
 
 const icons = iconFiles.map((fileName) => {
-    const slug = fileName.slice(0, -4);
-    return {
-      id: slug,
-      name: titleFromSlug(slug),
-      src: `/vendor/lobehub-icons/${fileName}`,
-    };
-  });
+  const slug = fileName.slice(0, -4);
+  return {
+    id: slug,
+    name: titleFromSlug(slug),
+    src: `/vendor/lobehub-icons/${fileName}`,
+  };
+});
 
 mkdirSync(manifestDir, { recursive: true });
 writeFileSync(

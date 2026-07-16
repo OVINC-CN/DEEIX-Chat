@@ -28,15 +28,23 @@ export function resolveIdentityProviderIconKey(name: string, slug: string): stri
 
 export function resolveIdentityProviderIconURL(name: string, slug: string): string | null {
   const icon = resolveIdentityProviderIconKey(name, slug);
-  if (!icon) return null;
-  if (LOCAL_ICON_URLS[icon]) return LOCAL_ICON_URLS[icon];
+  if (!icon) {
+    return null;
+  }
+  if (LOCAL_ICON_URLS[icon]) {
+    return LOCAL_ICON_URLS[icon];
+  }
   return resolveLobeHubIconURL(icon);
 }
 
 export function resolveIdentityProviderIconScale(name: string, slug: string): number {
   const icon = resolveIdentityProviderIconKey(name, slug);
-  if (icon === "x") return 0.78;
-  if (icon === "linuxdo") return 0.86;
+  if (icon === "x") {
+    return 0.78;
+  }
+  if (icon === "linuxdo") {
+    return 0.86;
+  }
   return 1;
 }
 

@@ -51,13 +51,13 @@ function appendPendingExchangeMessages({
     const attachments: MessageAttachment[] | undefined =
       pendingAttachments && pendingAttachments.length > 0
         ? pendingAttachments.map((att) => ({
-            fileID: att.fileID,
-            fileName: att.fileName,
-            mimeType: att.mimeType,
-            sizeBytes: att.sizeBytes,
-            kind: att.mimeType.startsWith("image/") ? ("image" as const) : ("file" as const),
-            previewURL: att.previewURL,
-          }))
+          fileID: att.fileID,
+          fileName: att.fileName,
+          mimeType: att.mimeType,
+          sizeBytes: att.sizeBytes,
+          kind: att.mimeType.startsWith("image/") ? ("image" as const) : ("file" as const),
+          previewURL: att.previewURL,
+        }))
         : undefined;
     nextMessages.push({
       key: `${pendingExchange.key}-user`,
@@ -161,10 +161,10 @@ function mergePendingAssistantState(messages: ChatAreaMessage[], pendingExchange
     const existingAlert = item.inlineAlert;
     const nextAlert = pendingAlert
       ? {
-          title: existingAlert?.title || pendingAlert.title,
-          message: existingAlert?.message || pendingAlert.message,
-          details: existingAlert?.details?.request?.body ? existingAlert.details : pendingAlert.details,
-        }
+        title: existingAlert?.title || pendingAlert.title,
+        message: existingAlert?.message || pendingAlert.message,
+        details: existingAlert?.details?.request?.body ? existingAlert.details : pendingAlert.details,
+      }
       : existingAlert;
     return {
       ...item,

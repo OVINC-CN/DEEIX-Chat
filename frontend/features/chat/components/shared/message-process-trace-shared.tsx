@@ -27,7 +27,9 @@ import { cn } from "@/lib/utils";
 export const TRACE_ROOT_CLASS = "chat-screenshot-omit mb-2 w-full pr-4 sm:pr-6";
 
 function FileContextBadgeList({ badges }: { badges: FileContextBadge[] }) {
-  if (badges.length === 0) return null;
+  if (badges.length === 0) {
+    return null;
+  }
   return (
     <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
       {badges.map((item, index) => {
@@ -85,7 +87,9 @@ type GroupedRAGCitation = {
 };
 
 function groupRAGCitations(citations: RAGCitation[], labels: ProcessTraceLabels): GroupedRAGCitation[] {
-  if (citations.length === 0) return [];
+  if (citations.length === 0) {
+    return [];
+  }
   const grouped = new Map<string, GroupedRAGCitation>();
   for (const item of citations) {
     const fileID = item.file_id?.trim() || "unknown";
@@ -112,7 +116,9 @@ function groupRAGCitations(citations: RAGCitation[], labels: ProcessTraceLabels)
       sharePercent: total > 0 ? Math.round((item.chunkCount / total) * 100) : 0,
     }))
     .sort((left, right) => {
-      if (right.chunkCount !== left.chunkCount) return right.chunkCount - left.chunkCount;
+      if (right.chunkCount !== left.chunkCount) {
+        return right.chunkCount - left.chunkCount;
+      }
       return right.maxScore - left.maxScore;
     });
 }
@@ -126,7 +132,9 @@ export function RAGCitationList({
   embedded?: boolean;
   labels: ProcessTraceLabels;
 }) {
-  if (citations.length === 0) return null;
+  if (citations.length === 0) {
+    return null;
+  }
   const grouped = groupRAGCitations(citations, labels);
   if (embedded) {
     return (

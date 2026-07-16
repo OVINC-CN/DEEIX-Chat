@@ -97,8 +97,11 @@ function useHiddenUsageSeries() {
   const toggleSeries = React.useCallback((id: string) => {
     setHiddenSeries((current) => {
       const next = new Set(current);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   }, []);
@@ -259,22 +262,22 @@ function DailyUsageChartTooltip({
   const visibleModels = item.models.filter((model) => !hiddenSeries.has(model.platformModelName || "-"));
   const visibleMetrics = item.models.length > 0
     ? visibleModels.reduce(
-        (totals, model) => ({
-          tokens: totals.tokens + model.totalTokens,
-          billedUsd: totals.billedUsd + model.billedUSD,
-          calls: totals.calls + model.callCount,
-          latency: totals.latency + model.avgLatencyMS * model.recordCount,
-          records: totals.records + model.recordCount,
-        }),
-        { tokens: 0, billedUsd: 0, calls: 0, latency: 0, records: 0 },
-      )
+      (totals, model) => ({
+        tokens: totals.tokens + model.totalTokens,
+        billedUsd: totals.billedUsd + model.billedUSD,
+        calls: totals.calls + model.callCount,
+        latency: totals.latency + model.avgLatencyMS * model.recordCount,
+        records: totals.records + model.recordCount,
+      }),
+      { tokens: 0, billedUsd: 0, calls: 0, latency: 0, records: 0 },
+    )
     : {
-        tokens: item.totalTokens,
-        billedUsd: item.billedUsd,
-        calls: item.callCount,
-        latency: item.avgLatencyMS * item.recordCount,
-        records: item.recordCount,
-      };
+      tokens: item.totalTokens,
+      billedUsd: item.billedUsd,
+      calls: item.callCount,
+      latency: item.avgLatencyMS * item.recordCount,
+      records: item.recordCount,
+    };
   const visibleLatency = visibleMetrics.records > 0 ? visibleMetrics.latency / visibleMetrics.records : 0;
 
   return (
@@ -379,7 +382,9 @@ function DailyUsageChart({
         .map((item) => {
           const models: DailyUsageChartModel[] = (item.models ?? []).filter((model) => topModelNames.has(model.platformModelName || "-"));
           const otherModels = (item.models ?? []).filter((model) => !topModelNames.has(model.platformModelName || "-"));
-          if (otherModels.length > 0) models.push(aggregateDailyModels(otherModels, otherModelLabel));
+          if (otherModels.length > 0) {
+            models.push(aggregateDailyModels(otherModels, otherModelLabel));
+          }
           const point: DailyUsageChartPoint = {
             dayLabel: formatDay(item.usageDate),
             fullDayLabel: formatShortDate(item.usageDate, locale),
@@ -405,7 +410,9 @@ function DailyUsageChart({
     [items, locale, modelColorByName, modelKeyByName, otherModelLabel, todayEndMS, topModelNames],
   );
   const chartConfig = React.useMemo<ChartConfig>(() => {
-    if (modelSeries.length === 0) return usageTokenChartConfig;
+    if (modelSeries.length === 0) {
+      return usageTokenChartConfig;
+    }
     return Object.fromEntries(modelSeries.map((item) => [item.key, { label: item.modelLabel, color: item.color }])) satisfies ChartConfig;
   }, [modelSeries]);
   const rangeLabel = chartData.length > 0 ? `${chartData[0].fullDayLabel} - ${chartData[chartData.length - 1].fullDayLabel}` : "";
@@ -413,10 +420,10 @@ function DailyUsageChart({
   const legendItems = React.useMemo<ChartInteractiveLegendItem[]>(
     () => modelSeries.length > 0
       ? modelSeries.map((item) => ({
-          id: item.platformModelName,
-          label: item.modelLabel,
-          color: item.color,
-        }))
+        id: item.platformModelName,
+        label: item.modelLabel,
+        color: item.color,
+      }))
       : [{ id: "totalTokens", label: "Tokens", color: "var(--chart-1)" }],
     [modelSeries],
   );

@@ -367,20 +367,20 @@ export function PreviewPdf({ source, toolbarContainer, showLoading = true, onLoa
 
         {status === "ready" ? (
           <div ref={scrollRegionRef} className="min-h-0 h-full flex-1 overflow-auto">
-              <div className="px-1 pb-2">
-                <div className="mx-auto flex min-w-full w-max flex-col gap-4">
-                  {Array.from({ length: pageCount }, (_, index) => (
-                    <div key={index} className="flex justify-center">
-                      <canvas
-                        ref={(node) => {
-                          canvasRefs.current[index] = node;
-                        }}
-                        className="block shrink-0"
-                      />
-                    </div>
-                  ))}
-                </div>
+            <div className="px-1 pb-2">
+              <div className="mx-auto flex min-w-full w-max flex-col gap-4">
+                {Array.from({ length: pageCount }, (_, index) => (
+                  <div key={index} className="flex justify-center">
+                    <canvas
+                      ref={(node) => {
+                        canvasRefs.current[index] = node;
+                      }}
+                      className="block shrink-0"
+                    />
+                  </div>
+                ))}
               </div>
+            </div>
           </div>
         ) : null}
 

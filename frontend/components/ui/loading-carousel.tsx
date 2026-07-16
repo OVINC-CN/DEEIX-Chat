@@ -1,41 +1,41 @@
-"use client"
+"use client";
 
-import React, { useCallback, useEffect, useMemo, useState, type JSX } from "react"
-import Image from "next/image"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import React, { useCallback, useEffect, useMemo, useState, type JSX } from "react";
+import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import type {
+  MotionProps,
+  Variants } from "motion/react";
 import {
   AnimatePresence,
   motion,
-  MotionProps,
-  useAnimation,
-  Variants,
-} from "motion/react"
+} from "motion/react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface Tip {
-  text: string
-  image: string
-  url?: string
+  text: string;
+  image: string;
+  url?: string;
 }
 
 interface LoadingCarouselProps {
-  tips?: Tip[]
-  className?: string
-  autoplayInterval?: number
-  showNavigation?: boolean
-  showIndicators?: boolean
-  showProgress?: boolean
-  aspectRatio?: "video" | "square" | "wide"
-  textPosition?: "top" | "bottom"
-  onTipChange?: (index: number) => void
-  backgroundTips?: boolean
-  backgroundGradient?: boolean
-  shuffleTips?: boolean
-  animateText?: boolean
-  previousTipLabel?: string
-  nextTipLabel?: string
+  tips?: Tip[];
+  className?: string;
+  autoplayInterval?: number;
+  showNavigation?: boolean;
+  showIndicators?: boolean;
+  showProgress?: boolean;
+  aspectRatio?: "video" | "square" | "wide";
+  textPosition?: "top" | "bottom";
+  onTipChange?: (index: number) => void;
+  backgroundTips?: boolean;
+  backgroundGradient?: boolean;
+  shuffleTips?: boolean;
+  animateText?: boolean;
+  previousTipLabel?: string;
+  nextTipLabel?: string;
 }
 
 const defaultTips: Tip[] = [
@@ -64,15 +64,15 @@ const defaultTips: Tip[] = [
     image: "/placeholders/cult-seo.png",
     url: "https://www.newcult.co/templates/cult-seo",
   },
-]
+];
 
 function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array]
+  const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
-  return shuffled
+  return shuffled;
 }
 
 const carouselVariants: Variants = {
@@ -88,18 +88,18 @@ const carouselVariants: Variants = {
     x: direction < 0 ? "100%" : "-100%",
     opacity: 0,
   }),
-}
+};
 
 const textVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { delay: 0.3, duration: 0.5 } },
-}
+};
 
 const aspectRatioClasses = {
   video: "aspect-video",
   square: "aspect-square",
   wide: "aspect-[2/1]",
-}
+};
 
 export function LoadingCarousel({
   onTipChange,
@@ -118,26 +118,30 @@ export function LoadingCarousel({
   previousTipLabel,
   nextTipLabel,
 }: LoadingCarouselProps) {
-  const [current, setCurrent] = useState(0)
-  const [direction, setDirection] = useState(1)
-  const displayTips = useMemo(() => (shuffleTips ? shuffleArray(tips) : tips), [shuffleTips, tips])
-  const totalTips = displayTips.length
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const displayTips = useMemo(() => (shuffleTips ? shuffleArray(tips) : tips), [shuffleTips, tips]);
+  const totalTips = displayTips.length;
 
   const selectTip = useCallback((index: number) => {
-    if (totalTips <= 0) return
-    setDirection(index > current ? 1 : -1)
-    const nextIndex = (index + totalTips) % totalTips
-    setCurrent(nextIndex)
-    onTipChange?.(nextIndex)
-  }, [current, onTipChange, totalTips])
+    if (totalTips <= 0) {
+      return;
+    }
+    setDirection(index > current ? 1 : -1);
+    const nextIndex = (index + totalTips) % totalTips;
+    setCurrent(nextIndex);
+    onTipChange?.(nextIndex);
+  }, [current, onTipChange, totalTips]);
 
   useEffect(() => {
-    if (totalTips <= 1) return
-    const timer = window.setInterval(() => selectTip(current + 1), autoplayInterval)
-    return () => window.clearInterval(timer)
-  }, [autoplayInterval, current, selectTip, totalTips])
+    if (totalTips <= 1) {
+      return;
+    }
+    const timer = window.setInterval(() => selectTip(current + 1), autoplayInterval);
+    return () => window.clearInterval(timer);
+  }, [autoplayInterval, current, selectTip, totalTips]);
 
-  const activeTip = displayTips[current]
+  const activeTip = displayTips[current];
 
   return (
     <motion.div
@@ -146,7 +150,7 @@ export function LoadingCarousel({
       transition={{ duration: 0.8, ease: "easeOut" }}
       className={cn(
         "w-full max-w-6xl mx-auto rounded-lg bg-muted shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)]",
-        className
+        className,
       )}
     >
       <div className="w-full overflow-hidden rounded-lg">
@@ -182,7 +186,7 @@ export function LoadingCarousel({
                     animate="visible"
                     className={cn(
                       "absolute left-0 right-0 p-4 sm:p-5",
-                      textPosition === "top" ? "top-0" : "bottom-0"
+                      textPosition === "top" ? "top-0" : "bottom-0",
                     )}
                   >
                     {activeTip.url ? (
@@ -234,7 +238,7 @@ export function LoadingCarousel({
               "flex flex-col items-start gap-3",
               showIndicators && !backgroundTips
                 ? ""
-                : ""
+                : "",
             )}
           >
             {showIndicators && (
@@ -308,24 +312,24 @@ export function LoadingCarousel({
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
 
 // Credit -> https://motion-primitives.com/docs/text-scramble
 // https://x.com/Ibelick
 type TextScrambleProps = {
-  children: string
-  duration?: number
-  speed?: number
-  characterSet?: string
-  as?: React.ElementType
-  className?: string
-  trigger?: boolean
-  onScrambleComplete?: () => void
-} & MotionProps
+  children: string;
+  duration?: number;
+  speed?: number;
+  characterSet?: string;
+  as?: React.ElementType;
+  className?: string;
+  trigger?: boolean;
+  onScrambleComplete?: () => void;
+} & MotionProps;
 
 const defaultChars =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 function TextScramble({
   children,
@@ -339,75 +343,79 @@ function TextScramble({
   ...props
 }: TextScrambleProps) {
   const MotionComponent = motion.create(
-    Component as keyof JSX.IntrinsicElements
-  )
-  const [displayText, setDisplayText] = useState(children)
-  const isAnimatingRef = React.useRef(false)
-  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null)
-  const text = children
+    Component as keyof JSX.IntrinsicElements,
+  );
+  const [displayText, setDisplayText] = useState(children);
+  const isAnimatingRef = React.useRef(false);
+  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+  const text = children;
 
   const scramble = useCallback(() => {
-    if (isAnimatingRef.current) return
-    isAnimatingRef.current = true
+    if (isAnimatingRef.current) {
+      return;
+    }
+    isAnimatingRef.current = true;
 
-    const steps = duration / speed
-    let step = 0
+    const steps = duration / speed;
+    let step = 0;
 
     if (intervalRef.current) {
-      clearInterval(intervalRef.current)
+      clearInterval(intervalRef.current);
     }
 
     intervalRef.current = setInterval(() => {
-      let scrambled = ""
-      const progress = step / steps
+      let scrambled = "";
+      const progress = step / steps;
 
       for (let i = 0; i < text.length; i++) {
         if (text[i] === " ") {
-          scrambled += " "
-          continue
+          scrambled += " ";
+          continue;
         }
 
         if (progress * text.length > i) {
-          scrambled += text[i]
+          scrambled += text[i];
         } else {
           scrambled +=
-            characterSet[Math.floor(Math.random() * characterSet.length)]
+            characterSet[Math.floor(Math.random() * characterSet.length)];
         }
       }
 
-      setDisplayText(scrambled)
-      step++
+      setDisplayText(scrambled);
+      step++;
 
       if (step > steps) {
         if (intervalRef.current) {
-          clearInterval(intervalRef.current)
-          intervalRef.current = null
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
         }
-        setDisplayText(text)
-        isAnimatingRef.current = false
-        onScrambleComplete?.()
+        setDisplayText(text);
+        isAnimatingRef.current = false;
+        onScrambleComplete?.();
       }
-    }, speed * 1000)
-  }, [characterSet, duration, onScrambleComplete, speed, text])
+    }, speed * 1000);
+  }, [characterSet, duration, onScrambleComplete, speed, text]);
 
   useEffect(() => {
-    if (!trigger) return
+    if (!trigger) {
+      return;
+    }
 
-    scramble()
+    scramble();
     return () => {
       if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-        intervalRef.current = null
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
-      isAnimatingRef.current = false
-    }
-  }, [scramble, trigger])
+      isAnimatingRef.current = false;
+    };
+  }, [scramble, trigger]);
 
   return (
     <MotionComponent className={className} {...props}>
       {displayText}
     </MotionComponent>
-  )
+  );
 }
 
-export default LoadingCarousel
+export default LoadingCarousel;

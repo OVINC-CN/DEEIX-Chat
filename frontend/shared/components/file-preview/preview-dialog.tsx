@@ -25,12 +25,12 @@ type PreviewState =
   | { status: "loading" }
   | { status: "error"; message: string }
   | {
-      status: "ready";
-      kind: ReturnType<typeof resolveFilePreviewKind>;
-      objectURL: string;
-      textContent: string | null;
-      contentType: string;
-    };
+    status: "ready";
+    kind: ReturnType<typeof resolveFilePreviewKind>;
+    objectURL: string;
+    textContent: string | null;
+    contentType: string;
+  };
 
 type PreviewSourceProps = {
   source: string;
@@ -143,12 +143,12 @@ function useFilePreviewDialog(file: PreviewDialogFile | null, loadContent?: File
         const result = loadContent
           ? await loadContent(file)
           : await (async () => {
-              const token = await resolveAccessToken();
-              if (!token) {
-                throw new Error(t("sessionExpired"));
-              }
-              return fetchFileContent(token, file.fileID);
-            })();
+            const token = await resolveAccessToken();
+            if (!token) {
+              throw new Error(t("sessionExpired"));
+            }
+            return fetchFileContent(token, file.fileID);
+          })();
         let kind = resolveFilePreviewKind(file, result.contentType);
         const objectURL = URL.createObjectURL(result.blob);
         objectURLRef.current = objectURL;

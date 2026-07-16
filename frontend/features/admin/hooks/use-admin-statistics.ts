@@ -49,7 +49,9 @@ function recentDateRange(days: number): { startDate: string; endDate: string } {
 
 function parseDateValue(value: string): number | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
-  if (!match) return null;
+  if (!match) {
+    return null;
+  }
   const year = Number(match[1]);
   const month = Number(match[2]);
   const day = Number(match[3]);
@@ -62,10 +64,14 @@ function parseDateValue(value: string): number | null {
 }
 
 function validateDateRange(startDate: string, endDate: string): AdminStatisticsRangeError {
-  if (!startDate.trim() || !endDate.trim()) return "incomplete";
+  if (!startDate.trim() || !endDate.trim()) {
+    return "incomplete";
+  }
   const start = parseDateValue(startDate);
   const end = parseDateValue(endDate);
-  if (start === null || end === null || end < start) return "invalid";
+  if (start === null || end === null || end < start) {
+    return "invalid";
+  }
   const days = Math.floor((end - start) / 86_400_000) + 1;
   return days > 366 ? "tooLong" : null;
 }
@@ -126,13 +132,17 @@ export function useAdminStatistics() {
     void (async () => {
       try {
         const token = await resolveAccessToken();
-        if (!token) return;
+        if (!token) {
+          return;
+        }
         const [configResult, modelsResult, permissionGroupsResult] = await Promise.allSettled([
           getAdminBillingConfig(token),
           listAllAdminPages((options) => listAdminLLMModels(token, { ...options, onlyActive: false })),
           listPermissionGroups(token),
         ]);
-        if (cancelled) return;
+        if (cancelled) {
+          return;
+        }
         if (configResult.status === "fulfilled") {
           setBillingDisplay({
             currency: normalizeBillingDisplayCurrency(configResult.value.config.displayCurrency),
@@ -169,7 +179,9 @@ export function useAdminStatistics() {
           toast.error(t("toasts.referenceLoadFailed"), { description: resolveAdminErrorMessage(error) });
         }
       } finally {
-        if (!cancelled) setReferenceLoading(false);
+        if (!cancelled) {
+          setReferenceLoading(false);
+        }
       }
     })();
     return () => {
@@ -269,8 +281,12 @@ export function useAdminStatistics() {
           const rollbackModelMetric = modelRankingMetric !== appliedModelRankingMetricRef.current;
           const rollbackUserMetric = userRankingMetric !== appliedUserRankingMetricRef.current;
           if (rollbackModelMetric || rollbackUserMetric) {
-            if (rollbackModelMetric) setModelRankingMetric(appliedModelRankingMetricRef.current);
-            if (rollbackUserMetric) setUserRankingMetric(appliedUserRankingMetricRef.current);
+            if (rollbackModelMetric) {
+              setModelRankingMetric(appliedModelRankingMetricRef.current);
+            }
+            if (rollbackUserMetric) {
+              setUserRankingMetric(appliedUserRankingMetricRef.current);
+            }
           }
           toast.error(t("toasts.loadFailed"), { description: resolveAdminErrorMessage(error) });
         }
@@ -284,7 +300,9 @@ export function useAdminStatistics() {
 
   const setRangePreset = React.useCallback((preset: AdminStatisticsRangePreset) => {
     setRangePresetState(preset);
-    if (preset === "custom") return;
+    if (preset === "custom") {
+      return;
+    }
     const range = recentDateRange(Number(preset));
     setStartDateState(range.startDate);
     setEndDateState(range.endDate);

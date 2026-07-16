@@ -453,85 +453,85 @@ export type SendMessageResult = {
 
 export type StreamMessageEvent =
   | {
-      type: "file_proc";
-      seq?: number;
-      message: string;
-    }
+    type: "file_proc";
+    seq?: number;
+    message: string;
+  }
   | {
-      type: "rag_search";
-      seq?: number;
-      message: string;
-    }
+    type: "rag_search";
+    seq?: number;
+    message: string;
+  }
   | {
-      type: "process_update";
-      seq?: number;
-      status: string;
-      block?: TraceBlockDTO;
-      trace?: MessageProcessTraceDTO;
-    }
+    type: "process_update";
+    seq?: number;
+    status: string;
+    block?: TraceBlockDTO;
+    trace?: MessageProcessTraceDTO;
+  }
   | {
-      type: "upstream_think_delta";
-      seq?: number;
-      status: string;
-      title?: string;
-      summary?: string;
-      stage?: string;
-      roundID?: string;
-      eventID?: string;
-      kind?: ReasoningDeltaDTO["kind"] | string;
-      delta?: string;
-      contentMarkdown?: string;
-      block?: TraceBlockDTO;
-      trace?: MessageProcessTraceDTO;
-      reasoning?: ReasoningDeltaDTO;
-    }
+    type: "upstream_think_delta";
+    seq?: number;
+    status: string;
+    title?: string;
+    summary?: string;
+    stage?: string;
+    roundID?: string;
+    eventID?: string;
+    kind?: ReasoningDeltaDTO["kind"] | string;
+    delta?: string;
+    contentMarkdown?: string;
+    block?: TraceBlockDTO;
+    trace?: MessageProcessTraceDTO;
+    reasoning?: ReasoningDeltaDTO;
+  }
   | {
-      type: "delta";
-      seq?: number;
-      delta: string;
-    }
+    type: "delta";
+    seq?: number;
+    delta: string;
+  }
   | {
-      type: "usage";
-      seq?: number;
-      input_tokens: number;
-      output_tokens: number;
-      cache_read_tokens: number;
-      cache_write_tokens: number;
-      reasoning_tokens: number;
-    }
+    type: "usage";
+    seq?: number;
+    input_tokens: number;
+    output_tokens: number;
+    cache_read_tokens: number;
+    cache_write_tokens: number;
+    reasoning_tokens: number;
+  }
   | {
-      type: "media_status";
-      seq?: number;
-      status: string;
-      message: string;
-      content_type?: string;
-    }
+    type: "media_status";
+    seq?: number;
+    status: string;
+    message: string;
+    content_type?: string;
+  }
   | {
-      type: "media_image_delta";
-      seq?: number;
-      index?: number;
-      b64_json: string;
-      mime_type?: string;
-      revised_prompt?: string;
-    }
+    type: "media_image_delta";
+    seq?: number;
+    index?: number;
+    b64_json: string;
+    mime_type?: string;
+    revised_prompt?: string;
+  }
   | {
-      type: "completed";
-      seq?: number;
-      data: SendMessageResult;
-    }
+    type: "completed";
+    seq?: number;
+    data: SendMessageResult;
+  }
   | {
-      type: "compact_done";
-      seq?: number;
-      method: string;
-      freed_tokens: number;
-      kept_turns: number;
-      summary_preview: string;
-    }
+    type: "compact_done";
+    seq?: number;
+    method: string;
+    freed_tokens: number;
+    kept_turns: number;
+    summary_preview: string;
+  }
   | {
-      type: "error";
-      seq?: number;
-      message: string;
-      errorCode?: string;
-      debug?: UpstreamDebugInfo;
-      data?: SendMessageResult;
-    };
+    type: "error";
+    seq?: number;
+    message: string;
+    errorCode?: string;
+    debug?: UpstreamDebugInfo;
+    data?: SendMessageResult;
+  };

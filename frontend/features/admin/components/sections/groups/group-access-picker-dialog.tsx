@@ -465,77 +465,77 @@ function GroupAccessTable({
           ) : null}
           {!loading
             ? items.map((item) => {
-                const checked = selectedIDs.has(item.id);
-                return (
-                  <TableRow
-                    key={item.id}
-                    interactive
-                    selected={checked}
-                    className={cn("cursor-default", busy && "pointer-events-none opacity-60")}
-                    onClick={() => toggle(item.id)}
+              const checked = selectedIDs.has(item.id);
+              return (
+                <TableRow
+                  key={item.id}
+                  interactive
+                  selected={checked}
+                  className={cn("cursor-default", busy && "pointer-events-none opacity-60")}
+                  onClick={() => toggle(item.id)}
+                >
+                  <TableCell
+                    className="w-10 px-2 py-1.5 text-center"
+                    onClick={(event) => event.stopPropagation()}
                   >
-                    <TableCell
-                      className="w-10 px-2 py-1.5 text-center"
-                      onClick={(event) => event.stopPropagation()}
-                    >
-                      <div className="flex h-6 items-center justify-center">
-                        <Checkbox
-                          checked={checked}
-                          onCheckedChange={() => toggle(item.id)}
-                          disabled={busy}
-                          aria-label={item.label}
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell className="min-w-0 py-1.5">
-                      <span className="block max-w-full truncate text-xs text-foreground">
-                        {item.label}
+                    <div className="flex h-6 items-center justify-center">
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={() => toggle(item.id)}
+                        disabled={busy}
+                        aria-label={item.label}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell className="min-w-0 py-1.5">
+                    <span className="block max-w-full truncate text-xs text-foreground">
+                      {item.label}
+                    </span>
+                  </TableCell>
+                  {showNicknameColumn ? (
+                    <TableCell className="w-[150px] py-1.5 text-xs text-muted-foreground">
+                      <span className="block max-w-full truncate" title={item.nickname}>
+                        {item.nickname || "-"}
                       </span>
                     </TableCell>
-                    {showNicknameColumn ? (
-                      <TableCell className="w-[150px] py-1.5 text-xs text-muted-foreground">
-                        <span className="block max-w-full truncate" title={item.nickname}>
-                          {item.nickname || "-"}
-                        </span>
-                      </TableCell>
-                    ) : null}
-                    {showEmailColumn ? (
-                      <TableCell className="w-[220px] py-1.5 text-xs text-muted-foreground">
-                        <span className="block max-w-full truncate" title={item.email}>
-                          {item.email || "-"}
-                        </span>
-                      </TableCell>
-                    ) : null}
-                    {showSubscriptionColumn ? (
-                      <TableCell className="w-[160px] py-1.5 text-xs text-muted-foreground">
-                        <span className="block max-w-full truncate" title={item.subscriptionStatus}>
-                          {item.subscriptionStatus || "-"}
-                        </span>
-                      </TableCell>
-                    ) : null}
-                    {showIdentityColumn ? (
-                      <TableCell className="w-[110px] py-1.5 text-xs text-muted-foreground">
-                        <IdentityProviderIconList providers={item.identityProviders} />
-                      </TableCell>
-                    ) : null}
-                    {showSourceColumn ? (
-                      <TableCell className="w-[160px] py-1.5 text-xs text-muted-foreground">
-                        <BadgeList labels={item.sourceLabels} />
-                      </TableCell>
-                    ) : null}
-                    {showVendorColumn ? (
-                      <TableCell className="w-[120px] py-1.5 text-xs text-muted-foreground">
-                        <BadgeList labels={item.vendorLabels} maxVisible={1} />
-                      </TableCell>
-                    ) : null}
-                    {showProtocolColumn ? (
-                      <TableCell className="w-[200px] py-1.5 text-xs text-muted-foreground">
-                        <BadgeList labels={item.protocolLabels} maxVisible={1} />
-                      </TableCell>
-                    ) : null}
-                  </TableRow>
-                );
-              })
+                  ) : null}
+                  {showEmailColumn ? (
+                    <TableCell className="w-[220px] py-1.5 text-xs text-muted-foreground">
+                      <span className="block max-w-full truncate" title={item.email}>
+                        {item.email || "-"}
+                      </span>
+                    </TableCell>
+                  ) : null}
+                  {showSubscriptionColumn ? (
+                    <TableCell className="w-[160px] py-1.5 text-xs text-muted-foreground">
+                      <span className="block max-w-full truncate" title={item.subscriptionStatus}>
+                        {item.subscriptionStatus || "-"}
+                      </span>
+                    </TableCell>
+                  ) : null}
+                  {showIdentityColumn ? (
+                    <TableCell className="w-[110px] py-1.5 text-xs text-muted-foreground">
+                      <IdentityProviderIconList providers={item.identityProviders} />
+                    </TableCell>
+                  ) : null}
+                  {showSourceColumn ? (
+                    <TableCell className="w-[160px] py-1.5 text-xs text-muted-foreground">
+                      <BadgeList labels={item.sourceLabels} />
+                    </TableCell>
+                  ) : null}
+                  {showVendorColumn ? (
+                    <TableCell className="w-[120px] py-1.5 text-xs text-muted-foreground">
+                      <BadgeList labels={item.vendorLabels} maxVisible={1} />
+                    </TableCell>
+                  ) : null}
+                  {showProtocolColumn ? (
+                    <TableCell className="w-[200px] py-1.5 text-xs text-muted-foreground">
+                      <BadgeList labels={item.protocolLabels} maxVisible={1} />
+                    </TableCell>
+                  ) : null}
+                </TableRow>
+              );
+            })
             : null}
         </TableBody>
       </Table>
@@ -548,16 +548,16 @@ function GroupAccessTable({
         summary={
           selectedIDs.size > 0
             ? t("selectionPagination", {
-                selected: selectedIDs.size,
-                total,
-                page: Math.min(page, totalPages),
-                totalPages,
-              })
+              selected: selectedIDs.size,
+              total,
+              page: Math.min(page, totalPages),
+              totalPages,
+            })
             : t("paginationSummary", {
-                total,
-                page: Math.min(page, totalPages),
-                totalPages,
-              })
+              total,
+              page: Math.min(page, totalPages),
+              totalPages,
+            })
         }
         onPageChange={onPageChange}
         onPageSizeChange={onPageSizeChange}

@@ -6,7 +6,7 @@ type UseLayoutSidebarListFlipOptions = {
   enabled: boolean;
   signature: string;
   excludeKey?: string | null;
-}
+};
 
 export function useLayoutSidebarListFlip(
   containerRef: React.RefObject<HTMLElement | null>,

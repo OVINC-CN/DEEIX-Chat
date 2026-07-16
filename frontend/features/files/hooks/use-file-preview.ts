@@ -58,25 +58,25 @@ async function tryReadTextPreview(blob: Blob): Promise<{ textContent: string | n
 
 type FilePreviewState =
   | {
-      status: "idle";
-    }
+    status: "idle";
+  }
   | {
-      status: "loading";
-    }
+    status: "loading";
+  }
   | {
-      status: "error";
-      message: string;
-    }
+    status: "error";
+    message: string;
+  }
   | {
-      status: "ready";
-      kind: FilePreviewKind;
-      objectURL: string;
-      textContent: string | null;
-      contentType: string;
-      contentLength: number | null;
-      extension: string;
-      isImage: boolean;
-    };
+    status: "ready";
+    kind: FilePreviewKind;
+    objectURL: string;
+    textContent: string | null;
+    contentType: string;
+    contentLength: number | null;
+    extension: string;
+    isImage: boolean;
+  };
 
 type UseFilePreviewOptions = {
   file: FileObjectDTO | null;

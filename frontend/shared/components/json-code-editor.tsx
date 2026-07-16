@@ -261,7 +261,9 @@ export function JsonCodeEditor({
       contentSubscription = editor.onDidChangeModelContent(() => {
         const nextValue = editor.getValue();
         editorValueRef.current = nextValue;
-        if (suppressChangeRef.current) return;
+        if (suppressChangeRef.current) {
+          return;
+        }
         valueRef.current = nextValue;
         onChangeRef.current(nextValue);
       });

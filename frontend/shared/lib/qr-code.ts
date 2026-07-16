@@ -127,7 +127,7 @@ function reedSolomonCompute(data: number[], degree: number): number[] {
   const generator = reedSolomonGenerator(degree);
   const result = new Array<number>(degree).fill(0);
   for (const byte of data) {
-    const factor = byte ^ result.shift()!;
+    const factor = byte ^ (result.shift() ?? 0);
     result.push(0);
     for (let index = 0; index < degree; index += 1) {
       result[index] ^= gfMultiply(generator[index], factor);
@@ -194,9 +194,13 @@ function createMatrix(spec: QRVersionSpec): QRMatrix {
 }
 
 function setModule(matrix: QRMatrix, x: number, y: number, value: boolean, reserved = false) {
-  if (x < 0 || y < 0 || x >= matrix.size || y >= matrix.size) return;
+  if (x < 0 || y < 0 || x >= matrix.size || y >= matrix.size) {
+    return;
+  }
   matrix.modules[y][x] = value;
-  if (reserved) matrix.reserved[y][x] = true;
+  if (reserved) {
+    matrix.reserved[y][x] = true;
+  }
 }
 
 function placeFinder(matrix: QRMatrix, x: number, y: number) {
@@ -204,7 +208,9 @@ function placeFinder(matrix: QRMatrix, x: number, y: number) {
     for (let dx = -1; dx <= 7; dx += 1) {
       const xx = x + dx;
       const yy = y + dy;
-      if (xx < 0 || yy < 0 || xx >= matrix.size || yy >= matrix.size) continue;
+      if (xx < 0 || yy < 0 || xx >= matrix.size || yy >= matrix.size) {
+        continue;
+      }
       const inFinder = dx >= 0 && dx <= 6 && dy >= 0 && dy <= 6;
       const value = inFinder && (dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4));
       setModule(matrix, xx, yy, value, true);
@@ -227,7 +233,9 @@ function placeAlignment(matrix: QRMatrix, positions: number[]) {
         (x === 6 && y === 6) ||
         (x === 6 && y === matrix.size - 7) ||
         (x === matrix.size - 7 && y === 6);
-      if (overlapsFinder) continue;
+      if (overlapsFinder) {
+        continue;
+      }
       for (let dy = -2; dy <= 2; dy += 1) {
         for (let dx = -2; dx <= 2; dx += 1) {
           const value = Math.max(Math.abs(dx), Math.abs(dy)) !== 1;
@@ -252,7 +260,9 @@ function reserveFormat(matrix: QRMatrix) {
 }
 
 function placeVersionInfo(matrix: QRMatrix, version: number) {
-  if (version < 7) return;
+  if (version < 7) {
+    return;
+  }
   const bits = calculateVersionBits(version);
   for (let index = 0; index < 18; index += 1) {
     const value = ((bits >> index) & 1) !== 0;
@@ -266,7 +276,9 @@ function placeData(matrix: QRMatrix, codewords: number[]) {
   let bitIndex = 0;
   let upward = true;
   for (let right = matrix.size - 1; right >= 1; right -= 2) {
-    if (right === 6) right -= 1;
+    if (right === 6) {
+      right -= 1;
+    }
     for (let vertical = 0; vertical < matrix.size; vertical += 1) {
       const y = upward ? matrix.size - 1 - vertical : vertical;
       for (let column = 0; column < 2; column += 1) {
@@ -302,21 +314,31 @@ function shouldMask(mask: number, x: number, y: number) {
 
 function placeFormatBits(matrix: QRMatrix, mask: number) {
   const bits = calculateFormatBits(mask);
-  for (let index = 0; index <= 5; index += 1) setModule(matrix, 8, index, ((bits >> index) & 1) !== 0, true);
+  for (let index = 0; index <= 5; index += 1) {
+    setModule(matrix, 8, index, ((bits >> index) & 1) !== 0, true);
+  }
   setModule(matrix, 8, 7, ((bits >> 6) & 1) !== 0, true);
   setModule(matrix, 8, 8, ((bits >> 7) & 1) !== 0, true);
   setModule(matrix, 7, 8, ((bits >> 8) & 1) !== 0, true);
-  for (let index = 9; index < 15; index += 1) setModule(matrix, 14 - index, 8, ((bits >> index) & 1) !== 0, true);
-  for (let index = 0; index < 8; index += 1) setModule(matrix, matrix.size - 1 - index, 8, ((bits >> index) & 1) !== 0, true);
-  for (let index = 8; index < 15; index += 1) setModule(matrix, 8, matrix.size - 15 + index, ((bits >> index) & 1) !== 0, true);
+  for (let index = 9; index < 15; index += 1) {
+    setModule(matrix, 14 - index, 8, ((bits >> index) & 1) !== 0, true);
+  }
+  for (let index = 0; index < 8; index += 1) {
+    setModule(matrix, matrix.size - 1 - index, 8, ((bits >> index) & 1) !== 0, true);
+  }
+  for (let index = 8; index < 15; index += 1) {
+    setModule(matrix, 8, matrix.size - 15 + index, ((bits >> index) & 1) !== 0, true);
+  }
 }
 
 function calculateFormatBits(mask: number): number {
-  let data = (0b01 << 3) | mask;
+  const data = (0b01 << 3) | mask;
   let value = data << 10;
   const generator = 0x537;
   for (let bit = 14; bit >= 10; bit -= 1) {
-    if (((value >> bit) & 1) !== 0) value ^= generator << (bit - 10);
+    if (((value >> bit) & 1) !== 0) {
+      value ^= generator << (bit - 10);
+    }
   }
   return ((data << 10) | value) ^ 0x5412;
 }
@@ -325,7 +347,9 @@ function calculateVersionBits(version: number): number {
   let value = version << 12;
   const generator = 0x1f25;
   for (let bit = 17; bit >= 12; bit -= 1) {
-    if (((value >> bit) & 1) !== 0) value ^= generator << (bit - 12);
+    if (((value >> bit) & 1) !== 0) {
+      value ^= generator << (bit - 12);
+    }
   }
   return (version << 12) | value;
 }

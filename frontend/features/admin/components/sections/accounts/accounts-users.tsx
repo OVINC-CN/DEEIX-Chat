@@ -601,7 +601,7 @@ export function AccountsUsers({
         <div className="flex h-10 items-center px-1">
           <h3 className="text-sm font-semibold">{t("pageTitle")}</h3>
         </div>
-        
+
         <TableToolbar
           query={query}
           onQueryChange={setQuery}
@@ -629,21 +629,21 @@ export function AccountsUsers({
             },
             ...(billingMode === "period"
               ? [
-                  {
-                    key: "tier",
-                    label: t("fields.subscription"),
-                    value: tierFilter,
-                    onValueChange: setTierFilter,
-                    options: [
-                      { label: t("table.allSubscriptions"), value: "" },
-                      ...billingPlans.map((item) => ({ label: item.name || item.code, value: item.code })),
-                      ...USER_TIER_OPTIONS.filter((tier) => !billingPlans.some((plan) => plan.code === tier)).map((item) => ({
-                        label: item,
-                        value: item,
-                      })),
-                    ],
-                  },
-                ]
+                {
+                  key: "tier",
+                  label: t("fields.subscription"),
+                  value: tierFilter,
+                  onValueChange: setTierFilter,
+                  options: [
+                    { label: t("table.allSubscriptions"), value: "" },
+                    ...billingPlans.map((item) => ({ label: item.name || item.code, value: item.code })),
+                    ...USER_TIER_OPTIONS.filter((tier) => !billingPlans.some((plan) => plan.code === tier)).map((item) => ({
+                      label: item,
+                      value: item,
+                    })),
+                  ],
+                },
+              ]
               : []),
           ]}
           sort={{
@@ -794,59 +794,59 @@ export function AccountsUsers({
           viewportClassName={virtualRows.viewportClassName}
           viewportStyle={virtualRows.viewportStyle}
         >
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="w-[44px] py-1.5 text-center">
-                  <div className="flex h-7 items-center justify-center">
-                    <Checkbox
-                      checked={selectAllState}
-                      onCheckedChange={(checked) => handleSelectAllVisible(checked === true)}
-                      disabled={loading || !hasSelectableFilteredItems}
-                    />
-                  </div>
-                </TableHead>
-                <TableHead>ID</TableHead>
-                <TableHead>{t("fields.info")}</TableHead>
-                <TableHead>{t("fields.role")}</TableHead>
-                <TableHead>{t("fields.status")}</TableHead>
-                {billingMode === "period" ? <TableHead>{t("fields.subscription")}</TableHead> : null}
-                {showBalanceColumn ? <TableHead>{t("fields.balance")}</TableHead> : null}
-                <TableHead className="text-center">2FA</TableHead>
-                <TableHead>{t("fields.timezone")}</TableHead>
-                <TableHead>{t("fields.lastActive")}</TableHead>
-                <TableHead className="w-[56px]" stickyEnd />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {initialLoading ? (
-                <TableLoadingRow colSpan={tableColSpan} />
-              ) : null}
-              {showRows ? <VirtualTablePaddingRow colSpan={tableColSpan} height={virtualRows.paddingTop} /> : null}
-              {showRows
-                ? virtualRows.rows.map(({ item }) => (
-                    <UserTableRow
-                      key={item.id}
-                      item={item}
-                      checked={selectedUserIDs.has(item.id)}
-                      billingMode={billingMode}
-                      inlineRolePending={Boolean(inlinePending[resolveInlineKey(item.id, "role")])}
-                      inlineStatusPending={Boolean(inlinePending[resolveInlineKey(item.id, "status")])}
-                      pendingAction={pendingAction}
-                      actionUserID={actionUserID}
-                      roleOptions={roleOptions}
-                      canManage={canManageUser(item)}
-                      onToggleSelectedUser={handleToggleSelectedUser}
-                      onInlinePatch={handleInlineUserPatch}
-                      onOpenAvatar={handleOpenAvatarDialog}
-                      onOpenEdit={handleOpenEditDialog}
-                    />
-                  ))
-                : null}
-              {showRows ? <VirtualTablePaddingRow colSpan={tableColSpan} height={virtualRows.paddingBottom} /> : null}
-              {!loading && filteredItems.length === 0 ? (
-                <TableEmptyRow colSpan={tableColSpan}>{t("table.empty")}</TableEmptyRow>
-              ) : null}
-            </TableBody>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-[44px] py-1.5 text-center">
+                <div className="flex h-7 items-center justify-center">
+                  <Checkbox
+                    checked={selectAllState}
+                    onCheckedChange={(checked) => handleSelectAllVisible(checked === true)}
+                    disabled={loading || !hasSelectableFilteredItems}
+                  />
+                </div>
+              </TableHead>
+              <TableHead>ID</TableHead>
+              <TableHead>{t("fields.info")}</TableHead>
+              <TableHead>{t("fields.role")}</TableHead>
+              <TableHead>{t("fields.status")}</TableHead>
+              {billingMode === "period" ? <TableHead>{t("fields.subscription")}</TableHead> : null}
+              {showBalanceColumn ? <TableHead>{t("fields.balance")}</TableHead> : null}
+              <TableHead className="text-center">2FA</TableHead>
+              <TableHead>{t("fields.timezone")}</TableHead>
+              <TableHead>{t("fields.lastActive")}</TableHead>
+              <TableHead className="w-[56px]" stickyEnd />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {initialLoading ? (
+              <TableLoadingRow colSpan={tableColSpan} />
+            ) : null}
+            {showRows ? <VirtualTablePaddingRow colSpan={tableColSpan} height={virtualRows.paddingTop} /> : null}
+            {showRows
+              ? virtualRows.rows.map(({ item }) => (
+                <UserTableRow
+                  key={item.id}
+                  item={item}
+                  checked={selectedUserIDs.has(item.id)}
+                  billingMode={billingMode}
+                  inlineRolePending={Boolean(inlinePending[resolveInlineKey(item.id, "role")])}
+                  inlineStatusPending={Boolean(inlinePending[resolveInlineKey(item.id, "status")])}
+                  pendingAction={pendingAction}
+                  actionUserID={actionUserID}
+                  roleOptions={roleOptions}
+                  canManage={canManageUser(item)}
+                  onToggleSelectedUser={handleToggleSelectedUser}
+                  onInlinePatch={handleInlineUserPatch}
+                  onOpenAvatar={handleOpenAvatarDialog}
+                  onOpenEdit={handleOpenEditDialog}
+                />
+              ))
+              : null}
+            {showRows ? <VirtualTablePaddingRow colSpan={tableColSpan} height={virtualRows.paddingBottom} /> : null}
+            {!loading && filteredItems.length === 0 ? (
+              <TableEmptyRow colSpan={tableColSpan}>{t("table.empty")}</TableEmptyRow>
+            ) : null}
+          </TableBody>
         </Table>
 
         <TablePagination

@@ -19,7 +19,9 @@ export function isRoutableChatPlatformModel(model: {
   activeSourceCount?: number | null;
   kindsJSON?: string | null;
 }): boolean {
-  if (!isRoutablePlatformModel(model)) return false;
+  if (!isRoutablePlatformModel(model)) {
+    return false;
+  }
   const kinds = parseKindsJSON(model.kindsJSON);
   return kinds.includes("chat");
 }

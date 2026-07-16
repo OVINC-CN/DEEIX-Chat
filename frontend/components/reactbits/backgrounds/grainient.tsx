@@ -31,7 +31,9 @@ interface GrainientProps {
 
 const hexToRgb = (hex: string): [number, number, number] => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  if (!result) return [1, 1, 1];
+  if (!result) {
+    return [1, 1, 1];
+  }
   return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
 };
 
@@ -163,7 +165,9 @@ const Grainient: React.FC<GrainientProps> = ({
 
   React.useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) {
+      return;
+    }
 
     const renderer = new Renderer({
       webgl: 2,
@@ -240,7 +244,9 @@ const Grainient: React.FC<GrainientProps> = ({
     };
 
     const tryStart = () => {
-      if (isVisible && isPageVisible && raf === 0) raf = requestAnimationFrame(loop);
+      if (isVisible && isPageVisible && raf === 0) {
+        raf = requestAnimationFrame(loop);
+      }
     };
     const tryStop = () => {
       if (raf !== 0) {
@@ -252,7 +258,11 @@ const Grainient: React.FC<GrainientProps> = ({
     const io = new IntersectionObserver(
       ([entry]) => {
         isVisible = entry.isIntersecting;
-        isVisible ? tryStart() : tryStop();
+        if (isVisible) {
+          tryStart();
+        } else {
+          tryStop();
+        }
       },
       { threshold: 0 },
     );
@@ -260,7 +270,11 @@ const Grainient: React.FC<GrainientProps> = ({
 
     const onVisibility = () => {
       isPageVisible = !document.hidden;
-      isPageVisible ? tryStart() : tryStop();
+      if (isPageVisible) {
+        tryStart();
+      } else {
+        tryStop();
+      }
     };
     document.addEventListener("visibilitychange", onVisibility);
 
@@ -282,9 +296,13 @@ const Grainient: React.FC<GrainientProps> = ({
 
   React.useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) {
+      return;
+    }
     const ctx = ctxMap.get(container);
-    if (!ctx) return;
+    if (!ctx) {
+      return;
+    }
     const { program } = ctx;
     const u = program.uniforms as Record<string, { value: unknown }>;
 

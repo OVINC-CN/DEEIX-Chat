@@ -284,49 +284,49 @@ export function PreviewSheet({ source, toolbarContainer, showLoading = true, onL
         {status === "ready" ? (
           <>
             <div ref={scrollRegionRef} className="min-h-0 flex-1 overflow-auto">
-                <div className="mx-auto flex min-w-full w-max justify-center px-1 pb-2">
+              <div className="mx-auto flex min-w-full w-max justify-center px-1 pb-2">
+                <div
+                  className="relative shrink-0"
+                  style={{
+                    width: contentWidth > 0 ? `${contentWidth * effectiveScale}px` : undefined,
+                    height: contentHeight > 0 ? `${contentHeight * effectiveScale}px` : undefined,
+                  }}
+                >
                   <div
-                    className="relative shrink-0"
                     style={{
-                      width: contentWidth > 0 ? `${contentWidth * effectiveScale}px` : undefined,
-                      height: contentHeight > 0 ? `${contentHeight * effectiveScale}px` : undefined,
+                      transform: `scale(${effectiveScale})`,
+                      transformOrigin: "top left",
+                      width: contentWidth > 0 ? `${contentWidth}px` : undefined,
                     }}
                   >
-                    <div
-                      style={{
-                        transform: `scale(${effectiveScale})`,
-                        transformOrigin: "top left",
-                        width: contentWidth > 0 ? `${contentWidth}px` : undefined,
-                      }}
-                    >
-                      <div ref={contentRef} className="w-max min-w-full">
-                        <table className="border-collapse text-[12.5px] leading-6">
-                          <tbody>
-                            {activeRows.map((row, rowIndex) => (
-                              <tr key={rowIndex} className="border-b border-border/30 align-top">
-                                {Array.from({ length: Math.max(columnCount, 1) }, (_, columnIndex) => {
-                                  const value = row[columnIndex] || "";
-                                  const isHeaderRow = rowIndex === 0;
-                                  return (
-                                    <td
-                                      key={`${rowIndex}-${columnIndex}`}
-                                      className={cn(
-                                        "min-w-[120px] max-w-[320px] border-r border-border/30 px-3 py-2 text-left align-top whitespace-pre-wrap break-words",
-                                        isHeaderRow ? "bg-muted/50 font-medium text-foreground" : "text-foreground/90",
-                                      )}
-                                    >
-                                      {value || " "}
-                                    </td>
-                                  );
-                                })}
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                    <div ref={contentRef} className="w-max min-w-full">
+                      <table className="border-collapse text-[12.5px] leading-6">
+                        <tbody>
+                          {activeRows.map((row, rowIndex) => (
+                            <tr key={rowIndex} className="border-b border-border/30 align-top">
+                              {Array.from({ length: Math.max(columnCount, 1) }, (_, columnIndex) => {
+                                const value = row[columnIndex] || "";
+                                const isHeaderRow = rowIndex === 0;
+                                return (
+                                  <td
+                                    key={`${rowIndex}-${columnIndex}`}
+                                    className={cn(
+                                      "min-w-[120px] max-w-[320px] border-r border-border/30 px-3 py-2 text-left align-top whitespace-pre-wrap break-words",
+                                      isHeaderRow ? "bg-muted/50 font-medium text-foreground" : "text-foreground/90",
+                                    )}
+                                  >
+                                    {value || " "}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
+              </div>
             </div>
 
             {workbook.sheetNames.length > 0 ? (

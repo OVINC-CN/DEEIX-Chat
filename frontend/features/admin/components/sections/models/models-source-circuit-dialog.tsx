@@ -58,7 +58,9 @@ export function ModelSourceCircuitDialog({
   const stableSource = useDialogSnapshot(source);
 
   React.useEffect(() => {
-    if (!source) return;
+    if (!source) {
+      return;
+    }
     setDraft({
       cbFailureThreshold: String(source.cbFailureThreshold ?? 0),
       cbDurationMin: String(source.cbDurationMin ?? 0),

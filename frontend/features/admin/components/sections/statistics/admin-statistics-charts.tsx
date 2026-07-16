@@ -52,7 +52,9 @@ function chartMetricValue(
   billingDisplay: BillingDisplayOptions,
 ): number {
   const value = rawMetricValue(metrics, rankBy);
-  if (rankBy !== "cost") return value;
+  if (rankBy !== "cost") {
+    return value;
+  }
   if (billingDisplay.currency === "CNY" && Number(billingDisplay.usdToCnyRate) > 0) {
     return value * Number(billingDisplay.usdToCnyRate);
   }
@@ -63,13 +65,19 @@ function rawMetricValue(
   metrics: AdminUsageStatisticsMetricsDTO,
   rankBy: AdminUsageStatisticsRankBy,
 ): number {
-  if (rankBy === "tokens") return metrics.totalTokens;
-  if (rankBy === "calls") return metrics.callCount;
+  if (rankBy === "tokens") {
+    return metrics.totalTokens;
+  }
+  if (rankBy === "calls") {
+    return metrics.callCount;
+  }
   return metrics.billedUSD;
 }
 
 function compactNumber(value: number, locale: string): string {
-  if (!Number.isFinite(value) || value === 0) return "0";
+  if (!Number.isFinite(value) || value === 0) {
+    return "0";
+  }
   return new Intl.NumberFormat(locale, {
     notation: "compact",
     maximumFractionDigits: 1,
@@ -82,7 +90,9 @@ function chartAxisValue(
   billingDisplay: BillingDisplayOptions,
   locale: string,
 ): string {
-  if (rankBy !== "cost") return compactNumber(value, locale);
+  if (rankBy !== "cost") {
+    return compactNumber(value, locale);
+  }
   const symbol = billingDisplay.currency === "CNY" && Number(billingDisplay.usdToCnyRate) > 0 ? "¥" : "$";
   return `${symbol}${value.toLocaleString("en-US", {
     minimumFractionDigits: 2,
@@ -91,14 +101,20 @@ function chartAxisValue(
 }
 
 function formatLatency(value: number, locale: string): string {
-  if (!Number.isFinite(value) || value <= 0) return "0";
-  if (value < 1000) return `${Math.round(value).toLocaleString(locale)}ms`;
+  if (!Number.isFinite(value) || value <= 0) {
+    return "0";
+  }
+  if (value < 1000) {
+    return `${Math.round(value).toLocaleString(locale)}ms`;
+  }
   return `${(value / 1000).toLocaleString(locale, { maximumFractionDigits: 2 })}s`;
 }
 
 function parsePeriodDate(value: string): Date | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
-  if (!match) return null;
+  if (!match) {
+    return null;
+  }
   const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
   return Number.isNaN(date.getTime()) ? null : date;
 }
@@ -111,7 +127,9 @@ function periodLabels(
   rangeEndDate?: string,
 ): { short: string; full: string } {
   const date = parsePeriodDate(value);
-  if (!date) return { short: "-", full: "-" };
+  if (!date) {
+    return { short: "-", full: "-" };
+  }
   if (granularity === "week") {
     const selectedStart = rangeStartDate ? parsePeriodDate(rangeStartDate) : null;
     const selectedEnd = rangeEndDate ? parsePeriodDate(rangeEndDate) : null;
@@ -153,7 +171,9 @@ function StatisticsTooltipContent({
   const locale = useLocale();
   const item = payload?.[0]?.payload;
   const metrics = item?.metrics;
-  if (!active || !metrics) return null;
+  if (!active || !metrics) {
+    return null;
+  }
   return (
     <div className="grid min-w-[12rem] gap-2 rounded-md border border-border/60 bg-background px-3 py-2 text-xs shadow-md">
       <p className="font-medium">{item.fullLabel || label}</p>
@@ -195,8 +215,11 @@ function useHiddenChartSeries() {
   const toggleSeries = React.useCallback((id: string) => {
     setHiddenSeries((current) => {
       const next = new Set(current);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   }, []);
@@ -253,7 +276,9 @@ export const StatisticsTrendChart = React.memo(function StatisticsTrendChart({
     { id: "avgLatencyMS", label: t("metrics.latency"), color: "var(--chart-2)" },
   ], [rankBy, t]);
 
-  if (loading) return <ChartLoadingSkeleton />;
+  if (loading) {
+    return <ChartLoadingSkeleton />;
+  }
   if (!loading && !hasData) {
     return <div className="flex h-[300px] items-center justify-center text-xs text-muted-foreground">{t("empty")}</div>;
   }
@@ -266,71 +291,71 @@ export const StatisticsTrendChart = React.memo(function StatisticsTrendChart({
           margin={{ top: 12, right: 12, left: 4, bottom: 0 }}
           onMouseDown={(_, event) => event.preventDefault()}
         >
-        <defs>
-          <linearGradient id="fillUsageTrendMetric" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--color-metricValue)" stopOpacity={0.3} />
-            <stop offset="95%" stopColor="var(--color-metricValue)" stopOpacity={0.02} />
-          </linearGradient>
-        </defs>
-        <CartesianGrid vertical={false} strokeDasharray="3 3" />
-        <XAxis
-          dataKey="label"
-          axisLine={false}
-          tickLine={false}
-          tickMargin={8}
-          minTickGap={24}
-          interval="equidistantPreserveStart"
-        />
-        <YAxis
-          yAxisId="metric"
-          width={64}
-          axisLine={false}
-          tickLine={false}
-          tickMargin={6}
-          tickFormatter={(value: number) => chartAxisValue(value, rankBy, billingDisplay, locale)}
-        />
-        <YAxis
-          yAxisId="latency"
-          orientation="right"
-          width={52}
-          axisLine={false}
-          tickLine={false}
-          tickMargin={6}
-          tickFormatter={(value: number) => formatLatency(value, locale)}
-        />
-        <ChartTooltip
-          cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
-          content={<StatisticsTooltipContent billingDisplay={billingDisplay} />}
-        />
-        <Area
-          yAxisId="metric"
-          dataKey="metricValue"
-          type="monotone"
-          fill="url(#fillUsageTrendMetric)"
-          fillOpacity={1}
-          stroke="var(--color-metricValue)"
-          strokeWidth={2}
-          dot={false}
-          activeDot={{ r: 3, strokeWidth: 2 }}
-          isAnimationActive
-          animationDuration={CHART_ANIMATION_DURATION_MS}
-          animationEasing="ease-out"
-          hide={hiddenSeries.has("metricValue")}
-        />
-        <Line
-          yAxisId="latency"
-          dataKey="avgLatencyMS"
-          type="monotone"
-          stroke="var(--color-avgLatencyMS)"
-          strokeWidth={1.5}
-          strokeDasharray="4 4"
-          dot={false}
-          activeDot={{ r: 2.5, strokeWidth: 1.5 }}
-          isAnimationActive
-          animationDuration={CHART_ANIMATION_DURATION_MS}
-          animationEasing="ease-out"
-          hide={hiddenSeries.has("avgLatencyMS")}
-        />
+          <defs>
+            <linearGradient id="fillUsageTrendMetric" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="var(--color-metricValue)" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="var(--color-metricValue)" stopOpacity={0.02} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <XAxis
+            dataKey="label"
+            axisLine={false}
+            tickLine={false}
+            tickMargin={8}
+            minTickGap={24}
+            interval="equidistantPreserveStart"
+          />
+          <YAxis
+            yAxisId="metric"
+            width={64}
+            axisLine={false}
+            tickLine={false}
+            tickMargin={6}
+            tickFormatter={(value: number) => chartAxisValue(value, rankBy, billingDisplay, locale)}
+          />
+          <YAxis
+            yAxisId="latency"
+            orientation="right"
+            width={52}
+            axisLine={false}
+            tickLine={false}
+            tickMargin={6}
+            tickFormatter={(value: number) => formatLatency(value, locale)}
+          />
+          <ChartTooltip
+            cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+            content={<StatisticsTooltipContent billingDisplay={billingDisplay} />}
+          />
+          <Area
+            yAxisId="metric"
+            dataKey="metricValue"
+            type="monotone"
+            fill="url(#fillUsageTrendMetric)"
+            fillOpacity={1}
+            stroke="var(--color-metricValue)"
+            strokeWidth={2}
+            dot={false}
+            activeDot={{ r: 3, strokeWidth: 2 }}
+            isAnimationActive
+            animationDuration={CHART_ANIMATION_DURATION_MS}
+            animationEasing="ease-out"
+            hide={hiddenSeries.has("metricValue")}
+          />
+          <Line
+            yAxisId="latency"
+            dataKey="avgLatencyMS"
+            type="monotone"
+            stroke="var(--color-avgLatencyMS)"
+            strokeWidth={1.5}
+            strokeDasharray="4 4"
+            dot={false}
+            activeDot={{ r: 2.5, strokeWidth: 1.5 }}
+            isAnimationActive
+            animationDuration={CHART_ANIMATION_DURATION_MS}
+            animationEasing="ease-out"
+            hide={hiddenSeries.has("avgLatencyMS")}
+          />
         </ComposedChart>
       </ChartContainer>
       <ChartInteractiveLegend items={legendItems} hiddenSeries={hiddenSeries} onToggle={toggleSeries} />
@@ -374,7 +399,9 @@ function formatStackedMetricValue(
   billingDisplay: BillingDisplayOptions,
   locale: string,
 ): string {
-  if (rankBy === "cost") return displayCost(value, billingDisplay);
+  if (rankBy === "cost") {
+    return displayCost(value, billingDisplay);
+  }
   return new Intl.NumberFormat(locale).format(value);
 }
 
@@ -394,9 +421,13 @@ function StatisticsStackedTooltipContent({
   const t = useTranslations("adminStatistics");
   const locale = useLocale();
   const item = payload?.[0]?.payload;
-  if (!active || !item) return null;
+  if (!active || !item) {
+    return null;
+  }
   const segments = item.segments.filter((segment) => segment.rawValue > 0 && !hiddenSeries.has(segment.id));
-  if (segments.length === 0) return null;
+  if (segments.length === 0) {
+    return null;
+  }
   return (
     <div className="grid min-w-[15rem] max-w-[22rem] gap-2 rounded-md border border-border/60 bg-background px-3 py-2.5 text-xs shadow-md">
       <p className="font-medium">{item.fullLabel}</p>
@@ -479,7 +510,9 @@ function StatisticsStackedTrendChart({
           totalRawValue: segments.reduce((total, segment) => total + segment.rawValue, 0),
           segments,
         };
-        for (const segment of segments) point[segment.key] = segment.chartValue;
+        for (const segment of segments) {
+          point[segment.key] = segment.chartValue;
+        }
         return point;
       });
       return points;
@@ -495,7 +528,9 @@ function StatisticsStackedTrendChart({
     () => [...series].reverse().find((item) => !hiddenSeries.has(item.id))?.id,
     [hiddenSeries, series],
   );
-  if (loading) return <ChartLoadingSkeleton />;
+  if (loading) {
+    return <ChartLoadingSkeleton />;
+  }
   if (!loading && !hasData) {
     return <div className="flex h-[300px] items-center justify-center text-xs text-muted-foreground">{t("empty")}</div>;
   }

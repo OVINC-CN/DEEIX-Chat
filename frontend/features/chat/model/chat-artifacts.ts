@@ -132,8 +132,8 @@ body {
 
 function previewHead(title: string): string {
   return [
-    `<meta charset="utf-8">`,
-    `<meta name="viewport" content="width=device-width, initial-scale=1">`,
+    "<meta charset=\"utf-8\">",
+    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
     `<meta http-equiv="Content-Security-Policy" content="${ARTIFACT_CSP}">`,
     `<title>${escapeHTML(title)}</title>`,
     artifactPreviewResetStyle(),
@@ -148,11 +148,11 @@ function htmlPreviewDocument(code: string): string {
   const body = bodyMatch
     ? bodyMatch[1]
     : code
-        .replace(DOCTYPE_RE, "")
-        .replace(HTML_OPEN_RE, "")
-        .replace(HTML_CLOSE_RE, "")
-        .replace(HEAD_BLOCK_RE, "")
-        .trim();
+      .replace(DOCTYPE_RE, "")
+      .replace(HTML_OPEN_RE, "")
+      .replace(HTML_CLOSE_RE, "")
+      .replace(HEAD_BLOCK_RE, "")
+      .trim();
 
   return `<!doctype html><html><head>${safeHead}${userHead}</head><body>${body}</body></html>`;
 }
@@ -224,14 +224,22 @@ body { margin: 0; font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "
 }
 
 export function buildArtifactPreviewDocument(kind: ArtifactPreviewKind, code: string): string {
-  if (kind === "css") return cssPreviewDocument(code);
-  if (kind === "javascript") return javascriptPreviewDocument(code);
+  if (kind === "css") {
+    return cssPreviewDocument(code);
+  }
+  if (kind === "javascript") {
+    return javascriptPreviewDocument(code);
+  }
   return htmlPreviewDocument(code);
 }
 
 export function resolveArtifactDownloadName(kind: ArtifactPreviewKind): string {
-  if (kind === "css") return "artifact-css-preview.html";
-  if (kind === "javascript") return "artifact-js-preview.html";
+  if (kind === "css") {
+    return "artifact-css-preview.html";
+  }
+  if (kind === "javascript") {
+    return "artifact-js-preview.html";
+  }
   return "artifact-preview.html";
 }
 

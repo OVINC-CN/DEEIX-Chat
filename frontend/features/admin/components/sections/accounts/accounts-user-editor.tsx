@@ -54,7 +54,6 @@ import { AdminDateTimePicker } from "@/features/admin/components/admin-date-time
 import type { UserDTO } from "@/shared/api/auth.types";
 import type { AdminUserRole, AdminUserStatus } from "@/features/admin/api/admin.types";
 import {
-  COMPACT_COMBOBOX_CLASSNAME,
   USER_STATUS_OPTIONS,
   type CreateUserPayload,
   type EditUserPayload,
@@ -432,7 +431,7 @@ export function EditUserSheet({
                 <AvatarFallback className="bg-foreground text-lg font-medium text-background">
                   {editDialogTarget ? resolveUserInitial(editDialogTarget) : "U"}
                 </AvatarFallback>
-              </Avatar>  
+              </Avatar>
             </Button>
             <div className="min-w-0 text-xs truncate">
               <p className="flex items-center gap-2 font-semibold">
@@ -489,17 +488,17 @@ export function EditUserSheet({
               </div>
             </div>
             <div className="space-y-1">
-                <Label className="text-xs font-normal text-muted-foreground">{t("editor.preferences")}</Label>
-                <Textarea
-                  value={editPayload.profilePreferences}
-                  onChange={(event) =>
-                    setEditPayload((current) => ({ ...current, profilePreferences: event.target.value }))
-                  }
-                  disabled={pending}
-                  placeholder={t("editor.preferencesPlaceholder")}
-                  className="h-24 resize-none overflow-y-auto [field-sizing:fixed]"
-                />
-              </div>
+              <Label className="text-xs font-normal text-muted-foreground">{t("editor.preferences")}</Label>
+              <Textarea
+                value={editPayload.profilePreferences}
+                onChange={(event) =>
+                  setEditPayload((current) => ({ ...current, profilePreferences: event.target.value }))
+                }
+                disabled={pending}
+                placeholder={t("editor.preferencesPlaceholder")}
+                className="h-24 resize-none overflow-y-auto [field-sizing:fixed]"
+              />
+            </div>
           </SheetSection>
 
           <SheetSection title={t("editor.accessSection")}>

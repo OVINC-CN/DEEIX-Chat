@@ -25,6 +25,10 @@ import { patchByID, replaceByID, upsertByID } from "@/shared/lib/optimistic-list
 
 const FILES_PAGE_SIZE = 100;
 
+function fileIDOf(file: FileObjectDTO): string {
+  return file.fileID;
+}
+
 type FilesMobileView = "list" | "detail";
 type FileContentTab = "preview" | "extract";
 
@@ -272,13 +276,12 @@ export function useFilesPage(): UseFilesPageResult {
           toast.error(t("toasts.listLoadFailed"), { id: "files-list-load-error", description });
         }
       } finally {
-        if (!isMountedRef.current || !isLatestRequest()) {
-          return;
+        if (isMountedRef.current && isLatestRequest()) {
+          hasLoadedOnceRef.current = true;
+          setLoading(false);
+          setLoadingMore(false);
+          setSyncing(false);
         }
-        hasLoadedOnceRef.current = true;
-        setLoading(false);
-        setLoadingMore(false);
-        setSyncing(false);
       }
     },
     [debouncedQuery, ensureAccessToken, filterKeys, resolveErrorMessage, sortKey, t],
@@ -393,7 +396,7 @@ export function useFilesPage(): UseFilesPageResult {
             });
           setFiles((current) => {
             const next = nextUploadedFiles.reduce(
-              (list, item) => upsertByID(list, item, (file) => file.fileID),
+              (list, item) => upsertByID(list, item, fileIDOf),
               current,
             );
             filesRef.current = next;
@@ -531,7 +534,7 @@ export function useFilesPage(): UseFilesPageResult {
             failedCount += 1;
           }
         }
-      }
+      },
     });
 
     if (latestQuota) {

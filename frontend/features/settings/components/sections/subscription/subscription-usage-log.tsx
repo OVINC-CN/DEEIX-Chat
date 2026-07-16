@@ -143,7 +143,9 @@ type BillingServiceItemSnapshot = {
 };
 
 function parsePricingSnapshot(value: string): BillingPricingSnapshot {
-  if (!value) return {};
+  if (!value) {
+    return {};
+  }
   try {
     const parsed = JSON.parse(value) as unknown;
     return parsed && typeof parsed === "object" ? (parsed as BillingPricingSnapshot) : {};
@@ -158,12 +160,16 @@ function readSnapshotNumber(snapshot: BillingPricingSnapshot, key: keyof Billing
 }
 
 function calcTokenBilledNanousd(tokens: number, rateNanousd: number): number {
-  if (!Number.isFinite(tokens) || !Number.isFinite(rateNanousd) || tokens <= 0 || rateNanousd <= 0) return 0;
+  if (!Number.isFinite(tokens) || !Number.isFinite(rateNanousd) || tokens <= 0 || rateNanousd <= 0) {
+    return 0;
+  }
   return Math.round((tokens * rateNanousd) / 1_000_000);
 }
 
 function normalizePricingMode(value: string | null | undefined): "token" | "call" | "duration" | "tiered" {
-  if (value === "call" || value === "duration" || value === "tiered") return value;
+  if (value === "call" || value === "duration" || value === "tiered") {
+    return value;
+  }
   return "token";
 }
 
@@ -174,8 +180,12 @@ function resolveTokenBilledNanousd(snapshot: BillingPricingSnapshot, billedKey: 
 
 function resolveCountBilledNanousd(snapshot: BillingPricingSnapshot, billedKey: keyof BillingPricingSnapshot, count: number, rateNanousd: number): number {
   const billed = readSnapshotNumber(snapshot, billedKey);
-  if (billed > 0) return billed;
-  if (!Number.isFinite(count) || !Number.isFinite(rateNanousd) || count <= 0 || rateNanousd <= 0) return 0;
+  if (billed > 0) {
+    return billed;
+  }
+  if (!Number.isFinite(count) || !Number.isFinite(rateNanousd) || count <= 0 || rateNanousd <= 0) {
+    return 0;
+  }
   return Math.round(count * rateNanousd);
 }
 
@@ -285,13 +295,17 @@ function buildUsageLogDisplayRows(items: BillingUsageLedgerDTO[]): UsageLogDispl
   for (const serviceLedger of serviceLedgers) {
     const serviceSnapshot = parsePricingSnapshot(serviceLedger.pricingSnapshotJSON);
     const serviceItems = readServiceItems(serviceSnapshot);
-    if (serviceItems.length === 0) continue;
+    if (serviceItems.length === 0) {
+      continue;
+    }
     const serviceTime = new Date(serviceLedger.createdAt || serviceLedger.usageDate).getTime();
     let matchedIndex = -1;
     let matchedDistance = Number.POSITIVE_INFINITY;
     for (let index = 0; index < rows.length; index += 1) {
       const row = rows[index];
-      if (row.item.conversationID !== serviceLedger.conversationID) continue;
+      if (row.item.conversationID !== serviceLedger.conversationID) {
+        continue;
+      }
       const rowTime = new Date(row.item.createdAt || row.item.usageDate).getTime();
       const distance = Math.abs((Number.isFinite(serviceTime) ? serviceTime : 0) - (Number.isFinite(rowTime) ? rowTime : 0));
       if (distance < matchedDistance) {
@@ -622,22 +636,22 @@ export function SubscriptionUsageLog({
           {showRows ? <VirtualTablePaddingRow colSpan={5} height={virtualRows.paddingTop} /> : null}
           {showRows
             ? virtualRows.rows.map(({ item: row }) => (
-                <TableRow key={row.item.id}>
-                  <TableCell className="text-xs text-muted-foreground">{formatUsageLogTime(row.item.createdAt || row.item.usageDate, locale)}</TableCell>
-                  <TableCell className="w-[10rem] max-w-[10rem] text-xs font-medium">
-                    <div className="truncate" title={modelDisplayLabel(row.item)}>
-                      {modelDisplayLabel(row.item)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-xs">
-                    <BaseBillingSummary items={row.baseServiceItems} billingDisplay={billingDisplay} />
-                  </TableCell>
-                  <TableCell className="text-xs">
-                    <ServiceBillingSummary item={row.item} billingDisplay={billingDisplay} />
-                  </TableCell>
-                  <TableCell className="text-right text-xs text-muted-foreground">{formatLatency(row.item.latencyMS)}</TableCell>
-                </TableRow>
-              ))
+              <TableRow key={row.item.id}>
+                <TableCell className="text-xs text-muted-foreground">{formatUsageLogTime(row.item.createdAt || row.item.usageDate, locale)}</TableCell>
+                <TableCell className="w-[10rem] max-w-[10rem] text-xs font-medium">
+                  <div className="truncate" title={modelDisplayLabel(row.item)}>
+                    {modelDisplayLabel(row.item)}
+                  </div>
+                </TableCell>
+                <TableCell className="text-xs">
+                  <BaseBillingSummary items={row.baseServiceItems} billingDisplay={billingDisplay} />
+                </TableCell>
+                <TableCell className="text-xs">
+                  <ServiceBillingSummary item={row.item} billingDisplay={billingDisplay} />
+                </TableCell>
+                <TableCell className="text-right text-xs text-muted-foreground">{formatLatency(row.item.latencyMS)}</TableCell>
+              </TableRow>
+            ))
             : null}
           {showRows ? <VirtualTablePaddingRow colSpan={5} height={virtualRows.paddingBottom} /> : null}
         </TableBody>

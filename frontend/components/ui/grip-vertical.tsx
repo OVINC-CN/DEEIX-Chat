@@ -54,7 +54,7 @@ const GripVerticalIcon = forwardRef<GripVerticalIconHandle, GripVerticalIconProp
         </svg>
       </div>
     );
-  }
+  },
 );
 
 GripVerticalIcon.displayName = "GripVerticalIcon";

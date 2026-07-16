@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ArrowRight, ChevronDown, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import { ArrowRight, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
@@ -143,7 +143,9 @@ export function AdminLoginSettingsPage() {
     for (const group of loginSettingsGroups) {
       for (const field of group.fields) {
         const id = fieldID(field);
-        if ((settingsMap[id] ?? "") !== (savedMap[id] ?? "")) result.add(id);
+        if ((settingsMap[id] ?? "") !== (savedMap[id] ?? "")) {
+          result.add(id);
+        }
       }
     }
     return result;
@@ -174,10 +176,18 @@ export function AdminLoginSettingsPage() {
   }, [t]);
 
   const isFieldDisabled = React.useCallback((field: LoginSettingsField) => {
-    if (loading || saving) return true;
-    if (field.key === "email_registration_enabled" && settingsMap["auth.email_login_enabled"] === "false") return true;
-    if (field.key === "password_reset_enabled" && settingsMap["auth.email_verification_enabled"] === "false") return true;
-    if (field.key === "turnstile_registration_enabled" && settingsMap["auth.email_registration_enabled"] === "false") return true;
+    if (loading || saving) {
+      return true;
+    }
+    if (field.key === "email_registration_enabled" && settingsMap["auth.email_login_enabled"] === "false") {
+      return true;
+    }
+    if (field.key === "password_reset_enabled" && settingsMap["auth.email_verification_enabled"] === "false") {
+      return true;
+    }
+    if (field.key === "turnstile_registration_enabled" && settingsMap["auth.email_registration_enabled"] === "false") {
+      return true;
+    }
     return false;
   }, [loading, saving, settingsMap]);
 
@@ -225,7 +235,9 @@ export function AdminLoginSettingsPage() {
       const items: PatchSettingItem[] = group.fields
         .map((field) => ({ namespace: field.namespace, key: field.key, value: nextSettingsMap[fieldID(field)] ?? "" }))
         .filter((item) => item.value !== (savedMap[`${item.namespace}.${item.key}`] ?? ""));
-      if (items.length === 0) return;
+      if (items.length === 0) {
+        return;
+      }
       setSaving(true);
       try {
         const token = await resolveAccessToken();
@@ -273,7 +285,9 @@ export function AdminLoginSettingsPage() {
     setSaving(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       const payload = {
         ...providerForm,
         registrationEnabled: providerForm.loginEnabled && providerForm.registrationEnabled,
@@ -298,7 +312,9 @@ export function AdminLoginSettingsPage() {
     setSaving(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       await deleteAdminIdentityProvider(token, provider.publicID, { force });
       setProviders((prev) => prev.filter((item) => item.publicID !== provider.publicID));
       setDeleteProviderTarget(null);
@@ -686,7 +702,9 @@ export function AdminLoginSettingsPage() {
                 onValueChange={(value) => {
                   const type = value as "oidc" | "oauth2";
                   setProviderForm((prev) => ({ ...prev, type }));
-                  if (type === "oidc") setOidcEndpointMode(providerForm.discoveryURL ? "discovery" : "issuer");
+                  if (type === "oidc") {
+                    setOidcEndpointMode(providerForm.discoveryURL ? "discovery" : "issuer");
+                  }
                 }}
               >
                 <SelectTrigger><SelectValue /></SelectTrigger>

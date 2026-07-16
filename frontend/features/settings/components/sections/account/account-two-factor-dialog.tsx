@@ -287,7 +287,9 @@ export function TwoFactorDialog({
                   disabled={actionPending}
                   onClick={() => {
                     const currentCode = requireCurrentCode(false);
-                    if (!currentCode) return;
+                    if (!currentCode) {
+                      return;
+                    }
                     setActionPending(true);
                     void onRegenerateRecoveryCodes(currentCode).finally(() => setActionPending(false));
                   }}
@@ -330,7 +332,9 @@ export function TwoFactorDialog({
                 disabled={actionPending}
                 onClick={() => {
                   const currentCode = requireCurrentCode(false);
-                  if (!currentCode) return;
+                  if (!currentCode) {
+                    return;
+                  }
                   setActionPending(true);
                   void onRegenerateRecoveryCodes(currentCode).finally(() => setActionPending(false));
                 }}
@@ -352,7 +356,9 @@ export function TwoFactorDialog({
               disabled={setupExpired || actionPending}
               onClick={() => {
                 const currentCode = requireCurrentCode(true);
-                if (!currentCode) return;
+                if (!currentCode) {
+                  return;
+                }
                 setActionPending(true);
                 void onConfirmSetup(currentCode).finally(() => setActionPending(false));
               }}

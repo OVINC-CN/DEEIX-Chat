@@ -228,33 +228,87 @@ function detectModelFamilyIcon(value: string): string {
     return "";
   }
 
-  if (/\bclaude\b/i.test(value)) return "claude";
-  if (/\bnano-banana\b/i.test(value) || /\bgemini-(?:2\.5-flash|3\.1-flash|3-pro)-image\b/i.test(value)) return "nanobanana";
-  if (/\bgemma\b/i.test(value)) return "gemma";
-  if (/\bgemini\b/i.test(value) || /\bimagen\b/i.test(value) || /\bveo\b/i.test(value)) return "gemini";
-  if (/\bllama\b/i.test(value)) return "meta";
-  if (/\bphi(?:-[a-z0-9.]+)?\b/i.test(value)) return "microsoft";
-  if (/\bnova\b/i.test(value)) return "nova";
-  if (/\btitan\b/i.test(value) || /\bbedrock\b/i.test(value)) return "bedrock";
-  if (/\bnemotron\b/i.test(value)) return "nvidia";
-  if (/\bgrok\b/i.test(value)) return "grok";
-  if (/\bglm\b/i.test(value) || /\bchatglm\b/i.test(value)) return "chatglm";
-  if (/\bcogview\b/i.test(value)) return "cogview";
-  if (/\bkimi\b/i.test(value)) return "kimi";
-  if (/\bqwen/i.test(value) || /\bqwq\b/i.test(value) || /\bqvq\b/i.test(value)) return "qwen";
-  if (/\bdeepseek\b/i.test(value)) return "deepseek";
-  if (/\bdoubao\b/i.test(value) || /\bseed\b/i.test(value)) return "doubao";
-  if (/\bhunyuan\b/i.test(value)) return "hunyuan";
-  if (/\blongcat\b/i.test(value)) return "longcat";
-  if (/\bmistral\b/i.test(value) || /\bmixtral\b/i.test(value) || /\bcodestral\b/i.test(value) || /\bpixtral\b/i.test(value)) return "mistral";
-  if (/\bmimo\b/i.test(value)) return "xiaomimimo";
-  if (/\bspark\b/i.test(value)) return "spark";
-  if (/\bstep(?:-[a-z0-9.]+)?\b/i.test(value)) return "stepfun";
-  if (/\bbaichuan/i.test(value)) return "baichuan";
-  if (/\bernie\b/i.test(value) || /\bwenxin\b/i.test(value)) return "wenxin";
-  if (/\bdall-e\b/i.test(value)) return "dalle";
-  if (/\bsora\b/i.test(value)) return "sora";
-  if (/\bgpt\b/i.test(value) || /\bchatgpt\b/i.test(value) || /\bo[134]\b/i.test(value) || /\bcodex\b/i.test(value)) return "openai";
+  if (/\bclaude\b/i.test(value)) {
+    return "claude";
+  }
+  if (/\bnano-banana\b/i.test(value) || /\bgemini-(?:2\.5-flash|3\.1-flash|3-pro)-image\b/i.test(value)) {
+    return "nanobanana";
+  }
+  if (/\bgemma\b/i.test(value)) {
+    return "gemma";
+  }
+  if (/\bgemini\b/i.test(value) || /\bimagen\b/i.test(value) || /\bveo\b/i.test(value)) {
+    return "gemini";
+  }
+  if (/\bllama\b/i.test(value)) {
+    return "meta";
+  }
+  if (/\bphi(?:-[a-z0-9.]+)?\b/i.test(value)) {
+    return "microsoft";
+  }
+  if (/\bnova\b/i.test(value)) {
+    return "nova";
+  }
+  if (/\btitan\b/i.test(value) || /\bbedrock\b/i.test(value)) {
+    return "bedrock";
+  }
+  if (/\bnemotron\b/i.test(value)) {
+    return "nvidia";
+  }
+  if (/\bgrok\b/i.test(value)) {
+    return "grok";
+  }
+  if (/\bglm\b/i.test(value) || /\bchatglm\b/i.test(value)) {
+    return "chatglm";
+  }
+  if (/\bcogview\b/i.test(value)) {
+    return "cogview";
+  }
+  if (/\bkimi\b/i.test(value)) {
+    return "kimi";
+  }
+  if (/\bqwen/i.test(value) || /\bqwq\b/i.test(value) || /\bqvq\b/i.test(value)) {
+    return "qwen";
+  }
+  if (/\bdeepseek\b/i.test(value)) {
+    return "deepseek";
+  }
+  if (/\bdoubao\b/i.test(value) || /\bseed\b/i.test(value)) {
+    return "doubao";
+  }
+  if (/\bhunyuan\b/i.test(value)) {
+    return "hunyuan";
+  }
+  if (/\blongcat\b/i.test(value)) {
+    return "longcat";
+  }
+  if (/\bmistral\b/i.test(value) || /\bmixtral\b/i.test(value) || /\bcodestral\b/i.test(value) || /\bpixtral\b/i.test(value)) {
+    return "mistral";
+  }
+  if (/\bmimo\b/i.test(value)) {
+    return "xiaomimimo";
+  }
+  if (/\bspark\b/i.test(value)) {
+    return "spark";
+  }
+  if (/\bstep(?:-[a-z0-9.]+)?\b/i.test(value)) {
+    return "stepfun";
+  }
+  if (/\bbaichuan/i.test(value)) {
+    return "baichuan";
+  }
+  if (/\bernie\b/i.test(value) || /\bwenxin\b/i.test(value)) {
+    return "wenxin";
+  }
+  if (/\bdall-e\b/i.test(value)) {
+    return "dalle";
+  }
+  if (/\bsora\b/i.test(value)) {
+    return "sora";
+  }
+  if (/\bgpt\b/i.test(value) || /\bchatgpt\b/i.test(value) || /\bo[134]\b/i.test(value) || /\bcodex\b/i.test(value)) {
+    return "openai";
+  }
   return "";
 }
 
@@ -323,7 +377,6 @@ function chooseResolvedVendor(input: ModelIdentityInput): VendorCatalogItem | nu
 export function resolveModelIdentity(input: ModelIdentityInput): ResolvedModelIdentity {
   const resolvedVendor = chooseResolvedVendor(input);
   const rawIcon = input.icon?.trim() ?? "";
-  const rawVendor = input.vendor?.trim() ?? "";
   const normalizedCode = normalizeValue(input.code);
   const detectedModelIcon = detectModelFamilyIcon(normalizedCode);
 

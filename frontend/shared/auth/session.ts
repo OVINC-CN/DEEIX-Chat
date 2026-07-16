@@ -82,8 +82,12 @@ function publishSessionSnapshotChanged(): void {
 function applySessionSnapshot(next: Partial<SessionSnapshot>, options: SessionSnapshotWriteOptions): void {
   const previousAccessToken = sessionSnapshot.accessToken;
   const previousSessionID = sessionSnapshot.sessionID;
-  if (typeof next.accessToken === "string") sessionSnapshot.accessToken = next.accessToken;
-  if (typeof next.sessionID === "string") sessionSnapshot.sessionID = next.sessionID;
+  if (typeof next.accessToken === "string") {
+    sessionSnapshot.accessToken = next.accessToken;
+  }
+  if (typeof next.sessionID === "string") {
+    sessionSnapshot.sessionID = next.sessionID;
+  }
   if (sessionSnapshot.accessToken !== previousAccessToken || sessionSnapshot.sessionID !== previousSessionID) {
     sessionRevision += 1;
     dispatchSessionSnapshotChanged();

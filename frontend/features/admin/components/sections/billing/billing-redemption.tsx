@@ -114,9 +114,13 @@ function datetimeLocalToISOString(value: string): string | null | undefined {
 
 function parseOptionalPositiveInt(value: string): number | null | undefined {
   const text = value.trim();
-  if (!text) return null;
+  if (!text) {
+    return null;
+  }
   const parsed = Number(text);
-  if (!Number.isInteger(parsed) || parsed <= 0) return undefined;
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    return undefined;
+  }
   return parsed;
 }
 
@@ -247,7 +251,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
     setSelectedRedemptionIDs((current) => {
       const next = new Set<number>();
       current.forEach((id) => {
-        if (visibleSet.has(id)) next.add(id);
+        if (visibleSet.has(id)) {
+          next.add(id);
+        }
       });
       return next.size === current.size ? current : next;
     });
@@ -338,7 +344,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
     setRedemptionBulkPending(true);
     try {
       const { results, failedCount } = await revealSelectedRedemptionCodes();
-      if (results.length === 0) return;
+      if (results.length === 0) {
+        return;
+      }
       const copied = await copy(results.map((result) => result.code).join("\n"), {
         key: "selected-redemption-codes",
         copied: t("toast.redemptionBulkCopied", { count: results.length }),
@@ -359,7 +367,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
     setRedemptionBulkPending(true);
     try {
       const { results, failedCount } = await revealSelectedRedemptionCodes();
-      if (results.length === 0) return;
+      if (results.length === 0) {
+        return;
+      }
       downloadJSONFile(redemptionCodesExportFilename(), {
         exportedAt: new Date().toISOString(),
         total: results.length,
@@ -395,7 +405,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
 
   async function applyRedemptionBulkStatus(status: "active" | "inactive") {
     const ids = Array.from(selectedRedemptionIDs);
-    if (ids.length === 0) return;
+    if (ids.length === 0) {
+      return;
+    }
     const previousRedemptionCodes = redemptionCodes;
     const idSet = new Set(ids);
     const updatedAt = new Date().toISOString();
@@ -438,7 +450,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
 
   async function setRedemptionCodeStatus(item: AdminRedemptionCodeDTO, checked: boolean) {
     const status = checked ? "active" : "inactive";
-    if (item.status === status) return;
+    if (item.status === status) {
+      return;
+    }
     const previousRedemptionCodes = redemptionCodes;
     const updatedAt = new Date().toISOString();
     setRedemptionCodes((current) => current.map((code) => (
@@ -466,7 +480,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
 
   async function deleteSelectedRedemptionCodes() {
     const ids = Array.from(selectedRedemptionIDs);
-    if (ids.length === 0) return;
+    if (ids.length === 0) {
+      return;
+    }
     const previousRedemptionCodes = redemptionCodes;
     const previousRedemptionTotal = redemptionTotal;
     const idSet = new Set(ids);
@@ -519,7 +535,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
   }
 
   async function deleteSingleRedemptionCode() {
-    if (!redemptionDeleteTarget) return;
+    if (!redemptionDeleteTarget) {
+      return;
+    }
     const target = redemptionDeleteTarget;
     const previousRedemptionCodes = redemptionCodes;
     const previousRedemptionTotal = redemptionTotal;
@@ -569,7 +587,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
 
   async function saveRedemptionCode(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
-    if (!redemptionForm) return;
+    if (!redemptionForm) {
+      return;
+    }
 
     const maxRedemptions = parseOptionalPositiveInt(redemptionForm.maxRedemptions);
     const perUserLimit = parseRequiredPositiveInt(redemptionForm.perUserLimit);
@@ -1248,7 +1268,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
       <AdminBulkConfirmDialog
         open={redemptionBulkAction !== null}
         onOpenChange={(open) => {
-          if (!open && !redemptionBulkPending) setRedemptionBulkAction(null);
+          if (!open && !redemptionBulkPending) {
+            setRedemptionBulkAction(null);
+          }
         }}
         pending={redemptionBulkPending}
         title={redemptionBulkConfirmTitle(stableRedemptionBulkAction)}
@@ -1261,7 +1283,9 @@ export function BillingRedemptionSection({ plans, billingMode, loading }: Billin
       <AdminBulkConfirmDialog
         open={redemptionDeleteTarget !== null}
         onOpenChange={(open) => {
-          if (!open && !redemptionBulkPending) setRedemptionDeleteTarget(null);
+          if (!open && !redemptionBulkPending) {
+            setRedemptionDeleteTarget(null);
+          }
         }}
         pending={redemptionBulkPending}
         title={t("redemption.deleteTitle")}

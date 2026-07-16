@@ -311,7 +311,7 @@ export async function completeProviderLogin(
 ): Promise<LoginData> {
   return apiRequest<LoginData>(`/api/v1/auth/providers/${pathParam(slug)}/callback`, {
     method: "POST",
-    body: { code, state, redirectURI: redirectURI, codeVerifier: codeVerifier, intent },
+    body: { code, state, redirectURI, codeVerifier, intent },
   });
 }
 
@@ -400,7 +400,7 @@ export async function completeProviderBind(
     {
       method: "POST",
       accessToken,
-      body: { code, state, redirectURI: redirectURI, codeVerifier: codeVerifier },
+      body: { code, state, redirectURI, codeVerifier },
     },
   );
 }

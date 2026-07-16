@@ -114,7 +114,9 @@ const CODE_TEXTAREA_CLASS = "font-mono text-xs placeholder:font-sans placeholder
 
 function apiKeysLinesToJson(lines: string): string {
   const keys = lines.split("\n").map((l) => l.trim()).filter(Boolean);
-  if (keys.length === 0) return "";
+  if (keys.length === 0) {
+    return "";
+  }
   return JSON.stringify({
     keys: keys.map((k) => ({ key: k, status: "active" })),
     strategy: "round_robin",
@@ -149,7 +151,9 @@ type MaskedAPIKeyItem = {
 };
 
 function normalizeAPIKeyItems(items: AdminLLMUpstreamAPIKey[] | undefined): MaskedAPIKeyItem[] {
-  if (!Array.isArray(items)) return [];
+  if (!Array.isArray(items)) {
+    return [];
+  }
   return items
     .filter((item) => item.id.trim() && Number.isInteger(item.index) && item.index >= 0 && item.keyMasked.trim())
     .map((item) => ({
@@ -171,10 +175,14 @@ function maskedAPIKeyItemsFromJson(json: string): MaskedAPIKeyItem[] {
         : [];
     return rawItems
       .map((item, index) => {
-        if (item === null || typeof item !== "object") return null;
+        if (item === null || typeof item !== "object") {
+          return null;
+        }
         const record = item as Record<string, unknown>;
         const keyMasked = typeof record.key === "string" ? record.key : "";
-        if (!keyMasked.trim()) return null;
+        if (!keyMasked.trim()) {
+          return null;
+        }
         return {
           id: "",
           index,
@@ -190,9 +198,13 @@ function maskedAPIKeyItemsFromJson(json: string): MaskedAPIKeyItem[] {
 }
 
 function maskedAPIKeyItems(target: AdminLLMUpstreamView | null): MaskedAPIKeyItem[] {
-  if (!target) return [];
+  if (!target) {
+    return [];
+  }
   const typedItems = normalizeAPIKeyItems(target.apiKeyItems);
-  if (typedItems.length > 0) return typedItems;
+  if (typedItems.length > 0) {
+    return typedItems;
+  }
   return maskedAPIKeyItemsFromJson(target.apiKeysMasked);
 }
 
@@ -408,42 +420,62 @@ export function UpstreamSheet({
         const nextBaseURL = form.baseUrl.trim();
         const deleteAPIKeyIDs = Array.from(pendingDeleteAPIKeyIDs).sort();
         const existingAPIKeys = maskedAPIKeyItems(target);
-        if (nextName !== target.name) payload.name = nextName;
-        if (nextBaseURL !== target.baseURL) payload.baseURL = nextBaseURL;
+        if (nextName !== target.name) {
+          payload.name = nextName;
+        }
+        if (nextBaseURL !== target.baseURL) {
+          payload.baseURL = nextBaseURL;
+        }
         const compatibleChanged = form.compatible !== target.compatible;
-        if (compatibleChanged) payload.compatible = form.compatible;
-        if (form.protocolDefaultsJson !== (target.protocolDefaultsJSON || "") || compatibleChanged)
+        if (compatibleChanged) {
+          payload.compatible = form.compatible;
+        }
+        if (form.protocolDefaultsJson !== (target.protocolDefaultsJSON || "") || compatibleChanged) {
           payload.protocolDefaultsJSON = form.protocolDefaultsJson.trim();
-        if (form.status !== target.status) payload.status = form.status;
-        if (form.connectTimeoutMs !== String(target.connectTimeoutMS ?? ""))
+        }
+        if (form.status !== target.status) {
+          payload.status = form.status;
+        }
+        if (form.connectTimeoutMs !== String(target.connectTimeoutMS ?? "")) {
           payload.connectTimeoutMS = form.connectTimeoutMs
             ? Number(form.connectTimeoutMs)
             : undefined;
-        if (form.readTimeoutMs !== String(target.readTimeoutMS ?? ""))
+        }
+        if (form.readTimeoutMs !== String(target.readTimeoutMS ?? "")) {
           payload.readTimeoutMS = form.readTimeoutMs
             ? Number(form.readTimeoutMs)
             : undefined;
-        if (form.streamIdleTimeoutMs !== String(target.streamIdleTimeoutMS ?? ""))
+        }
+        if (form.streamIdleTimeoutMs !== String(target.streamIdleTimeoutMS ?? "")) {
           payload.streamIdleTimeoutMS = form.streamIdleTimeoutMs
             ? Number(form.streamIdleTimeoutMs)
             : undefined;
-        if (form.cbFailureThreshold !== String(target.cbFailureThreshold ?? ""))
+        }
+        if (form.cbFailureThreshold !== String(target.cbFailureThreshold ?? "")) {
           payload.cbFailureThreshold =
             form.cbFailureThreshold !== "" ? Number(form.cbFailureThreshold) : undefined;
-        if (form.cbModelThreshold !== String(target.cbModelThreshold ?? ""))
+        }
+        if (form.cbModelThreshold !== String(target.cbModelThreshold ?? "")) {
           payload.cbModelThreshold =
             form.cbModelThreshold !== "" ? Number(form.cbModelThreshold) : undefined;
-        if (form.cbThresholdLogic !== (target.cbThresholdLogic ?? "or"))
+        }
+        if (form.cbThresholdLogic !== (target.cbThresholdLogic ?? "or")) {
           payload.cbThresholdLogic = form.cbThresholdLogic;
-        if (form.cbDurationMin !== String(target.cbDurationMin ?? ""))
+        }
+        if (form.cbDurationMin !== String(target.cbDurationMin ?? "")) {
           payload.cbDurationMin = form.cbDurationMin
             ? Number(form.cbDurationMin)
             : undefined;
-        if (form.cbWindowMin !== String(target.cbWindowMin ?? ""))
+        }
+        if (form.cbWindowMin !== String(target.cbWindowMin ?? "")) {
           payload.cbWindowMin = form.cbWindowMin ? Number(form.cbWindowMin) : undefined;
-        if (form.headersJson.trim() !== (target.headersJSON || ""))
+        }
+        if (form.headersJson.trim() !== (target.headersJSON || "")) {
           payload.headersJSON = form.headersJson.trim() || undefined;
-        if (apiKeysJson) payload.addAPIKeys = apiKeysJson;
+        }
+        if (apiKeysJson) {
+          payload.addAPIKeys = apiKeysJson;
+        }
         if (deleteAPIKeyIDs.length > 0) {
           const remainingActiveKeyCount = existingAPIKeys.filter(
             (item) => !pendingDeleteAPIKeyIDs.has(item.id) && isActiveAPIKeyItem(item),
@@ -806,7 +838,7 @@ export function UpstreamSheet({
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 pb-4 pt-0">
                   <JsonCodeEditor
-                    placeholder={`{"X-Custom-Header": "value"}`}
+                    placeholder={"{\"X-Custom-Header\": \"value\"}"}
                     value={form.headersJson}
                     height={220}
                     onChange={(nextValue) => setField("headersJson", nextValue)}
@@ -842,7 +874,9 @@ export function UpstreamSheet({
         <AlertDialog
           open={deleteAPIKeyTarget !== null}
           onOpenChange={(nextOpen) => {
-            if (!nextOpen) setDeleteAPIKeyTarget(null);
+            if (!nextOpen) {
+              setDeleteAPIKeyTarget(null);
+            }
           }}
         >
           <AlertDialogContent>
@@ -859,7 +893,9 @@ export function UpstreamSheet({
               <AlertDialogAction
                 variant="destructive"
                 onClick={() => {
-                  if (deleteAPIKeyTarget) markAPIKeyForDeletion(deleteAPIKeyTarget.id);
+                  if (deleteAPIKeyTarget) {
+                    markAPIKeyForDeletion(deleteAPIKeyTarget.id);
+                  }
                 }}
               >
                 {t("sheet.apiKeyDeleteConfirm")}

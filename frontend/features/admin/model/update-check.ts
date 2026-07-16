@@ -30,7 +30,9 @@ export function compareReleaseVersions(currentVersion: string, latestVersion: st
   const current = normalizeVersion(currentVersion);
   const latest = normalizeVersion(latestVersion);
 
-  if (!current || !latest) return "unknown";
+  if (!current || !latest) {
+    return "unknown";
+  }
 
   const currentParts = current.split(".").map((part) => Number.parseInt(part, 10));
   const latestParts = latest.split(".").map((part) => Number.parseInt(part, 10));
@@ -40,25 +42,37 @@ export function compareReleaseVersions(currentVersion: string, latestVersion: st
     const currentPart = currentParts[index] ?? 0;
     const latestPart = latestParts[index] ?? 0;
 
-    if (!Number.isFinite(currentPart) || !Number.isFinite(latestPart)) return "unknown";
-    if (latestPart > currentPart) return "available";
-    if (latestPart < currentPart) return "current";
+    if (!Number.isFinite(currentPart) || !Number.isFinite(latestPart)) {
+      return "unknown";
+    }
+    if (latestPart > currentPart) {
+      return "available";
+    }
+    if (latestPart < currentPart) {
+      return "current";
+    }
   }
 
   return "current";
 }
 
 export function resolveAvailableRelease(currentVersion: string, release: ReleaseInfo | null): ReleaseInfo | null {
-  if (!release) return null;
+  if (!release) {
+    return null;
+  }
   return compareReleaseVersions(currentVersion, release.version) === "available" ? release : null;
 }
 
 function parseReleaseSnapshot(raw: string | null): ReleaseInfo | null {
-  if (!raw) return null;
+  if (!raw) {
+    return null;
+  }
 
   try {
     const parsed = JSON.parse(raw) as Partial<ReleaseInfo>;
-    if (!parsed.version || !parsed.url) return null;
+    if (!parsed.version || !parsed.url) {
+      return null;
+    }
     return { version: parsed.version, url: parsed.url };
   } catch {
     return null;
@@ -66,10 +80,14 @@ function parseReleaseSnapshot(raw: string | null): ReleaseInfo | null {
 }
 
 export function getCachedLatestReleaseSnapshot(): ReleaseInfo | null {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined") {
+    return null;
+  }
 
   const raw = window.localStorage.getItem(LATEST_RELEASE_CACHE_KEY);
-  if (raw === cachedRawValue) return cachedSnapshot;
+  if (raw === cachedRawValue) {
+    return cachedSnapshot;
+  }
 
   cachedRawValue = raw;
   cachedSnapshot = parseReleaseSnapshot(raw);
@@ -81,7 +99,9 @@ export function getServerLatestReleaseSnapshot(): ReleaseInfo | null {
 }
 
 export function writeCachedLatestRelease(release: ReleaseInfo): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   const raw = JSON.stringify(release);
   try {
@@ -95,10 +115,14 @@ export function writeCachedLatestRelease(release: ReleaseInfo): void {
 }
 
 export function subscribeLatestReleaseChange(onStoreChange: () => void): () => void {
-  if (typeof window === "undefined") return () => {};
+  if (typeof window === "undefined") {
+    return () => {};
+  }
 
   const onStorage = (event: StorageEvent) => {
-    if (event.key === LATEST_RELEASE_CACHE_KEY) onStoreChange();
+    if (event.key === LATEST_RELEASE_CACHE_KEY) {
+      onStoreChange();
+    }
   };
 
   window.addEventListener(LATEST_RELEASE_CHANGED_EVENT, onStoreChange);

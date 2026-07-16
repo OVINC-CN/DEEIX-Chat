@@ -19,7 +19,6 @@ import {
   formatProviderPaymentAmountFromUSD,
   formatShortDate,
   isCurrentBillingPlan,
-  isFreePlan,
   planRank,
   resolveDefaultPrice,
   resolveEPayTypeLabel,
@@ -118,7 +117,9 @@ function ValueRow({
 }
 
 function entitlementTimeMS(value: string | null | undefined): number | null {
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
   const time = new Date(value).getTime();
   return Number.isFinite(time) ? time : null;
 }
@@ -140,7 +141,9 @@ function SubscriptionEntitlementQueue({
   const orderedItems = [...items].sort((left, right) => {
     const leftStart = entitlementTimeMS(left.currentPeriodStartAt || left.startAt) ?? 0;
     const rightStart = entitlementTimeMS(right.currentPeriodStartAt || right.startAt) ?? 0;
-    if (leftStart !== rightStart) return leftStart - rightStart;
+    if (leftStart !== rightStart) {
+      return leftStart - rightStart;
+    }
     return left.id - right.id;
   });
 

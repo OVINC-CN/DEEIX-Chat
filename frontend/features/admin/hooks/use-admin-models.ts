@@ -248,14 +248,14 @@ export function useAdminModels(): UseAdminModelsState {
       current.map((item) =>
         item.id === modelID
           ? {
-              ...item,
-              activeSourceCount: applySourceAvailabilityDelta(
-                item.activeSourceCount,
-                item.sourceCount,
-                previousAvailable,
-                nextAvailable,
-              ),
-            }
+            ...item,
+            activeSourceCount: applySourceAvailabilityDelta(
+              item.activeSourceCount,
+              item.sourceCount,
+              previousAvailable,
+              nextAvailable,
+            ),
+          }
           : item,
       ),
     );

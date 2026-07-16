@@ -1,10 +1,10 @@
-import { Loader2Icon } from "lucide-react"
+import { Loader2Icon } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import * as React from "react"
+import { cn } from "@/lib/utils";
+import * as React from "react";
 
 function Spinner({ className, label, ...props }: React.ComponentProps<"svg"> & { label?: string }) {
-  const accessibleLabel = label ?? props["aria-label"]
+  const accessibleLabel = label ?? props["aria-label"];
 
   return (
     <Loader2Icon
@@ -14,7 +14,7 @@ function Spinner({ className, label, ...props }: React.ComponentProps<"svg"> & {
       className={cn("size-4", className)}
       {...props}
     />
-  )
+  );
 }
 
 function SpinnerLabel({
@@ -23,7 +23,7 @@ function SpinnerLabel({
   children,
   ...props
 }: React.ComponentProps<"span"> & {
-  spinnerClassName?: string
+  spinnerClassName?: string;
 }) {
   return (
     <span
@@ -33,7 +33,7 @@ function SpinnerLabel({
       <Spinner className={cn("size-3.5", spinnerClassName)} />
       <span>{children}</span>
     </span>
-  )
+  );
 }
 
-export { Spinner, SpinnerLabel }
+export { Spinner, SpinnerLabel };

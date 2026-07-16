@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { MessageCircleMore as LucideMessageCircleMore } from 'lucide-react';
+import { MessageCircleMore as LucideMessageCircleMore } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type MessageCircleMoreProps = IconProps<string>;

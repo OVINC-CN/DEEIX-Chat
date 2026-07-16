@@ -137,10 +137,14 @@ function CollapsibleTableCell({
 }
 
 function formatCircuitUntil(until: string, locale: string): string {
-  if (!until) return "-";
+  if (!until) {
+    return "-";
+  }
   const ts = Number(until);
   const d = Number.isFinite(ts) && ts > 0 ? new Date(ts * 1000) : new Date(until);
-  if (Number.isNaN(d.getTime())) return until;
+  if (Number.isNaN(d.getTime())) {
+    return until;
+  }
   return new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "2-digit",
@@ -152,7 +156,9 @@ function formatCircuitUntil(until: string, locale: string): string {
 
 function ProtocolBadges({ protocols }: { protocols: string[] }) {
   const sortedProtocols = sortProtocolsForDisplay(protocols);
-  if (sortedProtocols.length === 0) return <span className="text-muted-foreground">-</span>;
+  if (sortedProtocols.length === 0) {
+    return <span className="text-muted-foreground">-</span>;
+  }
   return (
     <div className="flex min-w-0 flex-nowrap items-center gap-1">
       {sortedProtocols.map((item) => (
@@ -171,7 +177,9 @@ function SingleProtocolText({ protocol }: { protocol: string }) {
 function KindsBadges({ kindsJson }: { kindsJson: string | null | undefined }) {
   const t = useTranslations("adminModels");
   const kinds = parseKindsJSON(kindsJson);
-  if (kinds.length === 0) return <span className="text-muted-foreground">-</span>;
+  if (kinds.length === 0) {
+    return <span className="text-muted-foreground">-</span>;
+  }
   return (
     <div className="flex min-w-0 flex-nowrap items-center justify-start gap-1 overflow-hidden">
       {kinds.map((kind) => (
@@ -240,10 +248,10 @@ function SourceStatusText({
     modelStatus === "inactive"
       ? t("sources.platformModelInactive")
       : upstreamStatus === "inactive"
-      ? t("sources.upstreamInactive")
-      : upstreamModelStatus === "inactive"
-        ? t("sources.upstreamModelInactive")
-        : t("status.inactive");
+        ? t("sources.upstreamInactive")
+        : upstreamModelStatus === "inactive"
+          ? t("sources.upstreamModelInactive")
+          : t("status.inactive");
   if (circuitOpen) {
     return (
       <Tooltip>
@@ -777,15 +785,31 @@ export function ModelsTable({
 
   const clearCollapseTimer = React.useCallback((id: number) => {
     const timer = collapseTimersRef.current[id];
-    if (!timer) return;
+    if (!timer) {
+      return;
+    }
     window.clearTimeout(timer);
     delete collapseTimersRef.current[id];
   }, []);
 
   const clearOpenFrame = React.useCallback((id: number) => {
     const frame = openFramesRef.current[id];
-    if (!frame) return;
+    if (!frame) {
+      return;
+    }
     window.cancelAnimationFrame(frame);
+    delete openFramesRef.current[id];
+  }, []);
+
+  const finishOpeningRow = React.useCallback((id: number) => {
+    setOpeningRows((prev) => {
+      if (!prev.has(id)) {
+        return prev;
+      }
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
     delete openFramesRef.current[id];
   }, []);
 
@@ -805,15 +829,20 @@ export function ModelsTable({
   const handleSelectModel = React.useCallback((id: number, checked: boolean) => {
     onSelectedModelIDsChange((prev) => {
       const next = new Set(prev);
-      if (checked) next.add(id);
-      else next.delete(id);
+      if (checked) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
       return next;
     });
   }, [onSelectedModelIDsChange]);
 
   const refreshInlineSources = React.useCallback(async (modelId: number) => {
     const token = await resolveAccessToken();
-    if (!token) return;
+    if (!token) {
+      return;
+    }
     const data = await listAdminLLMModelUpstreamSources(token, modelId, {
       page: 1,
       pageSize: 100,
@@ -835,13 +864,17 @@ export function ModelsTable({
         clearCollapseTimer(item.id);
         clearOpenFrame(item.id);
         setOpeningRows((prev) => {
-          if (!prev.has(item.id)) return prev;
+          if (!prev.has(item.id)) {
+            return prev;
+          }
           const next = new Set(prev);
           next.delete(item.id);
           return next;
         });
         setExpandedRows((prev) => {
-          if (!prev.has(item.id)) return prev;
+          if (!prev.has(item.id)) {
+            return prev;
+          }
           const next = new Set(prev);
           next.delete(item.id);
           return next;
@@ -853,7 +886,9 @@ export function ModelsTable({
         });
         collapseTimersRef.current[item.id] = window.setTimeout(() => {
           setCollapsingRows((prev) => {
-            if (!prev.has(item.id)) return prev;
+            if (!prev.has(item.id)) {
+              return prev;
+            }
             const next = new Set(prev);
             next.delete(item.id);
             return next;
@@ -871,26 +906,24 @@ export function ModelsTable({
         return next;
       });
       setCollapsingRows((prev) => {
-        if (!prev.has(item.id)) return prev;
+        if (!prev.has(item.id)) {
+          return prev;
+        }
         const next = new Set(prev);
         next.delete(item.id);
         return next;
       });
       setExpandedRows((prev) => {
-        if (prev.has(item.id)) return prev;
+        if (prev.has(item.id)) {
+          return prev;
+        }
         const next = new Set(prev);
         next.add(item.id);
         return next;
       });
       openFramesRef.current[item.id] = window.requestAnimationFrame(() => {
         openFramesRef.current[item.id] = window.requestAnimationFrame(() => {
-          setOpeningRows((prev) => {
-            if (!prev.has(item.id)) return prev;
-            const next = new Set(prev);
-            next.delete(item.id);
-            return next;
-          });
-          delete openFramesRef.current[item.id];
+          finishOpeningRow(item.id);
         });
       });
 
@@ -919,7 +952,7 @@ export function ModelsTable({
         }
       }
     },
-    [clearCollapseTimer, clearOpenFrame, expandedRows, refreshInlineSources],
+    [clearCollapseTimer, clearOpenFrame, expandedRows, finishOpeningRow, refreshInlineSources],
   );
 
   const handleInlineCircuit = React.useCallback(
@@ -929,15 +962,17 @@ export function ModelsTable({
       action: "open" | "reset",
     ) => {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       const nextSource =
         action === "open"
           ? {
-              ...source,
-              circuitOpen: true,
-              circuitUntil: String(Math.floor(Date.now() / 1000) + 24 * 60 * 60),
-              circuitScope: "source" as const,
-            }
+            ...source,
+            circuitOpen: true,
+            circuitUntil: String(Math.floor(Date.now() / 1000) + 24 * 60 * 60),
+            circuitScope: "source" as const,
+          }
           : { ...source, circuitOpen: false, circuitUntil: "", circuitScope: "" as const };
       const modelStatus = items.find((item) => item.id === modelId)?.status ?? "inactive";
       const previousAvailable = isAdminLLMSourceAvailable(source, modelStatus);
@@ -980,7 +1015,9 @@ export function ModelsTable({
   const handleInlineStatusToggle = React.useCallback(
     async (source: AdminLLMModelUpstreamSourceDTO, modelId: number) => {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
 
       const nextStatus: AdminLLMStatus = source.status === "active" ? "inactive" : "active";
       const modelStatus = items.find((item) => item.id === modelId)?.status ?? "inactive";
@@ -1096,46 +1133,46 @@ export function ModelsTable({
 
   return (
     <>
-    <Table
-      viewportRef={virtualRows.viewportRef}
-      viewportClassName={virtualRows.viewportClassName}
-      viewportStyle={virtualRows.viewportStyle}
-    >
-      <TableHeader>
-        <TableRow className="hover:bg-transparent">
-          <TableHead className="w-[44px] py-1.5 text-center">
-            <div className="flex h-7 items-center justify-center">
-              <Checkbox
-                checked={allModelsSelected ? true : someModelsSelected ? "indeterminate" : false}
-                onCheckedChange={(checked) => handleSelectAllModels(checked === true)}
-                aria-label={t("table.selectAllModels")}
-              />
-            </div>
-          </TableHead>
-          <TableHead>{t("platformModel")}</TableHead>
-          <TableHead>{t("table.kind")}</TableHead>
-          <TableHead>{t("sources.protocol")}</TableHead>
-          <TableHead className="w-[120px]">{t("table.vendor")}</TableHead>
-          <TableHead className="w-[96px] text-center">{t("table.sources")}</TableHead>
-          <TableHead className="w-[72px] text-center">{t("fields.status")}</TableHead>
-          <TableHead className="w-[112px]">{t("table.accessScope")}</TableHead>
-          <TableHead className="w-[140px]">{t("sources.updatedAt")}</TableHead>
-          <TableHead className="w-[56px]" stickyEnd />
-        </TableRow>
-      </TableHeader>
+      <Table
+        viewportRef={virtualRows.viewportRef}
+        viewportClassName={virtualRows.viewportClassName}
+        viewportStyle={virtualRows.viewportStyle}
+      >
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="w-[44px] py-1.5 text-center">
+              <div className="flex h-7 items-center justify-center">
+                <Checkbox
+                  checked={allModelsSelected ? true : someModelsSelected ? "indeterminate" : false}
+                  onCheckedChange={(checked) => handleSelectAllModels(checked === true)}
+                  aria-label={t("table.selectAllModels")}
+                />
+              </div>
+            </TableHead>
+            <TableHead>{t("platformModel")}</TableHead>
+            <TableHead>{t("table.kind")}</TableHead>
+            <TableHead>{t("sources.protocol")}</TableHead>
+            <TableHead className="w-[120px]">{t("table.vendor")}</TableHead>
+            <TableHead className="w-[96px] text-center">{t("table.sources")}</TableHead>
+            <TableHead className="w-[72px] text-center">{t("fields.status")}</TableHead>
+            <TableHead className="w-[112px]">{t("table.accessScope")}</TableHead>
+            <TableHead className="w-[140px]">{t("sources.updatedAt")}</TableHead>
+            <TableHead className="w-[56px]" stickyEnd />
+          </TableRow>
+        </TableHeader>
 
-      <TableBody>
-        {initialLoading ? (
-          <TableLoadingRow colSpan={10} />
-        ) : null}
+        <TableBody>
+          {initialLoading ? (
+            <TableLoadingRow colSpan={10} />
+          ) : null}
 
-        {items.length === 0 && !loading ? (
-          <TableEmptyRow colSpan={10}>{t("table.empty")}</TableEmptyRow>
-        ) : null}
+          {items.length === 0 && !loading ? (
+            <TableEmptyRow colSpan={10}>{t("table.empty")}</TableEmptyRow>
+          ) : null}
 
-        {showRows ? <VirtualTablePaddingRow colSpan={10} height={virtualRows.paddingTop} /> : null}
-        {showRows
-          ? virtualRows.rows.map(({ item }) => (
+          {showRows ? <VirtualTablePaddingRow colSpan={10} height={virtualRows.paddingTop} /> : null}
+          {showRows
+            ? virtualRows.rows.map(({ item }) => (
               <ModelTableRow
                 key={item.id}
                 item={item}
@@ -1159,51 +1196,51 @@ export function ModelsTable({
                 onInlineSourceDeleteRequest={setDeleteSourceTarget}
               />
             ))
-          : null}
-        {showRows ? <VirtualTablePaddingRow colSpan={10} height={virtualRows.paddingBottom} /> : null}
-      </TableBody>
-    </Table>
-    <AlertDialog
-      open={deleteSourceTarget !== null}
-      onOpenChange={(open) => {
-        if (!open && !deleteSourcePending) {
-          setDeleteSourceTarget(null);
-        }
-      }}
-    >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{t("sources.deleteTitle")}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {t("sources.deleteDescription", {
-              name: stableDeleteSourceTarget?.source.upstreamModelName ?? "",
-            })}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleteSourcePending}>
-            {commonT("actions.cancel")}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            variant="destructive"
-            onClick={(event) => {
-              event.preventDefault();
-              void handleInlineSourceDelete();
-            }}
-            disabled={deleteSourcePending}
-          >
-            {deleteSourcePending ? t("sources.deletingSource") : t("sources.confirmDeleteSource")}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-    <ModelSourceCircuitDialog
-      source={circuitTarget?.source ?? null}
-      policyMode={circuitTarget?.policyMode}
-      pending={circuitPending}
-      onClose={() => setCircuitTarget(null)}
-      onSave={handleInlineCircuitSettingsSave}
-    />
+            : null}
+          {showRows ? <VirtualTablePaddingRow colSpan={10} height={virtualRows.paddingBottom} /> : null}
+        </TableBody>
+      </Table>
+      <AlertDialog
+        open={deleteSourceTarget !== null}
+        onOpenChange={(open) => {
+          if (!open && !deleteSourcePending) {
+            setDeleteSourceTarget(null);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("sources.deleteTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("sources.deleteDescription", {
+                name: stableDeleteSourceTarget?.source.upstreamModelName ?? "",
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteSourcePending}>
+              {commonT("actions.cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={(event) => {
+                event.preventDefault();
+                void handleInlineSourceDelete();
+              }}
+              disabled={deleteSourcePending}
+            >
+              {deleteSourcePending ? t("sources.deletingSource") : t("sources.confirmDeleteSource")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <ModelSourceCircuitDialog
+        source={circuitTarget?.source ?? null}
+        policyMode={circuitTarget?.policyMode}
+        pending={circuitPending}
+        onClose={() => setCircuitTarget(null)}
+        onSave={handleInlineCircuitSettingsSave}
+      />
     </>
   );
 }

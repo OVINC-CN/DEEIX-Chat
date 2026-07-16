@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Pause as LucidePause } from 'lucide-react';
+import { Pause as LucidePause } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type PauseProps = IconProps<string>;

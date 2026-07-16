@@ -25,35 +25,53 @@ type AdminDateTimePickerProps = {
 };
 
 export function adminDateTimeFormValue(value: string | null | undefined): string {
-  if (!value) return "";
+  if (!value) {
+    return "";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
   return `${format(date, "yyyy-MM-dd")}T${format(date, "HH:mm:ss")}`;
 }
 
 export function adminDateTimeValueToISOString(value: string): string | null | undefined {
   const text = value.trim();
-  if (!text) return null;
+  if (!text) {
+    return null;
+  }
   const date = new Date(text);
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 }
 
 function parseDatePart(value: string): Date | undefined {
   const [dateText] = value.trim().split("T");
-  if (!dateText) return undefined;
+  if (!dateText) {
+    return undefined;
+  }
   const [year, month, day] = dateText.split("-").map((part) => Number.parseInt(part, 10));
-  if (!year || !month || !day) return undefined;
+  if (!year || !month || !day) {
+    return undefined;
+  }
   const date = new Date(year, month - 1, day);
   return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
 function normalizeTimeValue(value: string, fallback: string): string {
   const trimmed = value.trim();
-  if (/^\d{2}:\d{2}:\d{2}$/.test(trimmed)) return trimmed;
-  if (/^\d{2}:\d{2}$/.test(trimmed)) return `${trimmed}:00`;
+  if (/^\d{2}:\d{2}:\d{2}$/.test(trimmed)) {
+    return trimmed;
+  }
+  if (/^\d{2}:\d{2}$/.test(trimmed)) {
+    return `${trimmed}:00`;
+  }
   const [, timeText = ""] = trimmed.split("T");
-  if (/^\d{2}:\d{2}:\d{2}$/.test(timeText)) return timeText;
-  if (/^\d{2}:\d{2}$/.test(timeText)) return `${timeText}:00`;
+  if (/^\d{2}:\d{2}:\d{2}$/.test(timeText)) {
+    return timeText;
+  }
+  if (/^\d{2}:\d{2}$/.test(timeText)) {
+    return `${timeText}:00`;
+  }
   return fallback;
 }
 
@@ -91,7 +109,9 @@ export function AdminDateTimePicker({
   const dateOnly = granularity === "date";
 
   const handleTimePartChange = (index: number, nextPart: string) => {
-    if (!selectedDate) return;
+    if (!selectedDate) {
+      return;
+    }
     onChange(buildDateTimeValue(selectedDate, updateTimePart(normalizedTime, index, nextPart, defaultTime), defaultTime));
   };
 

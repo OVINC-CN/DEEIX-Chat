@@ -187,11 +187,12 @@ export function useRecentPage() {
       return;
     }
 
-    if (!lastChange.item) {
+    const changedItem = lastChange.item;
+    if (!changedItem) {
       return;
     }
 
-    if (!conversationMatchesRecentFilters(lastChange.item, statusFilter, starredFilter, shareFilter, projectFilter)) {
+    if (!conversationMatchesRecentFilters(changedItem, statusFilter, starredFilter, shareFilter, projectFilter)) {
       setItems((current) => removeByPublicID(current, lastChange.publicID));
       setSelectedConversationIDs((current) => current.filter((item) => item !== lastChange.publicID));
       return;
@@ -201,7 +202,7 @@ export function useRecentPage() {
       return;
     }
 
-    setItems((current) => upsertByPublicID(current, lastChange.item!));
+    setItems((current) => upsertByPublicID(current, changedItem));
   }, [items, lastChange, normalizedQuery, projectFilter, shareFilter, starredFilter, statusFilter]);
 
   const loadPage = React.useCallback(
@@ -311,11 +312,15 @@ export function useRecentPage() {
   }, [loadMore]);
 
   const onExportAll = React.useCallback(async () => {
-    if (exportingAll) return;
+    if (exportingAll) {
+      return;
+    }
     setExportingAll(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       const blob = await exportAllConversations(token);
       const manifest = await readExportManifest(blob);
       downloadBlob(blob, `my-conversations-${new Date().toISOString().slice(0, 10)}.jsonl`);

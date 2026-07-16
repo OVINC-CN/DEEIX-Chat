@@ -314,8 +314,8 @@ const ChatMessageRow = React.memo(function ChatMessageRow({
     () =>
       isAssistant && onOpenCodeArtifact
         ? {
-            onOpenCodeArtifact: (artifact: OpenCodeArtifactInput) => onOpenCodeArtifact(item, artifact),
-          }
+          onOpenCodeArtifact: (artifact: OpenCodeArtifactInput) => onOpenCodeArtifact(item, artifact),
+        }
         : undefined,
     [isAssistant, item, onOpenCodeArtifact],
   );

@@ -212,7 +212,9 @@ function isProviderEmailConflictError(error: unknown): boolean {
 function parseProviderState(raw: string): { next: string; intent: "login" | "register" | "bind" } {
   try {
     const [encodedPayload] = raw.split(".");
-    if (!encodedPayload) return { next: DEFAULT_AUTH_NEXT_PATH, intent: "login" };
+    if (!encodedPayload) {
+      return { next: DEFAULT_AUTH_NEXT_PATH, intent: "login" };
+    }
     const padded = encodedPayload.replaceAll("-", "+").replaceAll("_", "/").padEnd(Math.ceil(encodedPayload.length / 4) * 4, "=");
     const parsed = JSON.parse(atob(padded)) as { next?: string; intent?: string };
     const intent = parsed.intent ?? "";

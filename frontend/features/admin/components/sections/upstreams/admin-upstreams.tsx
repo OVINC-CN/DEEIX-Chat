@@ -202,7 +202,9 @@ export function AdminUpstreamsPage() {
         <UpstreamSheet
           open
           onOpenChange={(open) => {
-            if (!open) upstreams.closeSheet();
+            if (!open) {
+              upstreams.closeSheet();
+            }
           }}
           mode={upstreams.sheetState.mode}
           target={upstreams.sheetState.mode === "edit" ? upstreams.sheetState.target : null}
@@ -239,7 +241,9 @@ export function AdminUpstreamsPage() {
           open
           onOpenChange={(open) => {
             upstreams.setModelsOpen(open);
-            if (!open) upstreams.closeModels();
+            if (!open) {
+              upstreams.closeModels();
+            }
           }}
           upstream={upstreams.modelsTarget}
           openRemoteOnOpen={syncOnOpenUpstreamID === upstreams.modelsTarget?.id}

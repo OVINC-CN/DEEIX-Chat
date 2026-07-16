@@ -58,7 +58,9 @@ export function DeleteModelDialog({
   const stableTarget = useDialogSnapshot(target);
 
   const handleDelete = React.useCallback(async () => {
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     const token = await resolveAccessToken();
     if (!token) {
@@ -128,7 +130,9 @@ export function BulkDeleteModelsDialog({
   const visibleTargets = React.useMemo(() => targets.slice(0, 6), [targets]);
 
   const handleDelete = React.useCallback(async () => {
-    if (targets.length === 0) return;
+    if (targets.length === 0) {
+      return;
+    }
 
     const token = await resolveAccessToken();
     if (!token) {

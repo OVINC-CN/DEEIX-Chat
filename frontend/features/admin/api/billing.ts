@@ -86,10 +86,18 @@ export async function listAdminRedemptionCodes(
     page: String(page),
     page_size: String(pageSize),
   });
-  if (options.query?.trim()) params.set("q", options.query.trim());
-  if (options.mode?.trim()) params.set("mode", options.mode.trim());
-  if (options.status?.trim()) params.set("status", options.status.trim());
-  if (options.availability?.trim()) params.set("availability", options.availability.trim());
+  if (options.query?.trim()) {
+    params.set("q", options.query.trim());
+  }
+  if (options.mode?.trim()) {
+    params.set("mode", options.mode.trim());
+  }
+  if (options.status?.trim()) {
+    params.set("status", options.status.trim());
+  }
+  if (options.availability?.trim()) {
+    params.set("availability", options.availability.trim());
+  }
   const data = await authedRequest<PagePayload<AdminRedemptionCodeDTO>>(
     `/api/v1/admin/billing/redemption-codes?${params.toString()}`,
     { accessToken },

@@ -9,19 +9,19 @@ import type { FileExtractDTO, FileObjectDTO } from "@/shared/api/file.types";
 
 type FileExtractState =
   | {
-      status: "idle";
-    }
+    status: "idle";
+  }
   | {
-      status: "loading";
-    }
+    status: "loading";
+  }
   | {
-      status: "error";
-      message: string;
-    }
+    status: "error";
+    message: string;
+  }
   | {
-      status: "ready";
-      data: FileExtractDTO;
-    };
+    status: "ready";
+    data: FileExtractDTO;
+  };
 
 type UseFileExtractOptions = {
   file: FileObjectDTO | null;

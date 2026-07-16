@@ -22,9 +22,15 @@ type EPayTypeOption = {
 };
 
 function resolveEPayTypeLabel(type: string, labels: { alipay: string; wxpay: string; qqpay: string; custom: (type: string) => string }): string {
-  if (type === "alipay") return labels.alipay;
-  if (type === "wxpay") return labels.wxpay;
-  if (type === "qqpay") return labels.qqpay;
+  if (type === "alipay") {
+    return labels.alipay;
+  }
+  if (type === "wxpay") {
+    return labels.wxpay;
+  }
+  if (type === "qqpay") {
+    return labels.qqpay;
+  }
   return labels.custom(type);
 }
 

@@ -83,6 +83,7 @@ import type {
   AdminLLMUpstreamModelDTO,
   AdminLLMUpstreamView,
   AdminLLMAdapter,
+  BindAdminLLMModelUpstreamSourceRequest,
   UpdateAdminLLMModelRequest,
 } from "@/features/admin/api/llm.types";
 
@@ -242,6 +243,24 @@ function normalizeCapabilitiesText(value: string | null | undefined): string {
   return trimmed === "{}" ? "" : trimmed;
 }
 
+async function bindModelSources(
+  token: string,
+  modelID: number,
+  payloads: BindAdminLLMModelUpstreamSourceRequest[],
+): Promise<{ failedCount: number; lastError: unknown }> {
+  let failedCount = 0;
+  let lastError: unknown = null;
+  for (const payload of payloads) {
+    try {
+      await bindAdminLLMModelUpstreamSource(token, modelID, payload);
+    } catch (error) {
+      failedCount += 1;
+      lastError = error;
+    }
+  }
+  return { failedCount, lastError };
+}
+
 function VendorOptionIcon({
   iconUrl,
   label,
@@ -391,12 +410,12 @@ export function ModelSheet({ open, mode, target, models, onClose, onSuccess }: M
       current.map((row) =>
         row.id === rowID
           ? {
-              ...row,
-              draft: {
-                ...DEFAULT_MODEL_SOURCE_BIND_DRAFT,
-                upstreamID,
-              },
-            }
+            ...row,
+            draft: {
+              ...DEFAULT_MODEL_SOURCE_BIND_DRAFT,
+              upstreamID,
+            },
+          }
           : row,
       ),
     );
@@ -432,12 +451,12 @@ export function ModelSheet({ open, mode, target, models, onClose, onSuccess }: M
       current.map((row) =>
         row.id === rowID
           ? {
-              ...row,
-              draft: {
-                ...row.draft,
-                [key]: value,
-              },
-            }
+            ...row,
+            draft: {
+              ...row.draft,
+              [key]: value,
+            },
+          }
           : row,
       ),
     );
@@ -626,7 +645,9 @@ export function ModelSheet({ open, mode, target, models, onClose, onSuccess }: M
     void (async () => {
       try {
         const token = await resolveAccessToken();
-        if (!token) return;
+        if (!token) {
+          return;
+        }
         const data = await listAdminLLMModelUpstreamSources(token, target.id, {
           page: 1,
           pageSize: 100,
@@ -652,7 +673,9 @@ export function ModelSheet({ open, mode, target, models, onClose, onSuccess }: M
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (mode === "edit" && !target) return;
+    if (mode === "edit" && !target) {
+      return;
+    }
 
     const bindDraftResult = mode === "create"
       ? resolveModelSourceBindDraftRows(bindRows)
@@ -707,19 +730,10 @@ export function ModelSheet({ open, mode, target, models, onClose, onSuccess }: M
           await saveModelPermissionGroups(token, data.model.id);
         }
         if (bindDraftResult.status === "valid" && bindDraftResult.payloads.length > 0) {
-          let failedCount = 0;
-          let lastBindError: unknown = null;
-          for (const payload of bindDraftResult.payloads) {
-            try {
-              await bindAdminLLMModelUpstreamSource(token, data.model.id, payload);
-            } catch (bindError) {
-              failedCount += 1;
-              lastBindError = bindError;
-            }
-          }
+          const { failedCount, lastError } = await bindModelSources(token, data.model.id, bindDraftResult.payloads);
           if (failedCount > 0) {
             toast.error(t("toast.modelCreatedSourcesBindPartialFailed", { count: failedCount }), {
-              description: lastBindError ? resolveAdminErrorMessage(lastBindError) : undefined,
+              description: lastError ? resolveAdminErrorMessage(lastError) : undefined,
             });
           } else {
             toast.success(t("toast.modelCreatedWithSources", { count: bindDraftResult.payloads.length }));
@@ -735,7 +749,9 @@ export function ModelSheet({ open, mode, target, models, onClose, onSuccess }: M
         return;
       }
 
-      if (!target) return;
+      if (!target) {
+        return;
+      }
       const payload: UpdateAdminLLMModelRequest = {
         platformModelName: form.platformModelName.trim() || undefined,
         vendor: form.vendor || undefined,

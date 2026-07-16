@@ -1,5 +1,7 @@
 export function isApplePlatform(): boolean {
-  if (typeof navigator === "undefined") return false;
+  if (typeof navigator === "undefined") {
+    return false;
+  }
   const nav = navigator as Navigator & { userAgentData?: { platform?: string } };
   const candidates = [
     nav.userAgentData?.platform,

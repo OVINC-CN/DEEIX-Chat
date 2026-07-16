@@ -47,9 +47,15 @@ function optionObject(value: unknown): Record<string, unknown> | null {
 
 function responseFormatType(value: unknown): "image" | "video" | "text" | "" {
   if (Array.isArray(value)) {
-    if (value.some((item) => responseFormatType(item) === "video")) return "video";
-    if (value.some((item) => responseFormatType(item) === "image")) return "image";
-    if (value.some((item) => responseFormatType(item) === "text")) return "text";
+    if (value.some((item) => responseFormatType(item) === "video")) {
+      return "video";
+    }
+    if (value.some((item) => responseFormatType(item) === "image")) {
+      return "image";
+    }
+    if (value.some((item) => responseFormatType(item) === "text")) {
+      return "text";
+    }
     return "";
   }
   const format = optionObject(value);

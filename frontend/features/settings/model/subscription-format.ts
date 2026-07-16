@@ -24,7 +24,9 @@ export function formatPlanPrice(
   intervalLabels: { lifetime: string; year: string; month: string },
   billingDisplay: BillingDisplayOptions = DEFAULT_BILLING_DISPLAY,
 ): string {
-  if (!price) return "-";
+  if (!price) {
+    return "-";
+  }
   const currency = (price.currency || "USD").toUpperCase();
   const amount = currency === "USD"
     ? formatBillingDisplayAmountFromUSD((price.amountCents || 0) / 100, billingDisplay, { maximumFractionDigits: 2 })
@@ -32,8 +34,12 @@ export function formatPlanPrice(
       style: "currency",
       currency,
     }).format((price.amountCents || 0) / 100);
-  if (price.billingInterval === "lifetime") return `${amount} / ${intervalLabels.lifetime}`;
-  if (price.billingInterval === "year") return `${amount} / ${intervalLabels.year}`;
+  if (price.billingInterval === "lifetime") {
+    return `${amount} / ${intervalLabels.lifetime}`;
+  }
+  if (price.billingInterval === "year") {
+    return `${amount} / ${intervalLabels.year}`;
+  }
   return `${amount} / ${intervalLabels.month}`;
 }
 
@@ -113,7 +119,9 @@ export function formatTooltipUnitPrice(value: number, billingDisplay: BillingDis
 }
 
 export function nanousdToUSD(value: number): number {
-  if (!Number.isFinite(value) || value <= 0) return 0;
+  if (!Number.isFinite(value) || value <= 0) {
+    return 0;
+  }
   return value / 1_000_000_000;
 }
 
@@ -132,61 +140,93 @@ export function formatUsageSummaryCost(value: number, billingDisplay: BillingDis
 }
 
 export function formatUsageAxisTokens(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "0";
-  if (value >= 1_000_000) return `${(value / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`;
-  if (value >= 1_000) return `${Math.round(value / 1_000).toLocaleString("en-US")}K`;
+  if (!Number.isFinite(value) || value <= 0) {
+    return "0";
+  }
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`;
+  }
+  if (value >= 1_000) {
+    return `${Math.round(value / 1_000).toLocaleString("en-US")}K`;
+  }
   return Math.round(value).toLocaleString("en-US");
 }
 
 export function formatLatency(value: number | null | undefined): string {
-  if (!Number.isFinite(value ?? NaN) || (value ?? 0) <= 0) return "-";
+  if (!Number.isFinite(value ?? NaN) || (value ?? 0) <= 0) {
+    return "-";
+  }
   const ms = value ?? 0;
-  if (ms < 1000) return `${Math.round(ms)}ms`;
+  if (ms < 1000) {
+    return `${Math.round(ms)}ms`;
+  }
   return `${(ms / 1000).toLocaleString("en-US", { maximumFractionDigits: 2 })}s`;
 }
 
 export function formatUsageTrendLatency(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "0";
+  if (!Number.isFinite(value) || value <= 0) {
+    return "0";
+  }
   return formatLatency(value);
 }
 
 export function formatTokenCount(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "-";
+  if (!Number.isFinite(value) || value <= 0) {
+    return "-";
+  }
   return value.toLocaleString("en-US");
 }
 
 export function formatFormulaTokenCount(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "0";
+  if (!Number.isFinite(value) || value <= 0) {
+    return "0";
+  }
   return value.toLocaleString("en-US");
 }
 
 export function formatDay(value: string | null | undefined): string {
-  if (!value) return "-";
+  if (!value) {
+    return "-";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${month}/${day}`;
 }
 
 export function formatMonthLabel(value: string | null | undefined, locale: string): string {
-  if (!value) return "-";
+  if (!value) {
+    return "-";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
   return new Intl.DateTimeFormat(locale, { month: "short" }).format(date);
 }
 
 export function formatFullMonthLabel(value: string | null | undefined, locale: string): string {
-  if (!value) return "-";
+  if (!value) {
+    return "-";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
   return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long" }).format(date);
 }
 
 export function formatShortDate(value: string | null | undefined, locale: string): string {
-  if (!value) return "-";
+  if (!value) {
+    return "-";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
   return new Intl.DateTimeFormat(locale, {
     month: "2-digit",
     day: "2-digit",
@@ -194,9 +234,13 @@ export function formatShortDate(value: string | null | undefined, locale: string
 }
 
 export function formatMediumDate(value: string | null | undefined, locale: string): string {
-  if (!value) return "-";
+  if (!value) {
+    return "-";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
   return new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "2-digit",
@@ -205,9 +249,13 @@ export function formatMediumDate(value: string | null | undefined, locale: strin
 }
 
 export function formatUsageLogTime(value: string | null | undefined, locale: string): string {
-  if (!value) return "-";
+  if (!value) {
+    return "-";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
   return new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "2-digit",
@@ -236,14 +284,24 @@ export function isCurrentBillingPlan(
 }
 
 export function planRank(plan: BillingPlanDTO | null | undefined): number {
-  if (!plan) return 0;
+  if (!plan) {
+    return 0;
+  }
   if (Number.isFinite(plan.sortOrder) && plan.sortOrder > 0) {
     return plan.sortOrder;
   }
-  if (plan.code === "ultra") return 40;
-  if (plan.code === "max") return 30;
-  if (plan.code === "pro") return 20;
-  if (plan.code === "free") return 10;
+  if (plan.code === "ultra") {
+    return 40;
+  }
+  if (plan.code === "max") {
+    return 30;
+  }
+  if (plan.code === "pro") {
+    return 20;
+  }
+  if (plan.code === "free") {
+    return 10;
+  }
   return plan.periodCreditUSD;
 }
 
@@ -268,17 +326,31 @@ export function resolvePlanActionKind(
 ): PlanActionKind {
   const targetRank = planRank(plan);
   if (isCurrent) {
-    if (isFreePlan(plan)) return "current";
+    if (isFreePlan(plan)) {
+      return "current";
+    }
     return price ? "renew" : "current";
   }
-  if (isFreePlan(plan) && protectedPaidPlanRank > 0) return "freeBlocked";
-  if (!price) return "unavailable";
-  if (!price.amountCents) return "switch";
-  if (!currentPlan || isFreePlan(currentPlan)) return "subscribe";
+  if (isFreePlan(plan) && protectedPaidPlanRank > 0) {
+    return "freeBlocked";
+  }
+  if (!price) {
+    return "unavailable";
+  }
+  if (!price.amountCents) {
+    return "switch";
+  }
+  if (!currentPlan || isFreePlan(currentPlan)) {
+    return "subscribe";
+  }
 
-  if (protectedPaidPlanRank > targetRank) return "renew";
+  if (protectedPaidPlanRank > targetRank) {
+    return "renew";
+  }
   const comparison = targetRank - planRank(currentPlan);
-  if (comparison > 0) return "upgrade";
+  if (comparison > 0) {
+    return "upgrade";
+  }
   return "renew";
 }
 
@@ -287,21 +359,35 @@ export function resolvePlanActionLabel(action: PlanActionKind, labels: PlanActio
 }
 
 export function resolvePlanButtonVariant(action: PlanActionKind): "default" | "outline" | "secondary" {
-  if (action === "current") return "secondary";
-  if (action === "freeBlocked" || action === "unavailable" || action === "switch") return "outline";
+  if (action === "current") {
+    return "secondary";
+  }
+  if (action === "freeBlocked" || action === "unavailable" || action === "switch") {
+    return "outline";
+  }
   return "default";
 }
 
 export function resolvePaymentProviderLabel(provider: string | undefined, fallback: string): string {
-  if (provider === "stripe") return "Stripe";
-  if (provider === "epay") return "EPay";
+  if (provider === "stripe") {
+    return "Stripe";
+  }
+  if (provider === "epay") {
+    return "EPay";
+  }
   return fallback;
 }
 
 export function resolveEPayTypeLabel(type: string, labels: { alipay: string; wxpay: string; qqpay: string; custom: (type: string) => string }): string {
-  if (type === "alipay") return labels.alipay;
-  if (type === "wxpay") return labels.wxpay;
-  if (type === "qqpay") return labels.qqpay;
+  if (type === "alipay") {
+    return labels.alipay;
+  }
+  if (type === "wxpay") {
+    return labels.wxpay;
+  }
+  if (type === "qqpay") {
+    return labels.qqpay;
+  }
   return labels.custom(type);
 }
 

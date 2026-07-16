@@ -80,10 +80,18 @@ function isSameSlot(current: ChatArtifact, previous: ChatArtifact): boolean {
 }
 
 function isSameLogicalArtifact(current: ChatArtifact, previous: ChatArtifact): boolean {
-  if (current.id === previous.id) return true;
-  if (!isSameSlot(current, previous)) return false;
-  if (current.runID && previous.runID && current.runID === previous.runID) return true;
-  if (current.messageID === previous.messageID || current.messageKey === previous.messageKey) return true;
+  if (current.id === previous.id) {
+    return true;
+  }
+  if (!isSameSlot(current, previous)) {
+    return false;
+  }
+  if (current.runID && previous.runID && current.runID === previous.runID) {
+    return true;
+  }
+  if (current.messageID === previous.messageID || current.messageKey === previous.messageKey) {
+    return true;
+  }
   return hasRelatedCode(current.code, previous.code);
 }
 
@@ -98,7 +106,9 @@ function findLatestArtifactInSameSlot(artifacts: ChatArtifact[], previous: ChatA
 }
 
 function findReplacementArtifact(artifacts: ChatArtifact[], previous: ChatArtifact | null): ChatArtifact | null {
-  if (!previous) return null;
+  if (!previous) {
+    return null;
+  }
 
   return (
     artifacts.find((artifact) => artifact.id === previous.id) ??
@@ -189,7 +199,9 @@ export function useChatArtifacts({ conversationID, messages }: UseChatArtifactsP
       messageArtifacts.find((artifact) => artifact.kind === input.kind) ??
       messageArtifacts.at(-1);
 
-    if (!selected) return;
+    if (!selected) {
+      return;
+    }
 
     dismissedArtifactRef.current = null;
     setDismissedArtifactID(null);

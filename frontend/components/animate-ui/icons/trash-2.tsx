@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Trash2 as LucideTrash2 } from 'lucide-react';
+import { Trash2 as LucideTrash2 } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type Trash2Props = IconProps<string>;

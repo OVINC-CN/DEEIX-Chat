@@ -96,49 +96,53 @@ export function useChatAttachments({
       return;
     }
     let cancelled = false;
-    const timer = window.setInterval(() => {
-      void (async () => {
-        try {
-          const token = await resolveAccessToken();
-          if (!token || cancelled) {
-            return;
-          }
-          const results = await Promise.allSettled(
-            pending.map((item) => getFileProcessingStatus(token, item.fileID)),
-          );
-          if (cancelled) {
-            return;
-          }
-          setAttachments((prev) =>
-            prev.map((item) => {
-              const index = pending.findIndex((candidate) => candidate.fileID === item.fileID);
-              if (index < 0) {
-                return item;
-              }
-              const result = results[index];
-              if (!result || result.status !== "fulfilled") {
-                return item;
-              }
-              return {
-                ...item,
-                detectedMime: result.value.detectedMIME,
-                fileCategory: result.value.fileCategory,
-                processingStatus: result.value.processingStatus,
-                processingReady: result.value.processingReady,
-                processingErrorCode: result.value.errorCode,
-                processingErrorMessage: result.value.errorMessage,
-                extractStatus: result.value.extractStatus,
-                embedStatus: result.value.embedStatus,
-                ragReady: result.value.ragReady,
-                ragReason: result.value.ragReason,
-                ocrUsed: result.value.ocrUsed,
-              };
-            }),
-          );
-        } catch {
-          // Ignore polling failures.
+    async function pollProcessingStatuses() {
+      try {
+        const token = await resolveAccessToken();
+        if (!token || cancelled) {
+          return;
         }
-      })();
+        const results = await Promise.allSettled(
+          pending.map((item) => getFileProcessingStatus(token, item.fileID)),
+        );
+        if (cancelled) {
+          return;
+        }
+        const resultsByFileID = new Map<string, (typeof results)[number]>();
+        for (let index = 0; index < pending.length; index += 1) {
+          const result = results[index];
+          if (result) {
+            resultsByFileID.set(pending[index].fileID, result);
+          }
+        }
+        setAttachments((prev) =>
+          prev.map((item) => {
+            const result = resultsByFileID.get(item.fileID);
+            if (!result || result.status !== "fulfilled") {
+              return item;
+            }
+            return {
+              ...item,
+              detectedMime: result.value.detectedMIME,
+              fileCategory: result.value.fileCategory,
+              processingStatus: result.value.processingStatus,
+              processingReady: result.value.processingReady,
+              processingErrorCode: result.value.errorCode,
+              processingErrorMessage: result.value.errorMessage,
+              extractStatus: result.value.extractStatus,
+              embedStatus: result.value.embedStatus,
+              ragReady: result.value.ragReady,
+              ragReason: result.value.ragReason,
+              ocrUsed: result.value.ocrUsed,
+            };
+          }),
+        );
+      } catch {
+        // Ignore polling failures.
+      }
+    }
+    const timer = window.setInterval(() => {
+      void pollProcessingStatuses();
     }, 1500);
     return () => {
       cancelled = true;

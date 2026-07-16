@@ -173,55 +173,55 @@ function PromptLibraryTable<T extends PromptLibraryRow>({
         {showRows ? <VirtualTablePaddingRow colSpan={PROMPT_PRESET_TABLE_COLUMN_COUNT} height={virtualRows.paddingTop} /> : null}
         {showRows
           ? virtualRows.rows.map(({ item }) => {
-              const displayName = item.trigger || item.title;
-              const summary = getSummary(item);
+            const displayName = item.trigger || item.title;
+            const summary = getSummary(item);
 
-              return (
-                <TableRow key={item.id} interactive onClick={() => onEdit(item)}>
-                  <TableCell>
-                    <div className="flex max-w-[200px] min-w-0 items-center gap-2">
-                      <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
-                      <span className="min-w-0 truncate font-medium">{displayName}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <p className="max-w-[300px] truncate text-muted-foreground">{summary}</p>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <div className="flex h-7 items-center justify-center">
-                      <Switch
-                        size="sm"
-                        checked={item.enabled}
-                        onClick={(event) => event.stopPropagation()}
-                        onCheckedChange={(checked) => onEnabledChange(item, checked)}
-                        aria-label={item.enabled ? t("disable") : t("enable")}
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap text-muted-foreground">
-                    {formatDateTime(item.createdAt, locale)}
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap text-muted-foreground">
-                    {formatDateTime(item.updatedAt, locale)}
-                  </TableCell>
-                  <TableCell stickyEnd>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 text-muted-foreground shadow-none hover:bg-muted hover:text-destructive"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        onDelete(item);
-                      }}
-                      aria-label={t("delete")}
-                    >
-                      <Trash2 className="size-3.5" strokeWidth={1.6} />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })
+            return (
+              <TableRow key={item.id} interactive onClick={() => onEdit(item)}>
+                <TableCell>
+                  <div className="flex max-w-[200px] min-w-0 items-center gap-2">
+                    <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
+                    <span className="min-w-0 truncate font-medium">{displayName}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <p className="max-w-[300px] truncate text-muted-foreground">{summary}</p>
+                </TableCell>
+                <TableCell className="text-center">
+                  <div className="flex h-7 items-center justify-center">
+                    <Switch
+                      size="sm"
+                      checked={item.enabled}
+                      onClick={(event) => event.stopPropagation()}
+                      onCheckedChange={(checked) => onEnabledChange(item, checked)}
+                      aria-label={item.enabled ? t("disable") : t("enable")}
+                    />
+                  </div>
+                </TableCell>
+                <TableCell className="whitespace-nowrap text-muted-foreground">
+                  {formatDateTime(item.createdAt, locale)}
+                </TableCell>
+                <TableCell className="whitespace-nowrap text-muted-foreground">
+                  {formatDateTime(item.updatedAt, locale)}
+                </TableCell>
+                <TableCell stickyEnd>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 text-muted-foreground shadow-none hover:bg-muted hover:text-destructive"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onDelete(item);
+                    }}
+                    aria-label={t("delete")}
+                  >
+                    <Trash2 className="size-3.5" strokeWidth={1.6} />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            );
+          })
           : null}
         {showRows ? <VirtualTablePaddingRow colSpan={PROMPT_PRESET_TABLE_COLUMN_COUNT} height={virtualRows.paddingBottom} /> : null}
       </TableBody>

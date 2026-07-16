@@ -20,10 +20,18 @@ export async function listAdminAnnouncements(
     page: String(page),
     page_size: String(pageSize),
   });
-  if (options.query?.trim()) params.set("q", options.query.trim());
-  if (options.status?.trim()) params.set("status", options.status.trim());
-  if (options.type?.trim()) params.set("type", options.type.trim());
-  if (options.pinned?.trim()) params.set("pinned", options.pinned.trim());
+  if (options.query?.trim()) {
+    params.set("q", options.query.trim());
+  }
+  if (options.status?.trim()) {
+    params.set("status", options.status.trim());
+  }
+  if (options.type?.trim()) {
+    params.set("type", options.type.trim());
+  }
+  if (options.pinned?.trim()) {
+    params.set("pinned", options.pinned.trim());
+  }
   const data = await authedRequest<PagePayload<AdminAnnouncementDTO>>(
     `/api/v1/admin/announcements?${params.toString()}`,
     { accessToken },

@@ -22,8 +22,12 @@ function promptPresetListPath(basePath: string, options: PromptPresetListOptions
     page: String(options.page ?? 1),
     page_size: String(options.pageSize ?? 50),
   });
-  if (options.query?.trim()) params.set("q", options.query.trim());
-  if (typeof options.enabled === "boolean") params.set("enabled", String(options.enabled));
+  if (options.query?.trim()) {
+    params.set("q", options.query.trim());
+  }
+  if (typeof options.enabled === "boolean") {
+    params.set("enabled", String(options.enabled));
+  }
   return `${basePath}?${params.toString()}`;
 }
 

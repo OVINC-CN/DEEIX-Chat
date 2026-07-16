@@ -840,9 +840,9 @@ export function AppChatArea() {
     const errors = [
       modelsErrorMsg.trim()
         ? {
-            title: t("modelListLoadFailed"),
-            message: modelsErrorMsg.trim(),
-          }
+          title: t("modelListLoadFailed"),
+          message: modelsErrorMsg.trim(),
+        }
         : null,
     ].filter((item): item is NonNullable<typeof item> => item !== null);
 

@@ -360,8 +360,7 @@ export function useChatModelOptions({
       return modelCatalogRequestRef.current;
     }
 
-    let request: Promise<ModelCatalogRefreshResult>;
-    request = (async () => {
+    const request = (async () => {
       const token = accessToken?.trim() || await resolveAccessToken();
       if (!token) {
         throw new Error("missing access token");

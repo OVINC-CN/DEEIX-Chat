@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Disc3 as LucideDisc3 } from 'lucide-react';
+import { Disc3 as LucideDisc3 } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type Disc3Props = IconProps<string>;

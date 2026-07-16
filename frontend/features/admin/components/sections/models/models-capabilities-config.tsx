@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { AdminLLMModelDTO } from "@/features/admin/api/llm.types";
 import { ModelCapabilitiesPresetDialog } from "@/features/admin/components/sections/models/models-capabilities-presets";
@@ -940,7 +939,7 @@ export function ModelCapabilitiesGuideButton({ t }: { t: (key: string) => string
           <TabsContent value="defaults" className="min-h-0 flex-1 space-y-3 overflow-y-auto text-sm text-muted-foreground">
             <p className="text-xs">{t("sheet.capabilitiesGuide.defaultsDescription")}</p>
             <pre className="max-h-72 overflow-auto rounded-md bg-muted/50 p-3 text-xs text-foreground">
-{`{
+              {`{
   "defaultOptions": {
     "store": false,
     "reasoning": {
@@ -957,7 +956,7 @@ export function ModelCapabilitiesGuideButton({ t }: { t: (key: string) => string
           <TabsContent value="controls" className="min-h-0 flex-1 space-y-3 overflow-y-auto text-sm text-muted-foreground">
             <p className="text-xs">{t("sheet.capabilitiesGuide.controlsDescription")}</p>
             <pre className="max-h-72 overflow-auto rounded-md bg-muted/50 p-3 text-xs text-foreground">
-{`{
+              {`{
   "defaultOptions": {},
   "optionControls": [
     {
@@ -989,7 +988,7 @@ export function ModelCapabilitiesGuideButton({ t }: { t: (key: string) => string
           <TabsContent value="tools" className="min-h-0 flex-1 space-y-3 overflow-y-auto text-sm text-muted-foreground">
             <p className="text-xs">{t("sheet.capabilitiesGuide.toolsDescription")}</p>
             <pre className="max-h-72 overflow-auto rounded-md bg-muted/50 p-3 text-xs text-foreground">
-{`{
+              {`{
   "nativeTools": [
     {
       "key": "xai.x_search",
@@ -1042,7 +1041,7 @@ export function ModelCapabilitiesGuideButton({ t }: { t: (key: string) => string
           <TabsContent value="policy" className="min-h-0 flex-1 space-y-3 overflow-y-auto text-sm text-muted-foreground">
             <p className="text-xs">{t("sheet.capabilitiesGuide.policyDescription")}</p>
             <pre className="max-h-72 overflow-auto rounded-md bg-muted/50 p-3 text-xs text-foreground">
-{`{
+              {`{
   "openai_image_generations": [
     "size",
     "quality",
@@ -1543,84 +1542,84 @@ export function ModelCapabilitiesQuickConfig({
                           </div>
 
                           {expanded ? (
-                          <div className="grid min-w-0 grid-cols-1 gap-2 border-t pt-3 sm:grid-cols-3">
-                            <label className="min-w-0 space-y-1">
-                              <span className="block truncate px-1 text-[11px] text-muted-foreground">
-                                {t("sheet.capabilitiesQuick.nativeToolKey")} *
-                              </span>
-                              <Input
-                                className={cn("h-8 bg-transparent", rowErrors.key && "border-destructive focus-visible:ring-destructive/30")}
-                                value={row.key}
-                                disabled={row.catalog}
-                                placeholder="anthropic.web_search_20260209"
-                                onChange={(event) => updateNativeToolRow(row.id, { key: event.target.value })}
-                              />
-                              {rowErrors.key ? <p className="truncate px-1 text-[10px] text-destructive">{rowErrors.key}</p> : null}
-                            </label>
-                            <label className="min-w-0 space-y-1">
-                              <span className="block truncate px-1 text-[11px] text-muted-foreground">
-                                {t("sheet.capabilitiesQuick.nativeToolType")} *
-                              </span>
-                              <Input
-                                className={cn("h-8 bg-transparent", rowErrors.type && "border-destructive focus-visible:ring-destructive/30")}
-                                value={row.type}
-                                disabled={row.catalog}
-                                placeholder="web_search_20260209"
-                                onChange={(event) => updateNativeToolRow(row.id, { type: event.target.value })}
-                              />
-                              {rowErrors.type ? <p className="truncate px-1 text-[10px] text-destructive">{rowErrors.type}</p> : null}
-                            </label>
-                            <label className="min-w-0 space-y-1">
-                              <span className="block truncate px-1 text-[11px] text-muted-foreground">
-                                {t("sheet.capabilitiesQuick.nativeToolProtocols")} *
-                              </span>
-                              <NativeToolProtocolsSelect
-                                value={row.protocols}
-                                options={protocolOptions}
-                                invalid={Boolean(rowErrors.protocols)}
-                                placeholder={t("sheet.capabilitiesQuick.nativeToolProtocolsPlaceholder")}
-                                onChange={(protocols) => updateNativeToolRow(row.id, { protocols })}
-                              />
-                              {rowErrors.protocols ? <p className="truncate px-1 text-[10px] text-destructive">{rowErrors.protocols}</p> : null}
-                            </label>
-                            <label className="min-w-0 space-y-1">
-                              <span className="block truncate px-1 text-[11px] text-muted-foreground">
-                                {t("sheet.capabilitiesQuick.labelColumn")}
-                              </span>
-                              <Input
-                                className="h-8 bg-transparent"
-                                value={row.label}
-                                placeholder={t("sheet.capabilitiesQuick.labelPlaceholder")}
-                                onChange={(event) => updateNativeToolRow(row.id, { label: event.target.value })}
-                              />
-                            </label>
-                            <label className="min-w-0 space-y-1">
-                              <span className="block truncate px-1 text-[11px] text-muted-foreground">
-                                {t("sheet.capabilitiesQuick.descriptionColumn")}
-                              </span>
-                              <Input
-                                className="h-8 bg-transparent"
-                                value={row.description}
-                                placeholder={t("sheet.capabilitiesQuick.descriptionPlaceholder")}
-                                onChange={(event) => updateNativeToolRow(row.id, { description: event.target.value })}
-                              />
-                            </label>
-                            <label className="min-w-0 space-y-1 sm:col-span-3">
-                              <span className="block truncate px-1 text-[11px] text-muted-foreground">
-                                {t("sheet.capabilitiesQuick.nativeToolPayload")} *
-                              </span>
-                              <textarea
-                                className={cn(
-                                  "min-h-20 w-full resize-y rounded-md border bg-transparent px-2 py-2 font-mono text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
-                                  rowErrors.payload && "border-destructive focus-visible:ring-destructive/30",
-                                )}
-                                value={row.payload}
-                                spellCheck={false}
-                                onChange={(event) => updateNativeToolRow(row.id, { payload: event.target.value })}
-                              />
-                              {rowErrors.payload ? <p className="truncate px-1 text-[10px] text-destructive">{rowErrors.payload}</p> : null}
-                            </label>
-                          </div>
+                            <div className="grid min-w-0 grid-cols-1 gap-2 border-t pt-3 sm:grid-cols-3">
+                              <label className="min-w-0 space-y-1">
+                                <span className="block truncate px-1 text-[11px] text-muted-foreground">
+                                  {t("sheet.capabilitiesQuick.nativeToolKey")} *
+                                </span>
+                                <Input
+                                  className={cn("h-8 bg-transparent", rowErrors.key && "border-destructive focus-visible:ring-destructive/30")}
+                                  value={row.key}
+                                  disabled={row.catalog}
+                                  placeholder="anthropic.web_search_20260209"
+                                  onChange={(event) => updateNativeToolRow(row.id, { key: event.target.value })}
+                                />
+                                {rowErrors.key ? <p className="truncate px-1 text-[10px] text-destructive">{rowErrors.key}</p> : null}
+                              </label>
+                              <label className="min-w-0 space-y-1">
+                                <span className="block truncate px-1 text-[11px] text-muted-foreground">
+                                  {t("sheet.capabilitiesQuick.nativeToolType")} *
+                                </span>
+                                <Input
+                                  className={cn("h-8 bg-transparent", rowErrors.type && "border-destructive focus-visible:ring-destructive/30")}
+                                  value={row.type}
+                                  disabled={row.catalog}
+                                  placeholder="web_search_20260209"
+                                  onChange={(event) => updateNativeToolRow(row.id, { type: event.target.value })}
+                                />
+                                {rowErrors.type ? <p className="truncate px-1 text-[10px] text-destructive">{rowErrors.type}</p> : null}
+                              </label>
+                              <label className="min-w-0 space-y-1">
+                                <span className="block truncate px-1 text-[11px] text-muted-foreground">
+                                  {t("sheet.capabilitiesQuick.nativeToolProtocols")} *
+                                </span>
+                                <NativeToolProtocolsSelect
+                                  value={row.protocols}
+                                  options={protocolOptions}
+                                  invalid={Boolean(rowErrors.protocols)}
+                                  placeholder={t("sheet.capabilitiesQuick.nativeToolProtocolsPlaceholder")}
+                                  onChange={(protocols) => updateNativeToolRow(row.id, { protocols })}
+                                />
+                                {rowErrors.protocols ? <p className="truncate px-1 text-[10px] text-destructive">{rowErrors.protocols}</p> : null}
+                              </label>
+                              <label className="min-w-0 space-y-1">
+                                <span className="block truncate px-1 text-[11px] text-muted-foreground">
+                                  {t("sheet.capabilitiesQuick.labelColumn")}
+                                </span>
+                                <Input
+                                  className="h-8 bg-transparent"
+                                  value={row.label}
+                                  placeholder={t("sheet.capabilitiesQuick.labelPlaceholder")}
+                                  onChange={(event) => updateNativeToolRow(row.id, { label: event.target.value })}
+                                />
+                              </label>
+                              <label className="min-w-0 space-y-1">
+                                <span className="block truncate px-1 text-[11px] text-muted-foreground">
+                                  {t("sheet.capabilitiesQuick.descriptionColumn")}
+                                </span>
+                                <Input
+                                  className="h-8 bg-transparent"
+                                  value={row.description}
+                                  placeholder={t("sheet.capabilitiesQuick.descriptionPlaceholder")}
+                                  onChange={(event) => updateNativeToolRow(row.id, { description: event.target.value })}
+                                />
+                              </label>
+                              <label className="min-w-0 space-y-1 sm:col-span-3">
+                                <span className="block truncate px-1 text-[11px] text-muted-foreground">
+                                  {t("sheet.capabilitiesQuick.nativeToolPayload")} *
+                                </span>
+                                <textarea
+                                  className={cn(
+                                    "min-h-20 w-full resize-y rounded-md border bg-transparent px-2 py-2 font-mono text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+                                    rowErrors.payload && "border-destructive focus-visible:ring-destructive/30",
+                                  )}
+                                  value={row.payload}
+                                  spellCheck={false}
+                                  onChange={(event) => updateNativeToolRow(row.id, { payload: event.target.value })}
+                                />
+                                {rowErrors.payload ? <p className="truncate px-1 text-[10px] text-destructive">{rowErrors.payload}</p> : null}
+                              </label>
+                            </div>
                           ) : null}
                         </div>
                       );

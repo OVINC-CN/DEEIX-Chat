@@ -30,7 +30,8 @@
     "analyze": "next experimental-analyze",
     "analyze:output": "next experimental-analyze --output",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
@@ -80,7 +81,8 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^9.39.4",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",

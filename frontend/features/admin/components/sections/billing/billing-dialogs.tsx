@@ -340,33 +340,183 @@ export function PricingBillingDialog({
           <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-2">
             {form ? (
               <>
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground">{t("modelPricing.platformModel")}</p>
-                <div className="flex items-center gap-2">
-                  <Input value={form.platformModelName} className="min-w-0 flex-1 cursor-default text-foreground placeholder:text-muted-foreground" readOnly />
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    className="h-8 shrink-0 px-2.5 text-xs shadow-none"
-                    disabled={saving}
-                    onClick={onOpenOfficialPricing}
-                    aria-label={t("modelPricing.officialPricing")}
-                    title={t("modelPricing.officialPricing")}
-                  >
-                    <Sparkles className="size-3.5 stroke-1" />
-                    {t("modelPricing.officialPricing")}
-                  </Button>
+                <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground">{t("modelPricing.platformModel")}</p>
+                  <div className="flex items-center gap-2">
+                    <Input value={form.platformModelName} className="min-w-0 flex-1 cursor-default text-foreground placeholder:text-muted-foreground" readOnly />
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      className="h-8 shrink-0 px-2.5 text-xs shadow-none"
+                      disabled={saving}
+                      onClick={onOpenOfficialPricing}
+                      aria-label={t("modelPricing.officialPricing")}
+                      title={t("modelPricing.officialPricing")}
+                    >
+                      <Sparkles className="size-3.5 stroke-1" />
+                      {t("modelPricing.officialPricing")}
+                    </Button>
+                  </div>
                 </div>
-              </div>
 
-              {editorMode === "form" ? (
-                <>
-                  <div className="grid grid-cols-2 gap-5">
+                {editorMode === "form" ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-5">
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground">{t("modelPricing.pricingMode")}</p>
+                        <Select value={form.pricingMode} onValueChange={(value) => setForm({ ...form, pricingMode: normalizePricingMode(value) })}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="token">{t("pricingModes.token")}</SelectItem>
+                            <SelectItem value="call">{t("pricingModes.call")}</SelectItem>
+                            <SelectItem value="duration">{t("pricingModes.duration")}</SelectItem>
+                            <SelectItem value="tiered">{t("pricingModes.tiered")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground">{t("modelPricing.freeModel")}</p>
+                        <div className="flex h-8 items-center">
+                          <Switch size="sm" checked={form.isFree} onCheckedChange={(checked) => setForm({ ...form, isFree: checked })} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {form.pricingMode === "token" ? (
+                      <>
+                        <div className="grid grid-cols-2 gap-5">
+                          <div className="space-y-1">
+                            <p className="text-xs text-muted-foreground">{t("modelPricing.inputPerM")}</p>
+                            <Input value={form.input} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, input: event.target.value })} />
+                          </div>
+                          <div className="space-y-1">
+                            <p className="text-xs text-muted-foreground">{t("modelPricing.outputPerM")}</p>
+                            <Input value={form.output} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, output: event.target.value })} />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-5">
+                          <div className="space-y-1">
+                            <p className="text-xs text-muted-foreground">{t("modelPricing.cacheReadPerM")}</p>
+                            <Input value={form.cacheRead} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, cacheRead: event.target.value })} />
+                          </div>
+                          <div className="space-y-1">
+                            <p className="text-xs text-muted-foreground">{t("modelPricing.cacheWritePerM")}</p>
+                            <Input value={form.cacheWrite} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, cacheWrite: event.target.value })} />
+                          </div>
+                        </div>
+                      </>
+                    ) : null}
+
+                    {form.pricingMode === "call" ? (
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground">{t("modelPricing.perCall")}</p>
+                        <Input value={form.call} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, call: event.target.value })} />
+                      </div>
+                    ) : null}
+
+                    {form.pricingMode === "duration" ? (
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground">{t("modelPricing.perSecond")}</p>
+                        <Input value={form.duration} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, duration: event.target.value })} />
+                      </div>
+                    ) : null}
+
+                    {form.pricingMode === "tiered" ? (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-xs text-muted-foreground">{t("modelPricing.tieredHint")}</p>
+                          <Button type="button" variant="ghost" size="xs" onClick={onAddTier}>
+                            <Plus className="size-3.5" />
+                            {t("modelPricing.addTier")}
+                          </Button>
+                        </div>
+
+                        <div className="space-y-2">
+                          {form.tieredTiers.map((tier, index) => (
+                            <div key={tier.id} className="grid gap-2 rounded-md border px-3 py-2">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="text-xs font-medium">{t("modelPricing.tierName", { index: index + 1 })}</span>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon-xs"
+                                  className="text-muted-foreground"
+                                  disabled={form.tieredTiers.length <= 1}
+                                  onClick={() => onRemoveTier(index)}
+                                  aria-label={t("modelPricing.deleteTier")}
+                                >
+                                  <Trash2 className="size-3.5" />
+                                </Button>
+                              </div>
+                              <div className="grid grid-cols-5 gap-2">
+                                <div className="space-y-1">
+                                  <p className="text-[11px] text-muted-foreground">{t("modelPricing.tokenLimitK")}</p>
+                                  <Input
+                                    value={tier.upToKTokens}
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    onChange={(event) => onUpdateTier(index, { upToKTokens: event.target.value })}
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[11px] text-muted-foreground">{t("modelPricing.inputPerM")}</p>
+                                  <Input
+                                    value={tier.input}
+                                    type="number"
+                                    min="0"
+                                    step="0.000001"
+                                    onChange={(event) => onUpdateTier(index, { input: event.target.value })}
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[11px] text-muted-foreground">{t("modelPricing.outputPerM")}</p>
+                                  <Input
+                                    value={tier.output}
+                                    type="number"
+                                    min="0"
+                                    step="0.000001"
+                                    onChange={(event) => onUpdateTier(index, { output: event.target.value })}
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[11px] text-muted-foreground">{t("modelPricing.cacheReadPerM")}</p>
+                                  <Input
+                                    value={tier.cacheRead}
+                                    type="number"
+                                    min="0"
+                                    step="0.000001"
+                                    onChange={(event) => onUpdateTier(index, { cacheRead: event.target.value })}
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[11px] text-muted-foreground">{t("modelPricing.cacheWritePerM")}</p>
+                                  <Input
+                                    value={tier.cacheWrite}
+                                    type="number"
+                                    min="0"
+                                    step="0.000001"
+                                    onChange={(event) => onUpdateTier(index, { cacheWrite: event.target.value })}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">{t("modelPricing.tierNote")}</p>
+                      </div>
+                    ) : null}
+                  </>
+                ) : (
+                  <div className="space-y-3">
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground">{t("modelPricing.pricingMode")}</p>
-                      <Select value={form.pricingMode} onValueChange={(value) => setForm({ ...form, pricingMode: normalizePricingMode(value) })}>
-                        <SelectTrigger>
+                      <Select value={form.pricingMode} onValueChange={handleJSONPricingModeChange}>
+                        <SelectTrigger className="w-full">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -377,168 +527,18 @@ export function PricingBillingDialog({
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground">{t("modelPricing.freeModel")}</p>
-                      <div className="flex h-8 items-center">
-                        <Switch size="sm" checked={form.isFree} onCheckedChange={(checked) => setForm({ ...form, isFree: checked })} />
-                      </div>
-                    </div>
+                    <Textarea
+                      value={jsonDraft}
+                      className="h-80 resize-none overflow-y-auto font-mono text-xs [field-sizing:fixed]"
+                      spellCheck={false}
+                      disabled={saving}
+                      onChange={(event) => handleJSONChange(event.target.value)}
+                    />
+                    <p className={jsonError ? "text-[11px] text-destructive" : "text-[11px] text-muted-foreground"}>
+                      {jsonError || t("modelPricing.jsonHint")}
+                    </p>
                   </div>
-
-                  {form.pricingMode === "token" ? (
-                    <>
-                      <div className="grid grid-cols-2 gap-5">
-                        <div className="space-y-1">
-                          <p className="text-xs text-muted-foreground">{t("modelPricing.inputPerM")}</p>
-                          <Input value={form.input} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, input: event.target.value })} />
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs text-muted-foreground">{t("modelPricing.outputPerM")}</p>
-                          <Input value={form.output} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, output: event.target.value })} />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-5">
-                        <div className="space-y-1">
-                          <p className="text-xs text-muted-foreground">{t("modelPricing.cacheReadPerM")}</p>
-                          <Input value={form.cacheRead} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, cacheRead: event.target.value })} />
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs text-muted-foreground">{t("modelPricing.cacheWritePerM")}</p>
-                          <Input value={form.cacheWrite} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, cacheWrite: event.target.value })} />
-                        </div>
-                      </div>
-                    </>
-                  ) : null}
-
-                  {form.pricingMode === "call" ? (
-                    <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground">{t("modelPricing.perCall")}</p>
-                      <Input value={form.call} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, call: event.target.value })} />
-                    </div>
-                  ) : null}
-
-                  {form.pricingMode === "duration" ? (
-                    <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground">{t("modelPricing.perSecond")}</p>
-                      <Input value={form.duration} type="number" min="0" step="0.000001" onChange={(event) => setForm({ ...form, duration: event.target.value })} />
-                    </div>
-                  ) : null}
-
-                  {form.pricingMode === "tiered" ? (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-xs text-muted-foreground">{t("modelPricing.tieredHint")}</p>
-                    <Button type="button" variant="ghost" size="xs" onClick={onAddTier}>
-                      <Plus className="size-3.5" />
-                      {t("modelPricing.addTier")}
-                    </Button>
-                  </div>
-
-                  <div className="space-y-2">
-                    {form.tieredTiers.map((tier, index) => (
-                      <div key={tier.id} className="grid gap-2 rounded-md border px-3 py-2">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-xs font-medium">{t("modelPricing.tierName", { index: index + 1 })}</span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-xs"
-                            className="text-muted-foreground"
-                            disabled={form.tieredTiers.length <= 1}
-                            onClick={() => onRemoveTier(index)}
-                            aria-label={t("modelPricing.deleteTier")}
-                          >
-                            <Trash2 className="size-3.5" />
-                          </Button>
-                        </div>
-                        <div className="grid grid-cols-5 gap-2">
-                          <div className="space-y-1">
-                            <p className="text-[11px] text-muted-foreground">{t("modelPricing.tokenLimitK")}</p>
-                            <Input
-                              value={tier.upToKTokens}
-                              type="number"
-                              min="0"
-                              step="1"
-                              onChange={(event) => onUpdateTier(index, { upToKTokens: event.target.value })}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-[11px] text-muted-foreground">{t("modelPricing.inputPerM")}</p>
-                            <Input
-                              value={tier.input}
-                              type="number"
-                              min="0"
-                              step="0.000001"
-                              onChange={(event) => onUpdateTier(index, { input: event.target.value })}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-[11px] text-muted-foreground">{t("modelPricing.outputPerM")}</p>
-                            <Input
-                              value={tier.output}
-                              type="number"
-                              min="0"
-                              step="0.000001"
-                              onChange={(event) => onUpdateTier(index, { output: event.target.value })}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-[11px] text-muted-foreground">{t("modelPricing.cacheReadPerM")}</p>
-                            <Input
-                              value={tier.cacheRead}
-                              type="number"
-                              min="0"
-                              step="0.000001"
-                              onChange={(event) => onUpdateTier(index, { cacheRead: event.target.value })}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-[11px] text-muted-foreground">{t("modelPricing.cacheWritePerM")}</p>
-                            <Input
-                              value={tier.cacheWrite}
-                              type="number"
-                              min="0"
-                              step="0.000001"
-                              onChange={(event) => onUpdateTier(index, { cacheWrite: event.target.value })}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-[11px] text-muted-foreground">{t("modelPricing.tierNote")}</p>
-                </div>
-                  ) : null}
-                </>
-              ) : (
-                <div className="space-y-3">
-                  <div className="space-y-1">
-                    <p className="text-xs text-muted-foreground">{t("modelPricing.pricingMode")}</p>
-                    <Select value={form.pricingMode} onValueChange={handleJSONPricingModeChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="token">{t("pricingModes.token")}</SelectItem>
-                        <SelectItem value="call">{t("pricingModes.call")}</SelectItem>
-                        <SelectItem value="duration">{t("pricingModes.duration")}</SelectItem>
-                        <SelectItem value="tiered">{t("pricingModes.tiered")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Textarea
-                    value={jsonDraft}
-                    className="h-80 resize-none overflow-y-auto font-mono text-xs [field-sizing:fixed]"
-                    spellCheck={false}
-                    disabled={saving}
-                    onChange={(event) => handleJSONChange(event.target.value)}
-                  />
-                  <p className={jsonError ? "text-[11px] text-destructive" : "text-[11px] text-muted-foreground"}>
-                    {jsonError || t("modelPricing.jsonHint")}
-                  </p>
-                </div>
-              )}
+                )}
               </>
             ) : null}
           </div>

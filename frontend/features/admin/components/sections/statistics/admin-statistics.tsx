@@ -161,7 +161,9 @@ export function AdminStatisticsPage() {
                       onFromChange={statistics.setStartDate}
                       onToChange={(value) => {
                         statistics.setEndDate(value);
-                        if (value) setDateFilterOpen(false);
+                        if (value) {
+                          setDateFilterOpen(false);
+                        }
                       }}
                       maxRangeDays={366}
                       disabled={initialLoading}

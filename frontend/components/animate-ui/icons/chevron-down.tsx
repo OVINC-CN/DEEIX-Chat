@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { ChevronDown as LucideChevronDown } from 'lucide-react';
+import { ChevronDown as LucideChevronDown } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type ChevronDownProps = IconProps<string>;

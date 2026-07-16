@@ -133,9 +133,14 @@ function KindsDropdown({
 
   function toggle(kind: string) {
     const next = new Set(selectedKinds);
-    if (next.has(kind)) next.delete(kind);
-    else next.add(kind);
-    if (next.size === 0) next.add("chat");
+    if (next.has(kind)) {
+      next.delete(kind);
+    } else {
+      next.add(kind);
+    }
+    if (next.size === 0) {
+      next.add("chat");
+    }
     onChange(Array.from(next).join(","));
   }
 
@@ -462,7 +467,9 @@ type RemoteModelsDialogProps = {
 };
 
 function remoteModelStatusKey(item: AdminLLMRemoteModelItem): "bound" | "unbound" | "unsynced" {
-  if (item.alreadyBound) return "bound";
+  if (item.alreadyBound) {
+    return "bound";
+  }
   return item.alreadySynced ? "unbound" : "unsynced";
 }
 
@@ -470,7 +477,9 @@ function dedupeRemoteModels(items: AdminLLMRemoteModelItem[]): AdminLLMRemoteMod
   const byName = new Map<string, AdminLLMRemoteModelItem>();
   for (const item of items) {
     const key = item.upstreamModelName.trim();
-    if (!key) continue;
+    if (!key) {
+      continue;
+    }
     const existing = byName.get(key);
     if (!existing) {
       byName.set(key, item);
@@ -515,7 +524,9 @@ function RemoteModelsDialog({
   const [permissionGroupsLoading, setPermissionGroupsLoading] = React.useState(false);
 
   const loadRemoteModels = React.useCallback(async () => {
-    if (!upstream) return;
+    if (!upstream) {
+      return;
+    }
     setRemoteItems([]);
     setSelected(new Set());
     setDraftPlatformModelNames(new Map());
@@ -537,7 +548,9 @@ function RemoteModelsDialog({
   }, [onOpenChange, resolveErrorMessage, t, upstream]);
 
   React.useEffect(() => {
-    if (!open || !upstream) return;
+    if (!open || !upstream) {
+      return;
+    }
     void loadRemoteModels();
   }, [loadRemoteModels, open, upstream]);
 
@@ -580,8 +593,11 @@ function RemoteModelsDialog({
   function toggleOne(name: string, checked: boolean) {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (checked) next.add(name);
-      else next.delete(name);
+      if (checked) {
+        next.add(name);
+      } else {
+        next.delete(name);
+      }
       return next;
     });
   }
@@ -602,7 +618,9 @@ function RemoteModelsDialog({
 
   const normalizedQuery = query.trim().toLowerCase();
   const filteredRemoteItems = React.useMemo(() => {
-    if (!normalizedQuery) return remoteItems;
+    if (!normalizedQuery) {
+      return remoteItems;
+    }
     return remoteItems.filter((item) => {
       return [
         item.upstreamModelName,
@@ -622,7 +640,9 @@ function RemoteModelsDialog({
   const hasQuery = normalizedQuery.length > 0;
 
   async function handleSyncBindings() {
-    if (!upstream || selectedRemoteItems.length === 0) return;
+    if (!upstream || selectedRemoteItems.length === 0) {
+      return;
+    }
     setImporting(true);
     try {
       const token = await resolveAccessToken();
@@ -821,7 +841,9 @@ function NewBindingDialog({
   const [saving, setSaving] = React.useState(false);
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      return;
+    }
     setForm(DEFAULT_NEW_BINDING);
   }, [open]);
 
@@ -1028,7 +1050,9 @@ export function UpstreamModelsDialog({
   }, [upstreamID]);
 
   const loadBindings = React.useCallback(async (params: RouteListParams = listParams) => {
-    if (!upstreamID || params.upstreamID !== upstreamID) return;
+    if (!upstreamID || params.upstreamID !== upstreamID) {
+      return;
+    }
     const requestSeq = requestSeqRef.current + 1;
     requestSeqRef.current = requestSeq;
     setLoadingList(true);
@@ -1102,7 +1126,9 @@ export function UpstreamModelsDialog({
   }, [open, query, upstreamID]);
 
   React.useEffect(() => {
-    if (!open || !upstream || !openRemoteOnOpen) return;
+    if (!open || !upstream || !openRemoteOnOpen) {
+      return;
+    }
     setRemoteModelsOpen(true);
     onRemoteOpenHandled?.();
   }, [onRemoteOpenHandled, open, openRemoteOnOpen, upstream]);
@@ -1163,15 +1189,20 @@ export function UpstreamModelsDialog({
   const handleSelectOne = React.useCallback((draftKey: string, checked: boolean) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (checked) next.add(draftKey);
-      else next.delete(draftKey);
+      if (checked) {
+        next.add(draftKey);
+      } else {
+        next.delete(draftKey);
+      }
       return next;
     });
   }, []);
 
   const handleTestRoute = React.useCallback(
     async (row: RowDraft, routeID: number) => {
-      if (!upstreamID || routeID <= 0) return;
+      if (!upstreamID || routeID <= 0) {
+        return;
+      }
       setProbeTargetName(`${row.platformModelNameDraft || row.platformModelName} / ${row.upstreamModelName}`);
       setProbeResults([]);
       setProbeOpen(true);
@@ -1240,7 +1271,9 @@ export function UpstreamModelsDialog({
   }, []);
 
   const applyBulkPatch = React.useCallback((patch: Partial<Omit<RowDraft, "draftKey" | "isDirty">>) => {
-    if (selected.size === 0) return;
+    if (selected.size === 0) {
+      return;
+    }
     setRows((prev) =>
       prev.map((row) =>
         routeIDsForRow(row).length > 0 && selected.has(row.draftKey)
@@ -1251,11 +1284,15 @@ export function UpstreamModelsDialog({
   }, [selected]);
 
   async function handleDeleteSelected() {
-    if (!upstream || selected.size === 0) return;
+    if (!upstream || selected.size === 0) {
+      return;
+    }
     const routeIDs = rows
       .filter((row) => selected.has(row.draftKey))
       .flatMap(routeIDsForRow);
-    if (routeIDs.length === 0) return;
+    if (routeIDs.length === 0) {
+      return;
+    }
     setDeleting(true);
     try {
       const token = await resolveAccessToken();
@@ -1299,7 +1336,9 @@ export function UpstreamModelsDialog({
   }
 
   async function handleSave() {
-    if (!upstream) return;
+    if (!upstream) {
+      return;
+    }
     const dirty = rows.filter((r) => r.isDirty);
     if (dirty.length === 0) {
       toast.info(t("modelsDialog.noPendingChanges"));
@@ -1360,8 +1399,8 @@ export function UpstreamModelsDialog({
             }),
           );
           savedCount += 1;
-          for (const routeID of existingRouteIDs) {
-            if (routeID === keepRouteID) continue;
+          const redundantRouteIDs = existingRouteIDs.filter((routeID) => routeID !== keepRouteID);
+          for (const routeID of redundantRouteIDs) {
             deleteOperations.push(() => deleteAdminLLMUpstreamModel(token, upstream.id, routeID));
             deletedCount += 1;
           }
@@ -1390,7 +1429,9 @@ export function UpstreamModelsDialog({
           savedCount += 1;
         }
         for (const [protocol, routeID] of Object.entries(row.routeIDsByProtocol)) {
-          if (desiredSet.has(protocol as AdminLLMAdapter) || reusedRouteIDs.has(routeID)) continue;
+          if (desiredSet.has(protocol as AdminLLMAdapter) || reusedRouteIDs.has(routeID)) {
+            continue;
+          }
           deleteOperations.push(() => deleteAdminLLMUpstreamModel(token, upstream.id, routeID));
           deletedCount += 1;
         }
@@ -1590,50 +1631,50 @@ export function UpstreamModelsDialog({
               viewportClassName={virtualRows.viewportClassName}
               viewportStyle={virtualRows.viewportStyle}
             >
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-[44px] py-1.5 text-center">
-                      <div className="flex h-7 items-center justify-center">
-                        <Checkbox
-                          checked={allSelected ? true : someSelected ? "indeterminate" : false}
-                          onCheckedChange={(checked) => handleSelectAll(checked === true)}
-                          aria-label={t("table.selectAll")}
-                        />
-                      </div>
-                    </TableHead>
-                    <TableHead className="w-[56px]">{t("modelsDialog.routeStatus")}</TableHead>
-                    <TableHead>{t("modelsDialog.upstreamModelName")}</TableHead>
-                    <TableHead className="min-w-[220px]">{t("modelsDialog.platformModel")}</TableHead>
-                    <TableHead className="w-[220px]">{t("modelsDialog.protocol")}</TableHead>
-                    <TableHead className="w-[140px]">{t("modelsDialog.kind")}</TableHead>
-                    <TableHead className="w-[48px]" stickyEnd />
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {initialTableLoading ? (
-                    <TableLoadingRow colSpan={7} />
-                  ) : null}
-                  {tableReady && !loadingList && rows.length === 0 ? (
-                    <TableEmptyRow colSpan={7}>
-                      {hasActiveListQuery ? t("modelsDialog.noMatchedBindings") : t("modelsDialog.noBindings")}
-                    </TableEmptyRow>
-                  ) : null}
-                  {showRows ? <VirtualTablePaddingRow colSpan={7} height={virtualRows.paddingTop} /> : null}
-                  {showRows
-                    ? virtualRows.rows.map(({ item: row }) => (
-                        <ModelRow
-                          key={row.draftKey}
-                          row={row}
-                          isSelected={selected.has(row.draftKey)}
-                          upstreamInactive={upstreamInactive}
-                          onSelect={handleSelectOne}
-                          onUpdate={updateRow}
-                          onTest={handleTestRoute}
-                        />
-                      ))
-                    : null}
-                  {showRows ? <VirtualTablePaddingRow colSpan={7} height={virtualRows.paddingBottom} /> : null}
-                </TableBody>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-[44px] py-1.5 text-center">
+                    <div className="flex h-7 items-center justify-center">
+                      <Checkbox
+                        checked={allSelected ? true : someSelected ? "indeterminate" : false}
+                        onCheckedChange={(checked) => handleSelectAll(checked === true)}
+                        aria-label={t("table.selectAll")}
+                      />
+                    </div>
+                  </TableHead>
+                  <TableHead className="w-[56px]">{t("modelsDialog.routeStatus")}</TableHead>
+                  <TableHead>{t("modelsDialog.upstreamModelName")}</TableHead>
+                  <TableHead className="min-w-[220px]">{t("modelsDialog.platformModel")}</TableHead>
+                  <TableHead className="w-[220px]">{t("modelsDialog.protocol")}</TableHead>
+                  <TableHead className="w-[140px]">{t("modelsDialog.kind")}</TableHead>
+                  <TableHead className="w-[48px]" stickyEnd />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {initialTableLoading ? (
+                  <TableLoadingRow colSpan={7} />
+                ) : null}
+                {tableReady && !loadingList && rows.length === 0 ? (
+                  <TableEmptyRow colSpan={7}>
+                    {hasActiveListQuery ? t("modelsDialog.noMatchedBindings") : t("modelsDialog.noBindings")}
+                  </TableEmptyRow>
+                ) : null}
+                {showRows ? <VirtualTablePaddingRow colSpan={7} height={virtualRows.paddingTop} /> : null}
+                {showRows
+                  ? virtualRows.rows.map(({ item: row }) => (
+                    <ModelRow
+                      key={row.draftKey}
+                      row={row}
+                      isSelected={selected.has(row.draftKey)}
+                      upstreamInactive={upstreamInactive}
+                      onSelect={handleSelectOne}
+                      onUpdate={updateRow}
+                      onTest={handleTestRoute}
+                    />
+                  ))
+                  : null}
+                {showRows ? <VirtualTablePaddingRow colSpan={7} height={virtualRows.paddingBottom} /> : null}
+              </TableBody>
             </Table>
           </div>
 

@@ -552,7 +552,9 @@ function readBillingNumber(snapshot: BillingSnapshot, key: keyof BillingSnapshot
 }
 
 function nanousdToUSD(value: number): number {
-  if (!Number.isFinite(value) || value <= 0) return 0;
+  if (!Number.isFinite(value) || value <= 0) {
+    return 0;
+  }
   return value / 1_000_000_000;
 }
 
@@ -645,7 +647,9 @@ function formatBillingFormulaLine(label: string, tokens: number, rateNanousd: nu
 }
 
 function formatTokenQuantity(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "0";
+  if (!Number.isFinite(value) || value <= 0) {
+    return "0";
+  }
   return value.toLocaleString("en-US");
 }
 
@@ -860,7 +864,9 @@ function QuickMemoryPin({ disabled }: { disabled?: boolean }) {
   const handleSave = React.useCallback(async () => {
     const trimmedKey = key.trim();
     const trimmedValue = value.trim();
-    if (!trimmedKey || !trimmedValue) return;
+    if (!trimmedKey || !trimmedValue) {
+      return;
+    }
     setSaving(true);
     try {
       const token = await resolveAccessToken();

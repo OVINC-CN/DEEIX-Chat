@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { SpinnerLabel } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableEmptyRow, TableHead, TableHeader, TableLoadingRow, TableRow } from "@/components/ui/table";
 import { TablePagination, TableToolbar } from "@/components/ui/table-tools";
@@ -50,7 +49,6 @@ import { resolveAdminErrorMessage } from "@/features/admin/utils/admin-error";
 import { LobeHubIcon } from "@/shared/components/lobehub-icon";
 import { resolveAccessToken } from "@/shared/auth/resolve-access-token";
 import { useDialogSnapshot } from "@/shared/hooks/use-dialog-snapshot";
-import { cn } from "@/lib/utils";
 import { KNOWN_VENDOR_OPTIONS, resolveLobeHubIconURL, resolveModelIdentity } from "@/shared/lib/model-identity";
 
 type BillingPricesSectionProps = {
@@ -314,7 +312,9 @@ export function BillingPricesSection({ models, pricingItems, setPricingItems, lo
 
   function updateTieredTier(index: number, patch: Partial<TieredPricingTierForm>) {
     setForm((current) => {
-      if (!current) return current;
+      if (!current) {
+        return current;
+      }
       return {
         ...current,
         tieredTiers: current.tieredTiers.map((tier, tierIndex) =>
@@ -326,7 +326,9 @@ export function BillingPricesSection({ models, pricingItems, setPricingItems, lo
 
   function addTieredTier() {
     setForm((current) => {
-      if (!current) return current;
+      if (!current) {
+        return current;
+      }
       return {
         ...current,
         tieredTiers: [
@@ -346,7 +348,9 @@ export function BillingPricesSection({ models, pricingItems, setPricingItems, lo
 
   function removeTieredTier(index: number) {
     setForm((current) => {
-      if (!current || current.tieredTiers.length <= 1) return current;
+      if (!current || current.tieredTiers.length <= 1) {
+        return current;
+      }
       return {
         ...current,
         tieredTiers: current.tieredTiers.filter((_, tierIndex) => tierIndex !== index),
@@ -356,7 +360,9 @@ export function BillingPricesSection({ models, pricingItems, setPricingItems, lo
 
   async function savePricing(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
-    if (!form) return;
+    if (!form) {
+      return;
+    }
     setSaving(true);
     try {
       const token = await resolveAccessToken();
@@ -615,62 +621,62 @@ export function BillingPricesSection({ models, pricingItems, setPricingItems, lo
             {showModelPricingRows ? <VirtualTablePaddingRow colSpan={6} height={modelPricingVirtualRows.paddingTop} /> : null}
             {showModelPricingRows
               ? modelPricingVirtualRows.rows.map(({ item: row }) => {
-                  const identity = resolveModelIdentity({
-                    code: row.platformModelName,
-                    vendor: row.vendor,
-                    icon: row.icon,
-                  });
-                  const iconURL = resolveLobeHubIconURL(identity.modelIcon);
+                const identity = resolveModelIdentity({
+                  code: row.platformModelName,
+                  vendor: row.vendor,
+                  icon: row.icon,
+                });
+                const iconURL = resolveLobeHubIconURL(identity.modelIcon);
 
-                  return (
-                    <TableRow key={row.platformModelName}>
-                      <TableCell className="py-1.5">
-                        <div className="flex h-7 min-w-0 items-center gap-2">
-                          <LobeHubIcon iconUrl={iconURL} label={row.platformModelName} />
-                          <div className="flex min-w-0 flex-1">
-                            <span className="truncate text-xs font-medium leading-5 text-foreground">
-                              {row.platformModelName}
-                            </span>
-                          </div>
+                return (
+                  <TableRow key={row.platformModelName}>
+                    <TableCell className="py-1.5">
+                      <div className="flex h-7 min-w-0 items-center gap-2">
+                        <LobeHubIcon iconUrl={iconURL} label={row.platformModelName} />
+                        <div className="flex min-w-0 flex-1">
+                          <span className="truncate text-xs font-medium leading-5 text-foreground">
+                            {row.platformModelName}
+                          </span>
                         </div>
-                      </TableCell>
-                      <TableCell className="py-1.5">
-                        <div className="flex h-7 items-center">
-                          <Switch
-                            size="sm"
-                            checked={row.isFree}
-                            disabled={loading || saving || Boolean(freeSwitchPendingModel)}
-                            onCheckedChange={(checked) => void toggleModelFree(row, checked)}
-                            aria-label={`${row.platformModelName} ${t("modelPricing.freeModel")}`}
-                          />
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-1.5">
-                        {row.pricing ? t(`pricingModes.${normalizePricingMode(row.pricing.pricingMode)}`) : <span className="text-muted-foreground">-</span>}
-                      </TableCell>
-                      <TableCell className="py-1.5">
-                        <PricingUnitCell pricing={row.pricing} />
-                      </TableCell>
-                      <TableCell className="py-1.5 text-muted-foreground">
-                        {formatDateTime(row.pricing?.updatedAt ?? "", locale)}
-                      </TableCell>
-                      <TableCell stickyEnd className="w-[56px] py-1.5 text-right">
-                        <div className="flex h-7 items-center justify-end">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-xs"
-                            className="h-7 w-7 text-muted-foreground shadow-none"
-                            onClick={() => openEdit(row)}
-                            aria-label={t("actions.editPricing")}
-                          >
-                            <Pencil className="size-3.5 stroke-1" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-1.5">
+                      <div className="flex h-7 items-center">
+                        <Switch
+                          size="sm"
+                          checked={row.isFree}
+                          disabled={loading || saving || Boolean(freeSwitchPendingModel)}
+                          onCheckedChange={(checked) => void toggleModelFree(row, checked)}
+                          aria-label={`${row.platformModelName} ${t("modelPricing.freeModel")}`}
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-1.5">
+                      {row.pricing ? t(`pricingModes.${normalizePricingMode(row.pricing.pricingMode)}`) : <span className="text-muted-foreground">-</span>}
+                    </TableCell>
+                    <TableCell className="py-1.5">
+                      <PricingUnitCell pricing={row.pricing} />
+                    </TableCell>
+                    <TableCell className="py-1.5 text-muted-foreground">
+                      {formatDateTime(row.pricing?.updatedAt ?? "", locale)}
+                    </TableCell>
+                    <TableCell stickyEnd className="w-[56px] py-1.5 text-right">
+                      <div className="flex h-7 items-center justify-end">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-xs"
+                          className="h-7 w-7 text-muted-foreground shadow-none"
+                          onClick={() => openEdit(row)}
+                          aria-label={t("actions.editPricing")}
+                        >
+                          <Pencil className="size-3.5 stroke-1" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
               : null}
             {showModelPricingRows ? <VirtualTablePaddingRow colSpan={6} height={modelPricingVirtualRows.paddingBottom} /> : null}
           </TableBody>

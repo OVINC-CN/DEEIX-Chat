@@ -1,13 +1,13 @@
 export type RenderSegment =
   | {
-      type: "markdown";
-      content: string;
-    }
+    type: "markdown";
+    content: string;
+  }
   | {
-      type: "thinking";
-      content: string;
-      incomplete: boolean;
-    };
+    type: "thinking";
+    content: string;
+    incomplete: boolean;
+  };
 
 export function normalizeContent(input: unknown): string {
   if (typeof input === "string") {

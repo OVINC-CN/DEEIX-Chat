@@ -10,8 +10,12 @@ function areBranchNavigatorsEqual(
   previous: ChatMessageBranchNavigator | undefined,
   next: ChatMessageBranchNavigator | undefined,
 ) {
-  if (previous === next) return true;
-  if (!previous || !next) return false;
+  if (previous === next) {
+    return true;
+  }
+  if (!previous || !next) {
+    return false;
+  }
   return (
     previous.parentPublicID === next.parentPublicID &&
     previous.index === next.index &&
@@ -25,8 +29,12 @@ function areInlineAlertsEqual(
   previous: ChatInlineAlert | undefined,
   next: ChatInlineAlert | undefined,
 ) {
-  if (previous === next) return true;
-  if (!previous || !next) return false;
+  if (previous === next) {
+    return true;
+  }
+  if (!previous || !next) {
+    return false;
+  }
   return previous.title === next.title && previous.message === next.message;
 }
 
@@ -34,8 +42,12 @@ function areProcessTracesEqual(
   previous: ChatMessageProcessTrace | undefined,
   next: ChatMessageProcessTrace | undefined,
 ) {
-  if (previous === next) return true;
-  if (!previous || !next) return false;
+  if (previous === next) {
+    return true;
+  }
+  if (!previous || !next) {
+    return false;
+  }
   const previousEvents = previous.events ?? [];
   const nextEvents = next.events ?? [];
   const eventsEqual =
@@ -92,8 +104,12 @@ function areAttachmentsEqual(
   previous: MessageAttachment[] | undefined,
   next: MessageAttachment[] | undefined,
 ) {
-  if (previous === next) return true;
-  if (!previous || !next || previous.length !== next.length) return false;
+  if (previous === next) {
+    return true;
+  }
+  if (!previous || !next || previous.length !== next.length) {
+    return false;
+  }
 
   return previous.every((item, index) => {
     const nextItem = next[index];
@@ -123,8 +139,12 @@ function areCompactDoneEqual(
   previous: ChatAreaMessage["compactDone"],
   next: ChatAreaMessage["compactDone"],
 ) {
-  if (previous === next) return true;
-  if (!previous || !next) return false;
+  if (previous === next) {
+    return true;
+  }
+  if (!previous || !next) {
+    return false;
+  }
   return (
     previous.method === next.method &&
     previous.freed_tokens === next.freed_tokens &&
@@ -136,8 +156,12 @@ function areBillingCostsEqual(
   previous: ChatAreaMessage["billingCost"],
   next: ChatAreaMessage["billingCost"],
 ) {
-  if (previous === next) return true;
-  if (!previous || !next) return false;
+  if (previous === next) {
+    return true;
+  }
+  if (!previous || !next) {
+    return false;
+  }
   return (
     previous.billingMode === next.billingMode &&
     previous.billedCurrency === next.billedCurrency &&

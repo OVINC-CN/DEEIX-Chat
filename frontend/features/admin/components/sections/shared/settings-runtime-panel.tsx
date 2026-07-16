@@ -406,10 +406,10 @@ export function SettingsFieldEditor({
     field.statusBadge ??
     (field.serviceRuntime
       ? {
-          label: resolveRuntimeStatusLabel(field.serviceRuntime.runtime?.status, runtimeStatusLabels),
-          tone: resolveRuntimeStatusBadgeTone(field.serviceRuntime.runtime),
-          detail: buildRuntimeTooltipDetail(field.serviceRuntime.runtime, runtimeDetailLabels),
-        }
+        label: resolveRuntimeStatusLabel(field.serviceRuntime.runtime?.status, runtimeStatusLabels),
+        tone: resolveRuntimeStatusBadgeTone(field.serviceRuntime.runtime),
+        detail: buildRuntimeTooltipDetail(field.serviceRuntime.runtime, runtimeDetailLabels),
+      }
       : undefined);
   const inlineRuntimeActions =
     field.actions ??

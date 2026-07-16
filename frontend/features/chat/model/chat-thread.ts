@@ -2,10 +2,14 @@ import type { ChatAreaMessage, MessageAttachment } from "@/features/chat/types/m
 import type { MessageDTO, UpstreamDebugInfo } from "@/shared/api/conversation.types";
 
 export function parseAttachments(raw: string): MessageAttachment[] {
-  if (!raw) return [];
+  if (!raw) {
+    return [];
+  }
   try {
     const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
     return (parsed as Record<string, unknown>[])
       .map((item) => ({
         fileID: String(item.file_id ?? ""),
@@ -34,43 +38,43 @@ function parseProcessTrace(item: MessageDTO) {
   const mapBlock = (block: typeof trace.process) =>
     block
       ? {
-          title: block.title,
-          summary: block.summary,
-          contentMarkdown: block.contentMarkdown,
-          status: block.status,
-          stage: block.stage,
-          roundID: block.roundID,
-          parentEventID: block.parentEventID,
-          updatedAt: block.updatedAt,
-          payloadJson: block.payloadJSON,
-        }
+        title: block.title,
+        summary: block.summary,
+        contentMarkdown: block.contentMarkdown,
+        status: block.status,
+        stage: block.stage,
+        roundID: block.roundID,
+        parentEventID: block.parentEventID,
+        updatedAt: block.updatedAt,
+        payloadJson: block.payloadJSON,
+      }
       : undefined;
   const promptTrace = trace.promptTrace
     ? {
-        mode: trace.promptTrace.mode,
-        promptFingerprint: trace.promptTrace.promptFingerprint,
-        statefulUsed: trace.promptTrace.statefulUsed,
-        statefulDisabledReason: trace.promptTrace.statefulDisabledReason,
-        totalTokenEstimate: trace.promptTrace.totalTokenEstimate,
-        sentTokenEstimate: trace.promptTrace.sentTokenEstimate,
-        fullMessageCount: trace.promptTrace.fullMessageCount,
-        sentMessageCount: trace.promptTrace.sentMessageCount,
-        statefulSavedMessages: trace.promptTrace.statefulSavedMessages,
-        statefulSavedTokens: trace.promptTrace.statefulSavedTokens,
-        blocks: trace.promptTrace.blocks?.map((block) => ({
-          kind: block.kind,
-          title: block.title,
-          tokenEstimate: block.tokenEstimate,
-          cacheable: block.cacheable,
-          sourceCount: block.sourceCount,
-          sourceRefs: block.sourceRefs?.map((ref) => ({
-            sourceType: ref.sourceType,
-            sourceID: ref.sourceID,
-            title: ref.title,
-            artifactID: ref.artifactID,
-          })),
-        })) ?? [],
-      }
+      mode: trace.promptTrace.mode,
+      promptFingerprint: trace.promptTrace.promptFingerprint,
+      statefulUsed: trace.promptTrace.statefulUsed,
+      statefulDisabledReason: trace.promptTrace.statefulDisabledReason,
+      totalTokenEstimate: trace.promptTrace.totalTokenEstimate,
+      sentTokenEstimate: trace.promptTrace.sentTokenEstimate,
+      fullMessageCount: trace.promptTrace.fullMessageCount,
+      sentMessageCount: trace.promptTrace.sentMessageCount,
+      statefulSavedMessages: trace.promptTrace.statefulSavedMessages,
+      statefulSavedTokens: trace.promptTrace.statefulSavedTokens,
+      blocks: trace.promptTrace.blocks?.map((block) => ({
+        kind: block.kind,
+        title: block.title,
+        tokenEstimate: block.tokenEstimate,
+        cacheable: block.cacheable,
+        sourceCount: block.sourceCount,
+        sourceRefs: block.sourceRefs?.map((ref) => ({
+          sourceType: ref.sourceType,
+          sourceID: ref.sourceID,
+          title: ref.title,
+          artifactID: ref.artifactID,
+        })),
+      })) ?? [],
+    }
     : undefined;
   return {
     enabled: true,
@@ -126,10 +130,18 @@ function parseUpstreamDebugPayload(payloadJSON: string | undefined): UpstreamDeb
 
 function upstreamDebugScore(value: UpstreamDebugInfo): number {
   let score = 0;
-  if (value.request?.body?.trim()) score += 8;
-  if (value.response?.body?.trim()) score += 4;
-  if (value.request?.headers && Object.keys(value.request.headers).length > 0) score += 2;
-  if (value.response?.headers && Object.keys(value.response.headers).length > 0) score += 1;
+  if (value.request?.body?.trim()) {
+    score += 8;
+  }
+  if (value.response?.body?.trim()) {
+    score += 4;
+  }
+  if (value.request?.headers && Object.keys(value.request.headers).length > 0) {
+    score += 2;
+  }
+  if (value.response?.headers && Object.keys(value.response.headers).length > 0) {
+    score += 1;
+  }
   return score;
 }
 

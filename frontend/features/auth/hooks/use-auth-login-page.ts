@@ -111,7 +111,9 @@ export function useLoginPage({ nextPath }: UseLoginPageInput) {
     let mounted = true;
     void resolveAccessToken()
       .then((token) => {
-        if (mounted && token) router.replace(resolvedNextPath);
+        if (mounted && token) {
+          router.replace(resolvedNextPath);
+        }
       })
       .catch(() => undefined);
     return () => {

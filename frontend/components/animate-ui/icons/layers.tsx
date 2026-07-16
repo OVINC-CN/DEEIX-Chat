@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Layers as LucideLayers } from 'lucide-react';
+import { Layers as LucideLayers } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type LayersProps = IconProps<string>;

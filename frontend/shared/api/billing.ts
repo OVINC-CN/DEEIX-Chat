@@ -41,9 +41,15 @@ export async function listBillingUsage(
     page: String(page),
     page_size: String(pageSize),
   });
-  if (options.query?.trim()) params.set("query", options.query.trim());
-  if (options.status?.trim()) params.set("status", options.status.trim());
-  if (options.sort?.trim()) params.set("sort", options.sort.trim());
+  if (options.query?.trim()) {
+    params.set("query", options.query.trim());
+  }
+  if (options.status?.trim()) {
+    params.set("status", options.status.trim());
+  }
+  if (options.sort?.trim()) {
+    params.set("sort", options.sort.trim());
+  }
   return authedRequest<PagePayload<BillingUsageLedgerDTO>>(
     `/api/v1/billing/usage?${params.toString()}`,
     { accessToken },
@@ -98,7 +104,7 @@ export async function redeemBillingCode(accessToken: string, payload: RedeemBill
 export async function subscribeBillingPlan(accessToken: string, priceID: number): Promise<SubscribeData> {
   return authedRequest<SubscribeData>(
     "/api/v1/billing/subscriptions",
-    { method: "POST", accessToken, body: { priceID: priceID, cycles: 1 } },
+    { method: "POST", accessToken, body: { priceID, cycles: 1 } },
     true,
   );
 }

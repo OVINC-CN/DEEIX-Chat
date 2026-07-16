@@ -109,7 +109,7 @@ export async function renameFile(
     {
       method: "PATCH",
       accessToken,
-      body: { fileName: fileName },
+      body: { fileName },
     },
     true,
   );
@@ -125,7 +125,7 @@ export async function updateFileRagOptOut(
     {
       method: "PATCH",
       accessToken,
-      body: { ragOptOut: ragOptOut },
+      body: { ragOptOut },
     },
     true,
   );

@@ -106,9 +106,9 @@ function patchConversationList(
     items.map((item) =>
       item.publicID === publicID
         ? {
-            ...item,
-            ...patch,
-          }
+          ...item,
+          ...patch,
+        }
         : item,
     ),
   );

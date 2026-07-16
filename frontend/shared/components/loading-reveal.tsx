@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-type LoadingRevealPhase = "loading" | "revealing" | "ready"
+type LoadingRevealPhase = "loading" | "revealing" | "ready";
 
 type LoadingRevealProps = {
-  loading: boolean
-  skeleton: React.ReactNode
-  children: React.ReactNode
-  className?: string
-  skeletonClassName?: string
-  contentClassName?: string
-  durationMs?: number
-}
+  loading: boolean;
+  skeleton: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+  skeletonClassName?: string;
+  contentClassName?: string;
+  durationMs?: number;
+};
 
 export function LoadingReveal({
   loading,
@@ -27,42 +27,42 @@ export function LoadingReveal({
 }: LoadingRevealProps) {
   const [phase, setPhase] = React.useState<LoadingRevealPhase>(() =>
     loading ? "loading" : "ready",
-  )
-  const [contentVisible, setContentVisible] = React.useState(() => !loading)
+  );
+  const [contentVisible, setContentVisible] = React.useState(() => !loading);
 
   React.useEffect(() => {
     if (loading) {
-      setPhase("loading")
-      setContentVisible(false)
-      return
+      setPhase("loading");
+      setContentVisible(false);
+      return;
     }
 
-    setPhase((current) => (current === "loading" ? "revealing" : "ready"))
-  }, [loading])
+    setPhase((current) => (current === "loading" ? "revealing" : "ready"));
+  }, [loading]);
 
   React.useEffect(() => {
     if (phase !== "revealing") {
       if (phase === "ready") {
-        setContentVisible(true)
+        setContentVisible(true);
       }
-      return
+      return;
     }
 
     const frameID = window.requestAnimationFrame(() => {
-      setContentVisible(true)
-    })
+      setContentVisible(true);
+    });
     const timerID = window.setTimeout(() => {
-      setPhase("ready")
-    }, durationMs)
+      setPhase("ready");
+    }, durationMs);
 
     return () => {
-      window.cancelAnimationFrame(frameID)
-      window.clearTimeout(timerID)
-    }
-  }, [durationMs, phase])
+      window.cancelAnimationFrame(frameID);
+      window.clearTimeout(timerID);
+    };
+  }, [durationMs, phase]);
 
-  const showSkeleton = phase !== "ready"
-  const showContent = phase !== "loading"
+  const showSkeleton = phase !== "ready";
+  const showContent = phase !== "loading";
 
   return (
     <div className={cn("relative min-h-0", className)}>
@@ -94,5 +94,5 @@ export function LoadingReveal({
         </div>
       ) : null}
     </div>
-  )
+  );
 }

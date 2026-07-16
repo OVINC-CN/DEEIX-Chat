@@ -48,14 +48,20 @@ const PROTOCOL_DEFAULT_KINDS = new Set(PROTOCOL_DEFAULT_KIND_ORDER);
 // ---------------------------------------------------------------------------
 
 function msToS(ms: number): string {
-  if (!ms) return "-";
+  if (!ms) {
+    return "-";
+  }
   return String(Math.round(ms / 1000));
 }
 
 function formatDateTime(value: string, locale: string): string {
-  if (!value) return "-";
+  if (!value) {
+    return "-";
+  }
   const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "-";
+  if (Number.isNaN(d.getTime())) {
+    return "-";
+  }
   return new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "2-digit",
@@ -66,10 +72,14 @@ function formatDateTime(value: string, locale: string): string {
 }
 
 function formatCircuitUntil(until: string, locale: string, unknown: string): string {
-  if (!until) return unknown;
+  if (!until) {
+    return unknown;
+  }
   const ts = Number(until);
   const d = Number.isFinite(ts) ? new Date(ts * 1000) : new Date(until);
-  if (Number.isNaN(d.getTime())) return until;
+  if (Number.isNaN(d.getTime())) {
+    return until;
+  }
   return new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "2-digit",
@@ -80,7 +90,9 @@ function formatCircuitUntil(until: string, locale: string, unknown: string): str
 }
 
 function parseProtocolDefaults(raw: string): Array<{ kind: string; protocol: string }> {
-  if (!raw.trim()) return [];
+  if (!raw.trim()) {
+    return [];
+  }
   try {
     const parsed = JSON.parse(raw) as unknown;
     if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
@@ -199,173 +211,173 @@ export function UpstreamsTable({
                   key={item.id}
                   selected={selected.has(item.id)}
                 >
-                <TableCell className="w-[44px] py-1.5 whitespace-nowrap text-center">
-                  <div className="flex h-7 items-center justify-center">
-                    <Checkbox
-                      checked={selected.has(item.id)}
-                      onCheckedChange={(checked) =>
-                        onSelectOne(item.id, checked === true)
-                      }
-                      aria-label={t("table.selectRow", { name: item.name })}
-                    />
-                  </div>
-                </TableCell>
+                  <TableCell className="w-[44px] py-1.5 whitespace-nowrap text-center">
+                    <div className="flex h-7 items-center justify-center">
+                      <Checkbox
+                        checked={selected.has(item.id)}
+                        onCheckedChange={(checked) =>
+                          onSelectOne(item.id, checked === true)
+                        }
+                        aria-label={t("table.selectRow", { name: item.name })}
+                      />
+                    </div>
+                  </TableCell>
 
-                <TableCell className="py-1.5 whitespace-nowrap font-mono text-xs text-muted-foreground">
-                  <span className="flex h-7 items-center">{item.id}</span>
-                </TableCell>
+                  <TableCell className="py-1.5 whitespace-nowrap font-mono text-xs text-muted-foreground">
+                    <span className="flex h-7 items-center">{item.id}</span>
+                  </TableCell>
 
-                <TableCell>
-                  <div className="max-w-[18rem] truncate whitespace-nowrap">
-                    <span className="font-medium">{item.name}</span>
-                  </div>
-                </TableCell>
+                  <TableCell>
+                    <div className="max-w-[18rem] truncate whitespace-nowrap">
+                      <span className="font-medium">{item.name}</span>
+                    </div>
+                  </TableCell>
 
-                <TableCell>
-                  <div
-                    className="max-w-[12rem] truncate text-xs text-muted-foreground"
-                    title={item.baseURL}
-                  >
-                    {item.baseURL}
-                  </div>
-                </TableCell>
+                  <TableCell>
+                    <div
+                      className="max-w-[12rem] truncate text-xs text-muted-foreground"
+                      title={item.baseURL}
+                    >
+                      {item.baseURL}
+                    </div>
+                  </TableCell>
 
-                <TableCell className="whitespace-nowrap">
-                  <div className="flex items-center gap-1.5">
-                    <Badge variant="secondary">
-                      {item.compatible === "custom" ? t("compatible.custom") : resolveCompatibleLabel(item.compatible)}
-                    </Badge>
-                    {protocolDefaults.length > 0 ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Badge
-                            variant="secondary"
-                            className="max-w-32 cursor-default truncate text-muted-foreground"
-                          >
-                            {t("table.protocolDefaultsCount", { count: protocolDefaults.length })}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">
-                          <div className="space-y-1.5">
-                            {protocolDefaults.map((entry) => (
-                              <div key={`${entry.kind}:${entry.protocol}`} className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-3">
-                                <span className="text-xs">
-                                  {t(`kinds.${entry.kind}`)}
-                                </span>
-                                <span className="truncate text-xs">
-                                  {resolveProtocolLabel(entry.protocol)}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">{t("table.noDefaults")}</span>
-                    )}
-                  </div>
-                </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    <div className="flex items-center gap-1.5">
+                      <Badge variant="secondary">
+                        {item.compatible === "custom" ? t("compatible.custom") : resolveCompatibleLabel(item.compatible)}
+                      </Badge>
+                      {protocolDefaults.length > 0 ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge
+                              variant="secondary"
+                              className="max-w-32 cursor-default truncate text-muted-foreground"
+                            >
+                              {t("table.protocolDefaultsCount", { count: protocolDefaults.length })}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            <div className="space-y-1.5">
+                              {protocolDefaults.map((entry) => (
+                                <div key={`${entry.kind}:${entry.protocol}`} className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-3">
+                                  <span className="text-xs">
+                                    {t(`kinds.${entry.kind}`)}
+                                  </span>
+                                  <span className="truncate text-xs">
+                                    {resolveProtocolLabel(entry.protocol)}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">{t("table.noDefaults")}</span>
+                      )}
+                    </div>
+                  </TableCell>
 
-                <TableCell className="py-1.5 whitespace-nowrap">
-                  <div className="flex h-7 items-center justify-center gap-2">
-                    <Switch
-                      size="sm"
-                      checked={item.status === "active"}
-                      disabled={togglingStatusIDs.has(item.id)}
-                      onCheckedChange={() => onToggleStatus(item)}
-                      aria-label={t("table.toggleStatus", {
-                        action: item.status === "active" ? t("actions.disable") : t("actions.enable"),
-                        name: item.name,
-                      })}
-                    />
-                    {item.circuitOpen ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <ShieldAlert
-                            className="size-4 text-destructive"
-                            aria-label={t("status.circuitOpen")}
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent side="top" className="text-xs">
-                          {t("table.circuitUntil", {
-                            time: formatCircuitUntil(item.circuitUntil, locale, t("table.unknown")),
-                          })}
-                        </TooltipContent>
-                      </Tooltip>
-                    ) : null}
-                  </div>
-                </TableCell>
+                  <TableCell className="py-1.5 whitespace-nowrap">
+                    <div className="flex h-7 items-center justify-center gap-2">
+                      <Switch
+                        size="sm"
+                        checked={item.status === "active"}
+                        disabled={togglingStatusIDs.has(item.id)}
+                        onCheckedChange={() => onToggleStatus(item)}
+                        aria-label={t("table.toggleStatus", {
+                          action: item.status === "active" ? t("actions.disable") : t("actions.enable"),
+                          name: item.name,
+                        })}
+                      />
+                      {item.circuitOpen ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <ShieldAlert
+                              className="size-4 text-destructive"
+                              aria-label={t("status.circuitOpen")}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-xs">
+                            {t("table.circuitUntil", {
+                              time: formatCircuitUntil(item.circuitUntil, locale, t("table.unknown")),
+                            })}
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : null}
+                    </div>
+                  </TableCell>
 
-                <TableCell>
-                  <div className="max-w-[10rem] truncate text-xs text-muted-foreground">
-                    {t("table.modelCountSummary", { active: item.activeModelsCount, total: item.modelsCount })}
-                  </div>
-                </TableCell>
+                  <TableCell>
+                    <div className="max-w-[10rem] truncate text-xs text-muted-foreground">
+                      {t("table.modelCountSummary", { active: item.activeModelsCount, total: item.modelsCount })}
+                    </div>
+                  </TableCell>
 
-                <TableCell>
-                  <div className="max-w-[15rem] truncate font-mono text-xs text-muted-foreground">
-                    C {msToS(item.connectTimeoutMS)}s / R {msToS(item.readTimeoutMS)}s / S {msToS(item.streamIdleTimeoutMS)}s
-                  </div>
-                </TableCell>
+                  <TableCell>
+                    <div className="max-w-[15rem] truncate font-mono text-xs text-muted-foreground">
+                      C {msToS(item.connectTimeoutMS)}s / R {msToS(item.readTimeoutMS)}s / S {msToS(item.streamIdleTimeoutMS)}s
+                    </div>
+                  </TableCell>
 
-                <TableCell className="whitespace-nowrap text-muted-foreground">
-                  {formatDateTime(item.updatedAt, locale)}
-                </TableCell>
+                  <TableCell className="whitespace-nowrap text-muted-foreground">
+                    {formatDateTime(item.updatedAt, locale)}
+                  </TableCell>
 
-                <TableCell className="w-[56px] py-1.5 whitespace-nowrap" stickyEnd>
-                  <div className="flex h-7 items-center justify-end gap-1">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon-xs" className="text-muted-foreground shadow-none">
-                          <MoreHorizontal className="size-3.5 stroke-1" />
-                          <span className="sr-only">{t("table.actions")}</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => onEdit(item)}>
-                          <Pencil className="size-3.5 stroke-1" />
-                          {t("actions.edit")}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onManageModels(item)}>
-                          <Settings2 className="size-3.5 stroke-1" />
-                          {t("actions.manageModels")}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onSyncModels(item)}>
-                          <CloudDownload className="size-3.5 stroke-1" />
-                          {t("actions.syncRemoteModels")}
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {item.circuitOpen ? (
-                          <DropdownMenuItem
-                            onClick={() => onCircuitAction(item, "reset")}
-                          >
-                            <RotateCcw className="size-3.5 stroke-1" />
-                            {t("actions.resetCircuit")}
+                  <TableCell className="w-[56px] py-1.5 whitespace-nowrap" stickyEnd>
+                    <div className="flex h-7 items-center justify-end gap-1">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon-xs" className="text-muted-foreground shadow-none">
+                            <MoreHorizontal className="size-3.5 stroke-1" />
+                            <span className="sr-only">{t("table.actions")}</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => onEdit(item)}>
+                            <Pencil className="size-3.5 stroke-1" />
+                            {t("actions.edit")}
                           </DropdownMenuItem>
-                        ) : (
-                          <DropdownMenuItem
-                            onClick={() => onCircuitAction(item, "open")}
-                          >
-                            <CircleOff className="size-3.5 stroke-1" />
-                            {t("actions.openCircuit")}
+                          <DropdownMenuItem onClick={() => onManageModels(item)}>
+                            <Settings2 className="size-3.5 stroke-1" />
+                            {t("actions.manageModels")}
                           </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem onClick={() => onToggleStatus(item)}>
-                          <Zap className="size-3.5 stroke-1" />
-                          {item.status === "active" ? t("actions.disableUpstream") : t("actions.enableUpstream")}
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => onDelete(item)}
-                        >
-                          <Trash2 className="size-3.5 stroke-1" />
-                          {t("actions.delete")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </TableCell>
+                          <DropdownMenuItem onClick={() => onSyncModels(item)}>
+                            <CloudDownload className="size-3.5 stroke-1" />
+                            {t("actions.syncRemoteModels")}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {item.circuitOpen ? (
+                            <DropdownMenuItem
+                              onClick={() => onCircuitAction(item, "reset")}
+                            >
+                              <RotateCcw className="size-3.5 stroke-1" />
+                              {t("actions.resetCircuit")}
+                            </DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem
+                              onClick={() => onCircuitAction(item, "open")}
+                            >
+                              <CircleOff className="size-3.5 stroke-1" />
+                              {t("actions.openCircuit")}
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem onClick={() => onToggleStatus(item)}>
+                            <Zap className="size-3.5 stroke-1" />
+                            {item.status === "active" ? t("actions.disableUpstream") : t("actions.enableUpstream")}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => onDelete(item)}
+                          >
+                            <Trash2 className="size-3.5 stroke-1" />
+                            {t("actions.delete")}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </TableCell>
                 </TableRow>
               );
             })}

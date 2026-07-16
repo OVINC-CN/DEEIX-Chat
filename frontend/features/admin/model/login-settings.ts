@@ -53,61 +53,61 @@ type LoginSettingsTranslator = (key: string) => string;
 
 export function buildLoginSettingsGroups(t: LoginSettingsTranslator): LoginSettingsGroup[] {
   return [
-  {
-    title: t("groups.loginPage.title"),
-    description: t("groups.loginPage.description"),
-    fields: [
-      { namespace: "auth", key: "login_default_next_path", label: t("fields.loginDefaultNextPath.label"), description: t("fields.loginDefaultNextPath.description"), type: "string", placeholder: "/chat" },
-    ],
-  },
-  {
-    title: t("groups.loginAndRegistration.title"),
-    description: t("groups.loginAndRegistration.description"),
-    fields: [
-      { namespace: "auth", key: "email_login_enabled", label: t("fields.emailLoginEnabled.label"), description: t("fields.emailLoginEnabled.description"), type: "bool" },
-      { namespace: "auth", key: "email_registration_enabled", label: t("fields.emailRegistrationEnabled.label"), description: t("fields.emailRegistrationEnabled.description"), type: "bool" },
-      { namespace: "auth", key: "password_reset_enabled", label: t("fields.passwordResetEnabled.label"), description: t("fields.passwordResetEnabled.description"), type: "bool" },
-      { namespace: "auth", key: "username_login_enabled", label: t("fields.usernameLoginEnabled.label"), description: t("fields.usernameLoginEnabled.description"), type: "bool" },
-      { namespace: "auth", key: "third_party_login_enabled", label: t("fields.thirdPartyLoginEnabled.label"), description: t("fields.thirdPartyLoginEnabled.description"), type: "bool" },
-    ],
-  },
-  {
-    title: t("groups.humanVerification.title"),
-    description: t("groups.humanVerification.description"),
-    fields: [
-      { namespace: "auth", key: "turnstile_registration_enabled", label: t("fields.turnstileRegistrationEnabled.label"), description: t("fields.turnstileRegistrationEnabled.description"), type: "bool" },
-      { namespace: "auth", key: "turnstile_site_key", label: t("fields.turnstileSiteKey.label"), description: t("fields.turnstileSiteKey.description"), type: "string", placeholder: "0x4AAAA..." },
-      { namespace: "auth", key: "turnstile_secret_key", label: t("fields.turnstileSecretKey.label"), description: t("fields.turnstileSecretKey.description"), type: "password" },
-    ],
-  },
-  {
-    title: t("groups.bindingAndVerification.title"),
-    description: t("groups.bindingAndVerification.description"),
-    fields: [
-      { namespace: "auth", key: "email_verification_enabled", label: t("fields.emailVerificationEnabled.label"), description: t("fields.emailVerificationEnabled.description"), type: "bool" },
-      { namespace: "auth", key: "smtp_host", label: t("fields.smtpHost.label"), description: t("fields.smtpHost.description"), type: "string", placeholder: "smtp.example.com" },
-      { namespace: "auth", key: "smtp_port", label: t("fields.smtpPort.label"), description: t("fields.smtpPort.description"), type: "int", placeholder: "587" },
-      { namespace: "auth", key: "smtp_username", label: t("fields.smtpUsername.label"), description: t("fields.smtpUsername.description"), type: "string", placeholder: "noreply@example.com" },
-      { namespace: "auth", key: "smtp_password", label: t("fields.smtpPassword.label"), description: t("fields.smtpPassword.description"), type: "password" },
-      { namespace: "auth", key: "smtp_from", label: t("fields.smtpFrom.label"), description: t("fields.smtpFrom.description"), type: "string", placeholder: "OVINC Chat <noreply@example.com>" },
-      { namespace: "auth", key: "email_registration_allowed_domains", label: t("fields.emailRegistrationAllowedDomains.label"), description: t("fields.emailRegistrationAllowedDomains.description"), type: "textarea", placeholder: "example.com\ncompany.com" },
-      { namespace: "auth", key: "email_registration_block_plus_alias", label: t("fields.emailRegistrationBlockPlusAlias.label"), description: t("fields.emailRegistrationBlockPlusAlias.description"), type: "bool" },
-      { namespace: "auth", key: "auto_link_verified_email", label: t("fields.autoLinkVerifiedEmail.label"), description: t("fields.autoLinkVerifiedEmail.description"), type: "bool" },
-    ],
-  },
-  {
-    title: t("groups.loginSecurity.title"),
-    description: t("groups.loginSecurity.description"),
-    fields: [
-      { namespace: "auth", key: "token_ttl_hours", label: t("fields.tokenTTLHours.label"), description: t("fields.tokenTTLHours.description"), type: "int", placeholder: "24" },
-      { namespace: "auth", key: "refresh_token_ttl_hours", label: t("fields.refreshTokenTTLHours.label"), description: t("fields.refreshTokenTTLHours.description"), type: "int", placeholder: "720" },
-      { namespace: "auth", key: "login_max_failures", label: t("fields.loginMaxFailures.label"), description: t("fields.loginMaxFailures.description"), type: "int", placeholder: "5" },
-      { namespace: "auth", key: "login_lock_minutes", label: t("fields.loginLockMinutes.label"), description: t("fields.loginLockMinutes.description"), type: "int", placeholder: "15" },
-      { namespace: "auth", key: "rate_limit_enabled", label: t("fields.rateLimitEnabled.label"), description: t("fields.rateLimitEnabled.description"), type: "bool" },
-      { namespace: "auth", key: "rate_limit_rpm", label: t("fields.rateLimitRPM.label"), description: t("fields.rateLimitRPM.description"), type: "int", placeholder: "60" },
-      { namespace: "auth", key: "public_auth_rate_limit_rpm", label: t("fields.publicAuthRateLimitRPM.label"), description: t("fields.publicAuthRateLimitRPM.description"), type: "int", placeholder: "30" },
-    ],
-  },
+    {
+      title: t("groups.loginPage.title"),
+      description: t("groups.loginPage.description"),
+      fields: [
+        { namespace: "auth", key: "login_default_next_path", label: t("fields.loginDefaultNextPath.label"), description: t("fields.loginDefaultNextPath.description"), type: "string", placeholder: "/chat" },
+      ],
+    },
+    {
+      title: t("groups.loginAndRegistration.title"),
+      description: t("groups.loginAndRegistration.description"),
+      fields: [
+        { namespace: "auth", key: "email_login_enabled", label: t("fields.emailLoginEnabled.label"), description: t("fields.emailLoginEnabled.description"), type: "bool" },
+        { namespace: "auth", key: "email_registration_enabled", label: t("fields.emailRegistrationEnabled.label"), description: t("fields.emailRegistrationEnabled.description"), type: "bool" },
+        { namespace: "auth", key: "password_reset_enabled", label: t("fields.passwordResetEnabled.label"), description: t("fields.passwordResetEnabled.description"), type: "bool" },
+        { namespace: "auth", key: "username_login_enabled", label: t("fields.usernameLoginEnabled.label"), description: t("fields.usernameLoginEnabled.description"), type: "bool" },
+        { namespace: "auth", key: "third_party_login_enabled", label: t("fields.thirdPartyLoginEnabled.label"), description: t("fields.thirdPartyLoginEnabled.description"), type: "bool" },
+      ],
+    },
+    {
+      title: t("groups.humanVerification.title"),
+      description: t("groups.humanVerification.description"),
+      fields: [
+        { namespace: "auth", key: "turnstile_registration_enabled", label: t("fields.turnstileRegistrationEnabled.label"), description: t("fields.turnstileRegistrationEnabled.description"), type: "bool" },
+        { namespace: "auth", key: "turnstile_site_key", label: t("fields.turnstileSiteKey.label"), description: t("fields.turnstileSiteKey.description"), type: "string", placeholder: "0x4AAAA..." },
+        { namespace: "auth", key: "turnstile_secret_key", label: t("fields.turnstileSecretKey.label"), description: t("fields.turnstileSecretKey.description"), type: "password" },
+      ],
+    },
+    {
+      title: t("groups.bindingAndVerification.title"),
+      description: t("groups.bindingAndVerification.description"),
+      fields: [
+        { namespace: "auth", key: "email_verification_enabled", label: t("fields.emailVerificationEnabled.label"), description: t("fields.emailVerificationEnabled.description"), type: "bool" },
+        { namespace: "auth", key: "smtp_host", label: t("fields.smtpHost.label"), description: t("fields.smtpHost.description"), type: "string", placeholder: "smtp.example.com" },
+        { namespace: "auth", key: "smtp_port", label: t("fields.smtpPort.label"), description: t("fields.smtpPort.description"), type: "int", placeholder: "587" },
+        { namespace: "auth", key: "smtp_username", label: t("fields.smtpUsername.label"), description: t("fields.smtpUsername.description"), type: "string", placeholder: "noreply@example.com" },
+        { namespace: "auth", key: "smtp_password", label: t("fields.smtpPassword.label"), description: t("fields.smtpPassword.description"), type: "password" },
+        { namespace: "auth", key: "smtp_from", label: t("fields.smtpFrom.label"), description: t("fields.smtpFrom.description"), type: "string", placeholder: "OVINC Chat <noreply@example.com>" },
+        { namespace: "auth", key: "email_registration_allowed_domains", label: t("fields.emailRegistrationAllowedDomains.label"), description: t("fields.emailRegistrationAllowedDomains.description"), type: "textarea", placeholder: "example.com\ncompany.com" },
+        { namespace: "auth", key: "email_registration_block_plus_alias", label: t("fields.emailRegistrationBlockPlusAlias.label"), description: t("fields.emailRegistrationBlockPlusAlias.description"), type: "bool" },
+        { namespace: "auth", key: "auto_link_verified_email", label: t("fields.autoLinkVerifiedEmail.label"), description: t("fields.autoLinkVerifiedEmail.description"), type: "bool" },
+      ],
+    },
+    {
+      title: t("groups.loginSecurity.title"),
+      description: t("groups.loginSecurity.description"),
+      fields: [
+        { namespace: "auth", key: "token_ttl_hours", label: t("fields.tokenTTLHours.label"), description: t("fields.tokenTTLHours.description"), type: "int", placeholder: "24" },
+        { namespace: "auth", key: "refresh_token_ttl_hours", label: t("fields.refreshTokenTTLHours.label"), description: t("fields.refreshTokenTTLHours.description"), type: "int", placeholder: "720" },
+        { namespace: "auth", key: "login_max_failures", label: t("fields.loginMaxFailures.label"), description: t("fields.loginMaxFailures.description"), type: "int", placeholder: "5" },
+        { namespace: "auth", key: "login_lock_minutes", label: t("fields.loginLockMinutes.label"), description: t("fields.loginLockMinutes.description"), type: "int", placeholder: "15" },
+        { namespace: "auth", key: "rate_limit_enabled", label: t("fields.rateLimitEnabled.label"), description: t("fields.rateLimitEnabled.description"), type: "bool" },
+        { namespace: "auth", key: "rate_limit_rpm", label: t("fields.rateLimitRPM.label"), description: t("fields.rateLimitRPM.description"), type: "int", placeholder: "60" },
+        { namespace: "auth", key: "public_auth_rate_limit_rpm", label: t("fields.publicAuthRateLimitRPM.label"), description: t("fields.publicAuthRateLimitRPM.description"), type: "int", placeholder: "30" },
+      ],
+    },
   ];
 }
 

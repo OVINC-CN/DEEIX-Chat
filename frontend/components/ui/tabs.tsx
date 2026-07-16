@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { Tabs as TabsPrimitive } from "radix-ui"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Tabs as TabsPrimitive } from "radix-ui";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Tabs({
   className,
@@ -18,11 +18,11 @@ function Tabs({
       orientation={orientation}
       className={cn(
         "group/tabs flex gap-2 data-[orientation=horizontal]:flex-col",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 const tabsListVariants = cva(
@@ -37,8 +37,8 @@ const tabsListVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
-)
+  },
+);
 
 function TabsList({
   className,
@@ -53,7 +53,7 @@ function TabsList({
       className={cn(tabsListVariants({ variant }), className)}
       {...props}
     />
-  )
+  );
 }
 
 function TabsTrigger({
@@ -65,11 +65,11 @@ function TabsTrigger({
       data-slot="tabs-trigger"
       className={cn(
         "relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium whitespace-nowrap text-foreground/60 transition-colors group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start hover:text-foreground focus-visible:ring-[2px] focus-visible:ring-ring/40 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-pure data-[state=active]:text-pure-foreground data-[state=active]:shadow-xs dark:text-muted-foreground dark:hover:text-foreground dark:data-[state=active]:bg-pure dark:data-[state=active]:text-pure-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TabsContent({
@@ -82,7 +82,7 @@ function TabsContent({
       className={cn("flex-1 outline-none", className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants }
+export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants };

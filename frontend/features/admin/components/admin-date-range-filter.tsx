@@ -53,9 +53,9 @@ export function AdminDateRangeFilter({
   const hasValue = fromValue.trim() !== "" || toValue.trim() !== "";
   const selectedRange: DateRange | undefined = hasValue
     ? {
-        from: parseDateValue(fromValue),
-        to: parseDateValue(toValue),
-      }
+      from: parseDateValue(fromValue),
+      to: parseDateValue(toValue),
+    }
     : undefined;
   const rangeStart = selectedRange?.from;
   const disabledDates: Matcher | undefined = maxRangeDays && rangeStart && !selectedRange?.to

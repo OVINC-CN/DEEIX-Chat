@@ -42,7 +42,7 @@ const FolderArchiveIcon = forwardRef<FolderArchiveIconHandle, FolderArchiveIconP
         </svg>
       </div>
     );
-  }
+  },
 );
 
 FolderArchiveIcon.displayName = "FolderArchiveIcon";

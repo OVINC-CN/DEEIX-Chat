@@ -78,7 +78,9 @@ function PreferenceCard({
 
   const commitEdit = async () => {
     const v = (editingValue ?? "").trim();
-    if (!v || v === item.value) { setEditingValue(null); return; }
+    if (!v || v === item.value) {
+      setEditingValue(null); return;
+    }
     setSaving(true);
     await onEdit(item.memoryKey, v);
     setSaving(false);
@@ -100,8 +102,12 @@ function PreferenceCard({
               className="min-h-14 w-full resize-none rounded-md border border-input bg-background px-2.5 py-1.5 text-xs leading-relaxed outline-none focus:border-ring"
               onChange={(e) => setEditingValue(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void commitEdit(); }
-                if (e.key === "Escape") cancelEdit();
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault(); void commitEdit();
+                }
+                if (e.key === "Escape") {
+                  cancelEdit();
+                }
               }}
             />
           </div>
@@ -271,7 +277,9 @@ function PreferenceMemorySection() {
       setLoadingMems(true);
       try {
         const token = await resolveAccessToken();
-        if (!token) return;
+        if (!token) {
+          return;
+        }
         const all = await listUserMemories(token);
         setItems(all.filter((m) => m.scope === "preference"));
       } catch {
@@ -285,11 +293,15 @@ function PreferenceMemorySection() {
   const handleAdd = React.useCallback(async () => {
     const key = addKey.trim();
     const value = addValue.trim();
-    if (!key || !value) return;
+    if (!key || !value) {
+      return;
+    }
     setAdding(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       await upsertUserMemory(token, key, value, "preference");
       setItems((prev) => {
         const exists = prev.find((m) => m.memoryKey === key);
@@ -321,7 +333,9 @@ function PreferenceMemorySection() {
   const handleEdit = React.useCallback(async (memoryKey: string, value: string) => {
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       await upsertUserMemory(token, memoryKey, value, "preference");
       setItems((prev) => prev.map((m) => m.memoryKey === memoryKey ? { ...m, value } : m));
       toast.success(t("updated"));
@@ -333,7 +347,9 @@ function PreferenceMemorySection() {
   const handleDelete = React.useCallback(async (memoryKey: string) => {
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       await deleteUserMemory(token, memoryKey);
       setItems((prev) => prev.filter((m) => m.memoryKey !== memoryKey));
       toast.success(t("deleted"));

@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronDownIcon } from "lucide-react"
-import { Accordion as AccordionPrimitive } from "radix-ui"
+import * as React from "react";
+import { ChevronDownIcon } from "lucide-react";
+import { Accordion as AccordionPrimitive } from "radix-ui";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Accordion({
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
-  return <AccordionPrimitive.Root data-slot="accordion" {...props} />
+  return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
 }
 
 function AccordionItem({
@@ -22,7 +22,7 @@ function AccordionItem({
       className={cn("border-b last:border-b-0", className)}
       {...props}
     />
-  )
+  );
 }
 
 function AccordionTrigger({
@@ -31,7 +31,7 @@ function AccordionTrigger({
   iconPosition = "right",
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Trigger> & {
-  iconPosition?: "left" | "right" | "adjacent" | "none"
+  iconPosition?: "left" | "right" | "adjacent" | "none";
 }) {
   return (
     <AccordionPrimitive.Header className="flex">
@@ -40,7 +40,7 @@ function AccordionTrigger({
         className={cn(
           "flex flex-1 items-start gap-4 rounded-md py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]_.accordion-trigger-icon]:rotate-180",
           iconPosition === "right" ? "justify-between" : "justify-start",
-          className
+          className,
         )}
         {...props}
       >
@@ -62,7 +62,7 @@ function AccordionTrigger({
         )}
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
-  )
+  );
 }
 
 function AccordionContent({
@@ -78,7 +78,7 @@ function AccordionContent({
     >
       <div className={cn("pt-0 pb-4 px-0.5", className)}>{children}</div>
     </AccordionPrimitive.Content>
-  )
+  );
 }
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };

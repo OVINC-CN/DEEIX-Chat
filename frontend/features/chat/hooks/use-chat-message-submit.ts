@@ -608,8 +608,8 @@ export function useChatMessageSubmit({
         combinedMessages.some((item) => item.publicID === resolvedSourcePublicID && item.role === "assistant");
       const reusedUserMessage = assistantOnlyBranch
         ? combinedMessages.find(
-            (item) => item.publicID === resolvedParentPublicID && item.role === "user",
-          ) ?? null
+          (item) => item.publicID === resolvedParentPublicID && item.role === "user",
+        ) ?? null
         : null;
       const pendingParentPublicID = assistantOnlyBranch
         ? reusedUserMessage?.parentPublicID ?? null
@@ -759,7 +759,7 @@ export function useChatMessageSubmit({
         const commonStreamPayload = {
           model: requestPlatformModelName,
           options: Object.keys(sanitizedOptions).length > 0 ? sanitizedOptions : undefined,
-          clientRunID: clientRunID,
+          clientRunID,
           fileIDs: effectiveAttachments.length > 0 ? effectiveAttachments.map((item) => item.fileID) : undefined,
           parentMessagePublicID: resolvedParentPublicID || undefined,
           sourceMessagePublicID: resolvedSourcePublicID || undefined,
@@ -892,14 +892,14 @@ export function useChatMessageSubmit({
             : "";
           const completedErrorMessage = completed.assistantMessage.errorCode
             ? resolveErrorMessage(
-                new ApiError(
-                  completed.assistantMessage.errorMessage || t("retryLater"),
-                  502,
-                  terminalStreamError?.debug,
-                  completed.assistantMessage.errorCode,
-                ),
+              new ApiError(
                 completed.assistantMessage.errorMessage || t("retryLater"),
-              )
+                502,
+                terminalStreamError?.debug,
+                completed.assistantMessage.errorCode,
+              ),
+              completed.assistantMessage.errorMessage || t("retryLater"),
+            )
             : completed.assistantMessage.errorMessage;
           return {
             ...current,
@@ -943,10 +943,10 @@ export function useChatMessageSubmit({
             assistantInlineAlert:
               completed.assistantMessage.status === "error" || completed.assistantMessage.status === "interrupted"
                 ? {
-                    title: t("generationInterrupted"),
-                    message: terminalErrorMessage || completedErrorMessage || t("retryLater"),
-                    details: terminalStreamError?.debug,
-                  }
+                  title: t("generationInterrupted"),
+                  message: terminalErrorMessage || completedErrorMessage || t("retryLater"),
+                  details: terminalStreamError?.debug,
+                }
                 : undefined,
             assistantText:
               streamedText === completed.assistantMessage.content

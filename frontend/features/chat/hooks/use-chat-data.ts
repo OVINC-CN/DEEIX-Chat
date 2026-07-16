@@ -433,16 +433,16 @@ export function useChatData(
               messages: prev.messages.map((message) =>
                 message.runID === pendingRunID && message.role === "assistant" && message.status === "pending"
                   ? {
-                      ...message,
-                      inputTokens: event.input_tokens > 0 ? event.input_tokens : message.inputTokens,
-                      outputTokens: event.output_tokens > 0 ? event.output_tokens : message.outputTokens,
-                      cacheReadTokens:
+                    ...message,
+                    inputTokens: event.input_tokens > 0 ? event.input_tokens : message.inputTokens,
+                    outputTokens: event.output_tokens > 0 ? event.output_tokens : message.outputTokens,
+                    cacheReadTokens:
                         event.cache_read_tokens > 0 ? event.cache_read_tokens : message.cacheReadTokens,
-                      cacheWriteTokens:
+                    cacheWriteTokens:
                         event.cache_write_tokens > 0 ? event.cache_write_tokens : message.cacheWriteTokens,
-                      reasoningTokens:
+                    reasoningTokens:
                         event.reasoning_tokens > 0 ? event.reasoning_tokens : message.reasoningTokens,
-                    }
+                  }
                   : message,
               ),
             }));

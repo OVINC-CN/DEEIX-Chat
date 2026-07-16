@@ -45,7 +45,6 @@ import { CopyActionButton } from "@/shared/components/copy-action";
 import { TimeZoneSelect } from "@/shared/components/time-zone-select";
 import { createQRCodeSVG } from "@/shared/lib/qr-code";
 import { detectCurrentTimeZone } from "@/shared/lib/time-zone";
-import { cn } from "@/lib/utils";
 
 const ADMIN_ONBOARDING_TIPS = [
   "adminTips.upstreams",
@@ -284,7 +283,9 @@ export function InitialSecurityGuard() {
       : t("userReadyDescription");
 
   const submitAccountStep = React.useCallback(async () => {
-    if (!viewer?.initialSecurityRequired || savingAccount) return;
+    if (!viewer?.initialSecurityRequired || savingAccount) {
+      return;
+    }
     const nextUsername = username.trim().toLowerCase();
     const nextDisplayName = displayName.trim();
     const nextPassword = password.trim();
@@ -331,7 +332,9 @@ export function InitialSecurityGuard() {
   }, [accessToken, displayName, password, resolveErrorMessage, savingAccount, t, tCommonErrors, username, viewer]);
 
   const confirmTwoFactor = React.useCallback(async () => {
-    if (savingTwoFactor) return;
+    if (savingTwoFactor) {
+      return;
+    }
     const code = otp.replace(/\D/g, "").slice(0, 6);
     if (code.length !== 6) {
       toast.error(t("toasts.otpRequired"));
@@ -374,7 +377,9 @@ export function InitialSecurityGuard() {
   }, [accessToken, otp, refreshUser, resolveErrorMessage, savingTwoFactor, t, tCommonErrors]);
 
   const skipTwoFactor = React.useCallback(async () => {
-    if (savingTwoFactor) return;
+    if (savingTwoFactor) {
+      return;
+    }
     setSavingTwoFactor(true);
     try {
       if (twoFactorSetup) {
@@ -439,7 +444,9 @@ export function InitialSecurityGuard() {
   );
 
   const savePersonalizationStep = React.useCallback(async () => {
-    if (!viewer || savingPersonalization) return;
+    if (!viewer || savingPersonalization) {
+      return;
+    }
     const nextTimezone = timezone.trim() || currentTimeZone;
     const profilePayload: Parameters<typeof patchMe>[1] = {};
     const appearancePreferences = currentAppearancePreferences();
@@ -472,7 +479,9 @@ export function InitialSecurityGuard() {
   }, [accessToken, currentAppearancePreferences, currentTimeZone, resolveErrorMessage, savingPersonalization, t, tCommonErrors, timezone, viewer]);
 
   const finishInitialSecurity = React.useCallback(async () => {
-    if (!viewer || finishing) return;
+    if (!viewer || finishing) {
+      return;
+    }
     if (viewer.mustResetPassword && !isPasswordPolicyValid(password)) {
       toast.error(t("toasts.passwordTooShort"));
       setStep(2);
@@ -543,340 +552,340 @@ export function InitialSecurityGuard() {
           </div>
 
           <div className="flex flex-1">
-          <Onboarding.Step step={1} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
-            <div className="flex flex-1 items-center">
-              <div className="w-full space-y-6">
-                <Onboarding.Header className="text-left">
-                  <div className="space-y-3">
-                    <h2 className="text-2xl font-semibold tracking-normal">{welcomeTitle}</h2>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {welcomeDescription}
-                    </p>
-                  </div>
-                </Onboarding.Header>
-
-                <div className="w-full space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground" htmlFor="initial-locale-trigger">
-                    {t("labels.language")}
-                  </label>
-                  <Select
-                    value={locale}
-                    disabled={Boolean(savingLocale)}
-                    onValueChange={(value) => handleLocaleChange(value as AppLocale)}
-                  >
-                    <SelectTrigger id="initial-locale-trigger" aria-label={t("labels.language")} className="h-8 w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {APP_LOCALES.map((item) => (
-                        <SelectItem key={item} value={item}>
-                          {APP_LOCALE_LABELS[item]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-            <Onboarding.Navigation aria-label={t("aria.welcomeNavigation")} className="mt-auto justify-end pt-6">
-              <Button type="button" disabled={Boolean(savingLocale)} onClick={() => void saveWelcomeStep()}>
-                {savingLocale ? <SpinnerLabel>{t("saving")}</SpinnerLabel> : t("start")}
-              </Button>
-            </Onboarding.Navigation>
-          </Onboarding.Step>
-
-          <Onboarding.Step step={2} className="flex flex-1 animate-in fade-in-0 slide-in-from-right-2 duration-200">
-            <form
-              className="flex flex-1 flex-col"
-              autoComplete="on"
-              onSubmit={(event) => {
-                event.preventDefault();
-                void submitAccountStep();
-              }}
-            >
+            <Onboarding.Step step={1} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
               <div className="flex flex-1 items-center">
                 <div className="w-full space-y-6">
                   <Onboarding.Header className="text-left">
+                    <div className="space-y-3">
+                      <h2 className="text-2xl font-semibold tracking-normal">{welcomeTitle}</h2>
+                      <p className="text-sm leading-6 text-muted-foreground">
+                        {welcomeDescription}
+                      </p>
+                    </div>
+                  </Onboarding.Header>
+
+                  <div className="w-full space-y-2">
+                    <label className="text-xs font-medium text-muted-foreground" htmlFor="initial-locale-trigger">
+                      {t("labels.language")}
+                    </label>
+                    <Select
+                      value={locale}
+                      disabled={Boolean(savingLocale)}
+                      onValueChange={(value) => handleLocaleChange(value as AppLocale)}
+                    >
+                      <SelectTrigger id="initial-locale-trigger" aria-label={t("labels.language")} className="h-8 w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {APP_LOCALES.map((item) => (
+                          <SelectItem key={item} value={item}>
+                            {APP_LOCALE_LABELS[item]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+              <Onboarding.Navigation aria-label={t("aria.welcomeNavigation")} className="mt-auto justify-end pt-6">
+                <Button type="button" disabled={Boolean(savingLocale)} onClick={() => void saveWelcomeStep()}>
+                  {savingLocale ? <SpinnerLabel>{t("saving")}</SpinnerLabel> : t("start")}
+                </Button>
+              </Onboarding.Navigation>
+            </Onboarding.Step>
+
+            <Onboarding.Step step={2} className="flex flex-1 animate-in fade-in-0 slide-in-from-right-2 duration-200">
+              <form
+                className="flex flex-1 flex-col"
+                autoComplete="on"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void submitAccountStep();
+                }}
+              >
+                <div className="flex flex-1 items-center">
+                  <div className="w-full space-y-6">
+                    <Onboarding.Header className="text-left">
+                      <div className="space-y-2">
+                        <h2 className="text-2xl font-semibold tracking-normal">
+                          {accountTitle}
+                        </h2>
+                      </div>
+                    </Onboarding.Header>
+
+                    <div className="space-y-4">
+                      <label className="block space-y-1.5" htmlFor="initial-username">
+                        <span className="flex items-center text-xs font-medium">
+                          {t("labels.username")}
+                        </span>
+                        <Input
+                          id="initial-username"
+                          name="username"
+                          value={username}
+                          onChange={(event) => setUsername(event.target.value.toLowerCase())}
+                          disabled={savingAccount}
+                          readOnly={!viewer.initialUsernameRequired}
+                          maxLength={USERNAME_MAX_LENGTH}
+                          autoComplete="username"
+                          aria-disabled={!viewer.initialUsernameRequired}
+                          placeholder={isBootstrapAdminSetup ? t("placeholders.adminUsername") : t("placeholders.username")}
+                        />
+                      </label>
+
+                      {isBootstrapAdminSetup ? (
+                        <label className="block space-y-1.5" htmlFor="initial-admin-password">
+                          <span className="flex items-center text-xs font-medium">
+                            {t("labels.password")}
+                          </span>
+                          <Input
+                            id="initial-admin-password"
+                            name="password"
+                            type="password"
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
+                            disabled={savingAccount || !viewer.mustResetPassword}
+                            autoComplete="new-password"
+                            minLength={PASSWORD_MIN_LENGTH}
+                            placeholder={t("placeholders.adminPassword")}
+                          />
+                        </label>
+                      ) : (
+                        <label className="block space-y-1.5" htmlFor="initial-display-name">
+                          <span className="flex items-center text-xs font-medium">
+                            {t("labels.displayName")}
+                          </span>
+                          <Input
+                            id="initial-display-name"
+                            name="name"
+                            value={displayName}
+                            onChange={(event) => setDisplayName(event.target.value)}
+                            disabled={savingAccount}
+                            maxLength={DISPLAY_NAME_MAX_LENGTH}
+                            autoComplete="name"
+                            placeholder={t("placeholders.displayName")}
+                          />
+                        </label>
+                      )}
+
+                    </div>
+                  </div>
+                </div>
+
+                <Onboarding.Navigation aria-label={t("aria.accountNavigation")} className="mt-auto justify-end pt-6">
+                  <Button type="button" variant="ghost" className="shadow-none" disabled={savingAccount} onClick={() => setStep(1)}>
+                    {t("back")}
+                  </Button>
+                  <Button type="submit" disabled={savingAccount}>
+                    {savingAccount ? <SpinnerLabel>{t("saving")}</SpinnerLabel> : t("continue")}
+                  </Button>
+                </Onboarding.Navigation>
+              </form>
+            </Onboarding.Step>
+
+            <Onboarding.Step step={3} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
+              <div className="flex flex-1 items-center">
+                <div className="w-full space-y-5">
+                  <Onboarding.Header className="text-left">
                     <div className="space-y-2">
-                      <h2 className="text-2xl font-semibold tracking-normal">
-                        {accountTitle}
-                      </h2>
+                      <h2 className="text-2xl font-semibold tracking-normal">{twoFactorTitle}</h2>
+                    </div>
+                  </Onboarding.Header>
+
+                  {!viewer.twoFactorAvailable ? (
+                    <div className="rounded-lg border border-border/60 bg-muted/25 px-4 py-3 text-xs text-muted-foreground">
+                      {t("states.twoFactorUnavailable")}
+                    </div>
+                  ) : viewer.twoFactorEnabled ? (
+                    <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-muted/25 px-4 py-3 text-xs font-medium">
+                      <ShieldCheck className="size-3.5 text-muted-foreground" />
+                      {t("states.twoFactorEnabled")}
+                    </div>
+                  ) : savingTwoFactor && !twoFactorSetup ? (
+                    <div className="flex min-h-[7.5rem] items-center justify-center rounded-lg border border-border/60 bg-muted/20 text-xs text-muted-foreground">
+                      <SpinnerLabel>{t("generating")}</SpinnerLabel>
+                    </div>
+                  ) : !twoFactorSetup ? (
+                    <div className="rounded-lg border border-border/60 bg-muted/25 px-4 py-3 text-xs text-muted-foreground">
+                      {t("states.twoFactorPreparing")}
+                    </div>
+                  ) : (
+                    <div className="grid items-center gap-5 sm:grid-cols-[7.5rem_minmax(0,1fr)]">
+                      <div className="flex min-h-[7.5rem] items-center justify-center">
+                        {savingTwoFactor && !qrCodeSVG ? (
+                          <div className="flex size-[7.5rem] items-center justify-center rounded-lg border border-border/60 bg-muted/20 text-xs text-muted-foreground">
+                            <SpinnerLabel>{t("generating")}</SpinnerLabel>
+                          </div>
+                        ) : qrCodeSVG ? (
+                          <div
+                            className="flex size-[7.5rem] items-center justify-center [&_svg]:size-full"
+                            dangerouslySetInnerHTML={{ __html: qrCodeSVG }}
+                          />
+                        ) : (
+                          <div className="flex size-[7.5rem] items-center justify-center rounded-lg border border-border/60 bg-muted/20 px-3 text-center text-[11px] leading-4 text-muted-foreground">
+                            {qrCodeUnavailable ? t("states.qrUnavailable") : <SpinnerLabel>{t("generating")}</SpinnerLabel>}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="min-w-0 space-y-2.5">
+                        {twoFactorSetup?.secret ? (
+                          <div className="space-y-1.5">
+                            <span className="text-xs font-medium">{t("labels.manualSecret")}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="min-w-0 flex-1 break-all font-mono text-[11px] leading-5 text-muted-foreground">
+                                {twoFactorSetup.secret}
+                              </span>
+                              <CopyActionButton
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                className="shrink-0 text-muted-foreground shadow-none"
+                                value={twoFactorSetup.secret}
+                                messages={copyMessages}
+                                copyOptions={{ copied: t("toasts.copied", { label: t("toasts.secret") }) }}
+                                aria-label={t("actions.copySecret")}
+                                title={t("actions.copySecretTitle")}
+                              />
+                            </div>
+                          </div>
+                        ) : null}
+
+                        <label className="block space-y-1.5">
+                          <span className="text-xs font-medium">{t("labels.otp")}</span>
+                          <Input
+                            type="text"
+                            inputMode="numeric"
+                            autoComplete="one-time-code"
+                            pattern="[0-9]*"
+                            placeholder={t("placeholders.otp")}
+                            value={otp}
+                            maxLength={6}
+                            className="h-8 text-xs"
+                            onInput={(event) => setOtp(event.currentTarget.value.replace(/\D/g, "").slice(0, 6))}
+                            onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <Onboarding.Navigation aria-label={t("aria.twoFactorNavigation")} className="mt-auto justify-end pt-6">
+                <Button type="button" variant="ghost" className="shadow-none" disabled={savingTwoFactor} onClick={() => void skipTwoFactor()}>
+                  {t("skip")}
+                </Button>
+                <Button
+                  type="button"
+                  disabled={savingTwoFactor || !viewer.twoFactorAvailable || viewer.twoFactorEnabled || !twoFactorSetup}
+                  onClick={() => void confirmTwoFactor()}
+                >
+                  {savingTwoFactor ? <SpinnerLabel>{t("processing")}</SpinnerLabel> : t("enable")}
+                </Button>
+              </Onboarding.Navigation>
+            </Onboarding.Step>
+
+            <Onboarding.Step step={4} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
+              <div className="flex flex-1 items-center">
+                <div className="w-full space-y-5">
+                  <Onboarding.Header className="text-left">
+                    <div className="space-y-2">
+                      <h2 className="text-2xl font-semibold tracking-normal">{t("personalizationTitle")}</h2>
+                      <p className="text-xs leading-5 text-muted-foreground">
+                        {t("personalizationDescription")}
+                      </p>
                     </div>
                   </Onboarding.Header>
 
                   <div className="space-y-4">
-                    <label className="block space-y-1.5" htmlFor="initial-username">
+                    <label className="block space-y-1.5" htmlFor="initial-timezone">
                       <span className="flex items-center text-xs font-medium">
-                        {t("labels.username")}
+                        {t("labels.region")}
                       </span>
-                      <Input
-                        id="initial-username"
-                        name="username"
-                        value={username}
-                        onChange={(event) => setUsername(event.target.value.toLowerCase())}
-                        disabled={savingAccount}
-                        readOnly={!viewer.initialUsernameRequired}
-                        maxLength={USERNAME_MAX_LENGTH}
-                        autoComplete="username"
-                        aria-disabled={!viewer.initialUsernameRequired}
-                        placeholder={isBootstrapAdminSetup ? t("placeholders.adminUsername") : t("placeholders.username")}
-                      />
+                      <div className="flex gap-1.5">
+                        <TimeZoneSelect
+                          id="initial-timezone"
+                          value={timezone || currentTimeZone}
+                          disabled={savingPersonalization}
+                          triggerClassName="h-8 min-w-0 flex-1 text-xs"
+                          valueClassName="text-xs"
+                          onChange={setTimezone}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 shrink-0 shadow-none"
+                          disabled={savingPersonalization || timezone === currentTimeZone}
+                          onClick={() => setTimezone(currentTimeZone)}
+                          aria-label={t("actions.syncTimezone")}
+                          title={t("actions.syncTimezone")}
+                        >
+                          <MapPinned className="size-3.5 stroke-1" />
+                        </Button>
+                      </div>
                     </label>
 
-                    {isBootstrapAdminSetup ? (
-                      <label className="block space-y-1.5" htmlFor="initial-admin-password">
-                        <span className="flex items-center text-xs font-medium">
-                          {t("labels.password")}
-                        </span>
-                        <Input
-                          id="initial-admin-password"
-                          name="password"
-                          type="password"
-                          value={password}
-                          onChange={(event) => setPassword(event.target.value)}
-                          disabled={savingAccount || !viewer.mustResetPassword}
-                          autoComplete="new-password"
-                          minLength={PASSWORD_MIN_LENGTH}
-                          placeholder={t("placeholders.adminPassword")}
-                        />
-                      </label>
-                    ) : (
-                      <label className="block space-y-1.5" htmlFor="initial-display-name">
-                        <span className="flex items-center text-xs font-medium">
-                          {t("labels.displayName")}
-                        </span>
-                        <Input
-                          id="initial-display-name"
-                          name="name"
-                          value={displayName}
-                          onChange={(event) => setDisplayName(event.target.value)}
-                          disabled={savingAccount}
-                          maxLength={DISPLAY_NAME_MAX_LENGTH}
-                          autoComplete="name"
-                          placeholder={t("placeholders.displayName")}
-                        />
-                      </label>
-                    )}
-
                   </div>
                 </div>
               </div>
 
-              <Onboarding.Navigation aria-label={t("aria.accountNavigation")} className="mt-auto justify-end pt-6">
-                <Button type="button" variant="ghost" className="shadow-none" disabled={savingAccount} onClick={() => setStep(1)}>
+              <Onboarding.Navigation aria-label={t("aria.personalizationNavigation")} className="mt-auto justify-end pt-6">
+                <Button type="button" variant="ghost" className="shadow-none" disabled={savingPersonalization} onClick={() => setStep(3)}>
                   {t("back")}
                 </Button>
-                <Button type="submit" disabled={savingAccount}>
-                  {savingAccount ? <SpinnerLabel>{t("saving")}</SpinnerLabel> : t("continue")}
+                <Button type="button" disabled={savingPersonalization} onClick={() => void savePersonalizationStep()}>
+                  {savingPersonalization ? <SpinnerLabel>{t("saving")}</SpinnerLabel> : t("continue")}
                 </Button>
               </Onboarding.Navigation>
-            </form>
-          </Onboarding.Step>
+            </Onboarding.Step>
 
-          <Onboarding.Step step={3} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
-            <div className="flex flex-1 items-center">
-              <div className="w-full space-y-5">
-                <Onboarding.Header className="text-left">
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-semibold tracking-normal">{twoFactorTitle}</h2>
-                  </div>
-                </Onboarding.Header>
+            <Onboarding.Step step={5} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
+              <div className="flex flex-1 items-center">
+                <div className="w-full space-y-5">
+                  <Onboarding.Header className="text-left">
+                    <div className="space-y-2">
+                      <h2 className="text-2xl font-semibold tracking-normal">{t("ready")}</h2>
+                      <p className="text-xs text-muted-foreground">
+                        {readyDescription}
+                      </p>
+                    </div>
+                  </Onboarding.Header>
 
-                {!viewer.twoFactorAvailable ? (
-                  <div className="rounded-lg border border-border/60 bg-muted/25 px-4 py-3 text-xs text-muted-foreground">
-                    {t("states.twoFactorUnavailable")}
-                  </div>
-                ) : viewer.twoFactorEnabled ? (
-                  <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-muted/25 px-4 py-3 text-xs font-medium">
-                    <ShieldCheck className="size-3.5 text-muted-foreground" />
-                    {t("states.twoFactorEnabled")}
-                  </div>
-                ) : savingTwoFactor && !twoFactorSetup ? (
-                  <div className="flex min-h-[7.5rem] items-center justify-center rounded-lg border border-border/60 bg-muted/20 text-xs text-muted-foreground">
-                    <SpinnerLabel>{t("generating")}</SpinnerLabel>
-                  </div>
-                ) : !twoFactorSetup ? (
-                  <div className="rounded-lg border border-border/60 bg-muted/25 px-4 py-3 text-xs text-muted-foreground">
-                    {t("states.twoFactorPreparing")}
-                  </div>
-                ) : (
-                  <div className="grid items-center gap-5 sm:grid-cols-[7.5rem_minmax(0,1fr)]">
-                    <div className="flex min-h-[7.5rem] items-center justify-center">
-                      {savingTwoFactor && !qrCodeSVG ? (
-                        <div className="flex size-[7.5rem] items-center justify-center rounded-lg border border-border/60 bg-muted/20 text-xs text-muted-foreground">
-                          <SpinnerLabel>{t("generating")}</SpinnerLabel>
-                        </div>
-                      ) : qrCodeSVG ? (
-                        <div
-                          className="flex size-[7.5rem] items-center justify-center [&_svg]:size-full"
-                          dangerouslySetInnerHTML={{ __html: qrCodeSVG }}
+                  {recoveryCodes.length > 0 ? (
+                    <div className="space-y-2 rounded-lg border border-border/60 bg-muted/20 p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs font-medium">{t("labels.recoveryCodes")}</p>
+                        <CopyActionButton
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 shadow-none"
+                          value={recoveryCodes.join("\n")}
+                          messages={copyMessages}
+                          copyOptions={{ copied: t("toasts.recoveryCodesCopied"), failedDescription: undefined }}
+                          aria-label={t("actions.copyRecoveryCodes")}
                         />
-                      ) : (
-                        <div className="flex size-[7.5rem] items-center justify-center rounded-lg border border-border/60 bg-muted/20 px-3 text-center text-[11px] leading-4 text-muted-foreground">
-                          {qrCodeUnavailable ? t("states.qrUnavailable") : <SpinnerLabel>{t("generating")}</SpinnerLabel>}
-                        </div>
-                      )}
+                      </div>
+                      <div className="grid grid-cols-2 gap-1 font-mono text-[11px] text-muted-foreground">
+                        {recoveryCodes.map((code) => (
+                          <span key={code}>{code}</span>
+                        ))}
+                      </div>
                     </div>
-
-                    <div className="min-w-0 space-y-2.5">
-                      {twoFactorSetup?.secret ? (
-                        <div className="space-y-1.5">
-                          <span className="text-xs font-medium">{t("labels.manualSecret")}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="min-w-0 flex-1 break-all font-mono text-[11px] leading-5 text-muted-foreground">
-                              {twoFactorSetup.secret}
-                            </span>
-                            <CopyActionButton
-                              type="button"
-                              variant="ghost"
-                              size="icon-sm"
-                              className="shrink-0 text-muted-foreground shadow-none"
-                              value={twoFactorSetup.secret}
-                              messages={copyMessages}
-                              copyOptions={{ copied: t("toasts.copied", { label: t("toasts.secret") }) }}
-                              aria-label={t("actions.copySecret")}
-                              title={t("actions.copySecretTitle")}
-                            />
-                          </div>
-                        </div>
-                      ) : null}
-
-                      <label className="block space-y-1.5">
-                        <span className="text-xs font-medium">{t("labels.otp")}</span>
-                        <Input
-                          type="text"
-                          inputMode="numeric"
-                          autoComplete="one-time-code"
-                          pattern="[0-9]*"
-                          placeholder={t("placeholders.otp")}
-                          value={otp}
-                          maxLength={6}
-                          className="h-8 text-xs"
-                          onInput={(event) => setOtp(event.currentTarget.value.replace(/\D/g, "").slice(0, 6))}
-                          onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
-                        />
-                      </label>
-                    </div>
-                  </div>
-                )}
-                </div>
-            </div>
-
-            <Onboarding.Navigation aria-label={t("aria.twoFactorNavigation")} className="mt-auto justify-end pt-6">
-              <Button type="button" variant="ghost" className="shadow-none" disabled={savingTwoFactor} onClick={() => void skipTwoFactor()}>
-                {t("skip")}
-              </Button>
-              <Button
-                type="button"
-                disabled={savingTwoFactor || !viewer.twoFactorAvailable || viewer.twoFactorEnabled || !twoFactorSetup}
-                onClick={() => void confirmTwoFactor()}
-              >
-                {savingTwoFactor ? <SpinnerLabel>{t("processing")}</SpinnerLabel> : t("enable")}
-              </Button>
-            </Onboarding.Navigation>
-          </Onboarding.Step>
-
-          <Onboarding.Step step={4} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
-            <div className="flex flex-1 items-center">
-              <div className="w-full space-y-5">
-                <Onboarding.Header className="text-left">
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-semibold tracking-normal">{t("personalizationTitle")}</h2>
-                    <p className="text-xs leading-5 text-muted-foreground">
-                      {t("personalizationDescription")}
-                    </p>
-                  </div>
-                </Onboarding.Header>
-
-                <div className="space-y-4">
-                  <label className="block space-y-1.5" htmlFor="initial-timezone">
-                    <span className="flex items-center text-xs font-medium">
-                      {t("labels.region")}
-                    </span>
-                    <div className="flex gap-1.5">
-                      <TimeZoneSelect
-                        id="initial-timezone"
-                        value={timezone || currentTimeZone}
-                        disabled={savingPersonalization}
-                        triggerClassName="h-8 min-w-0 flex-1 text-xs"
-                        valueClassName="text-xs"
-                        onChange={setTimezone}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 shrink-0 shadow-none"
-                        disabled={savingPersonalization || timezone === currentTimeZone}
-                        onClick={() => setTimezone(currentTimeZone)}
-                        aria-label={t("actions.syncTimezone")}
-                        title={t("actions.syncTimezone")}
-                      >
-                        <MapPinned className="size-3.5 stroke-1" />
-                      </Button>
-                    </div>
-                  </label>
-
+                  ) : null}
                 </div>
               </div>
-            </div>
 
-            <Onboarding.Navigation aria-label={t("aria.personalizationNavigation")} className="mt-auto justify-end pt-6">
-              <Button type="button" variant="ghost" className="shadow-none" disabled={savingPersonalization} onClick={() => setStep(3)}>
-                {t("back")}
-              </Button>
-              <Button type="button" disabled={savingPersonalization} onClick={() => void savePersonalizationStep()}>
-                {savingPersonalization ? <SpinnerLabel>{t("saving")}</SpinnerLabel> : t("continue")}
-              </Button>
-            </Onboarding.Navigation>
-          </Onboarding.Step>
-
-          <Onboarding.Step step={5} className="flex flex-1 flex-col animate-in fade-in-0 slide-in-from-right-2 duration-200">
-            <div className="flex flex-1 items-center">
-              <div className="w-full space-y-5">
-                <Onboarding.Header className="text-left">
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-semibold tracking-normal">{t("ready")}</h2>
-                    <p className="text-xs text-muted-foreground">
-                      {readyDescription}
-                    </p>
-                  </div>
-                </Onboarding.Header>
-
-                {recoveryCodes.length > 0 ? (
-                  <div className="space-y-2 rounded-lg border border-border/60 bg-muted/20 p-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-xs font-medium">{t("labels.recoveryCodes")}</p>
-                      <CopyActionButton
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-7 shadow-none"
-                        value={recoveryCodes.join("\n")}
-                        messages={copyMessages}
-                        copyOptions={{ copied: t("toasts.recoveryCodesCopied"), failedDescription: undefined }}
-                        aria-label={t("actions.copyRecoveryCodes")}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-1 font-mono text-[11px] text-muted-foreground">
-                      {recoveryCodes.map((code) => (
-                        <span key={code}>{code}</span>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            <Onboarding.Navigation aria-label={t("aria.finishNavigation")} className="mt-auto justify-end pt-6">
-              <Button type="button" variant="ghost" className="shadow-none" disabled={finishing} onClick={() => setStep(4)}>
-                {t("back")}
-              </Button>
-              <Button type="button" disabled={finishing} onClick={() => void finishInitialSecurity()}>
-                {finishing ? <SpinnerLabel>{t("finishing")}</SpinnerLabel> : t("finish")}
-              </Button>
-            </Onboarding.Navigation>
-          </Onboarding.Step>
+              <Onboarding.Navigation aria-label={t("aria.finishNavigation")} className="mt-auto justify-end pt-6">
+                <Button type="button" variant="ghost" className="shadow-none" disabled={finishing} onClick={() => setStep(4)}>
+                  {t("back")}
+                </Button>
+                <Button type="button" disabled={finishing} onClick={() => void finishInitialSecurity()}>
+                  {finishing ? <SpinnerLabel>{t("finishing")}</SpinnerLabel> : t("finish")}
+                </Button>
+              </Onboarding.Navigation>
+            </Onboarding.Step>
           </div>
         </div>
       </Onboarding>

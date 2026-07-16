@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Link as LucideLink } from 'lucide-react';
+import { Link as LucideLink } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type LinkProps = IconProps<string>;

@@ -243,7 +243,9 @@ function resolveRequestFieldError(locale: AppLocale, item: RequestBodyFieldError
   const field = typeof item.field === "string" ? item.field.trim() : "";
   const rule = typeof item.rule === "string" ? item.rule.trim() : "";
   const param = typeof item.param === "string" ? item.param.trim() : "";
-  if (!field || !rule) return undefined;
+  if (!field || !rule) {
+    return undefined;
+  }
 
   const label = resolveRequestFieldLabel(locale, field);
   if (locale === "zh-CN") {
@@ -290,8 +292,12 @@ function resolveRequestFieldError(locale: AppLocale, item: RequestBodyFieldError
 }
 
 function resolveRequestBodyValidationMessage(error: ApiError, locale: AppLocale): string | undefined {
-  if (error.errorCode !== "request.invalid_body") return undefined;
-  if (!isRequestBodyErrorDetails(error.details) || !Array.isArray(error.details.fieldErrors)) return undefined;
+  if (error.errorCode !== "request.invalid_body") {
+    return undefined;
+  }
+  if (!isRequestBodyErrorDetails(error.details) || !Array.isArray(error.details.fieldErrors)) {
+    return undefined;
+  }
 
   const messages = error.details.fieldErrors
     .filter(isRequestBodyFieldError)
@@ -307,28 +313,50 @@ function resolveSettingsFieldLabel(locale: AppLocale, key: string): string {
 
 function resolveSettingsReason(locale: AppLocale, label: string, reason: string): string {
   const normalized = reason.trim();
-  if (!normalized) return "";
+  if (!normalized) {
+    return "";
+  }
   if (locale === "zh-CN") {
     const integerRange = normalized.match(/^must be an integer between (.+) and (.+)$/);
-    if (integerRange) return `${label}必须是 ${integerRange[1]} 到 ${integerRange[2]} 之间的整数。`;
+    if (integerRange) {
+      return `${label}必须是 ${integerRange[1]} 到 ${integerRange[2]} 之间的整数。`;
+    }
     const optionalZeroRange = normalized.match(/^must be empty, 0, or between (.+) and (.+)$/);
-    if (optionalZeroRange) return `${label}必须留空、填 0，或在 ${optionalZeroRange[1]} 到 ${optionalZeroRange[2]} 之间。`;
+    if (optionalZeroRange) {
+      return `${label}必须留空、填 0，或在 ${optionalZeroRange[1]} 到 ${optionalZeroRange[2]} 之间。`;
+    }
     const range = normalized.match(/^must be between (.+) and (.+)$/);
-    if (range) return `${label}必须在 ${range[1]} 到 ${range[2]} 之间。`;
+    if (range) {
+      return `${label}必须在 ${range[1]} 到 ${range[2]} 之间。`;
+    }
     const optionalMin = normalized.match(/^must be empty or >= (.+)$/);
-    if (optionalMin) return `${label}必须留空，或大于等于 ${optionalMin[1]}。`;
+    if (optionalMin) {
+      return `${label}必须留空，或大于等于 ${optionalMin[1]}。`;
+    }
     const min = normalized.match(/^must be >= (.+)$/);
-    if (min) return `${label}必须大于等于 ${min[1]}。`;
+    if (min) {
+      return `${label}必须大于等于 ${min[1]}。`;
+    }
     const maxLength = normalized.match(/^length must be <= (.+)$/);
-    if (maxLength) return `${label}长度不能超过 ${maxLength[1]} 个字符。`;
+    if (maxLength) {
+      return `${label}长度不能超过 ${maxLength[1]} 个字符。`;
+    }
     const oneOf = normalized.match(/^must be one of: (.+)$/);
-    if (oneOf) return `${label}必须是以下值之一：${oneOf[1]}。`;
+    if (oneOf) {
+      return `${label}必须是以下值之一：${oneOf[1]}。`;
+    }
     const only = normalized.match(/^must contain only: (.+)$/);
-    if (only) return `${label}只能包含：${only[1]}。`;
+    if (only) {
+      return `${label}只能包含：${only[1]}。`;
+    }
     const invalidDomain = normalized.match(/^contains invalid domain: (.+)$/);
-    if (invalidDomain) return `${label}包含无效域名：${invalidDomain[1]}。`;
+    if (invalidDomain) {
+      return `${label}包含无效域名：${invalidDomain[1]}。`;
+    }
     const invalidMime = normalized.match(/^contains invalid mime: (.+)$/);
-    if (invalidMime) return `${label}包含无效 MIME 类型：${invalidMime[1]}。`;
+    if (invalidMime) {
+      return `${label}包含无效 MIME 类型：${invalidMime[1]}。`;
+    }
     switch (normalized) {
       case "cannot be empty":
       case "is required":
@@ -369,7 +397,9 @@ function resolveSettingsReason(locale: AppLocale, label: string, reason: string)
 }
 
 function resolveSettingsValidationMessage(error: ApiError, locale: AppLocale): string | undefined {
-  if (!error.errorCode?.startsWith("settings.")) return undefined;
+  if (!error.errorCode?.startsWith("settings.")) {
+    return undefined;
+  }
   const raw = (error.rawMessage || error.message || "").trim();
   if (!raw || /^invalid .+ settings?\.?$/i.test(raw) || /^invalid setting value\.?$/i.test(raw)) {
     return undefined;
@@ -386,10 +416,14 @@ function resolveSettingsValidationMessage(error: ApiError, locale: AppLocale): s
     },
   };
   const dependencyMessage = dependencyMessages[locale][detail.toLowerCase()];
-  if (dependencyMessage) return dependencyMessage;
+  if (dependencyMessage) {
+    return dependencyMessage;
+  }
 
   const match = detail.match(/^([a-z]+:[a-z0-9_]+)\s+(.+)$/);
-  if (!match) return detail;
+  if (!match) {
+    return detail;
+  }
   return resolveSettingsReason(locale, resolveSettingsFieldLabel(locale, match[1]), match[2]);
 }
 
@@ -398,10 +432,16 @@ function isRedemptionCodeErrorDetails(details: unknown): details is RedemptionCo
 }
 
 function resolveRedemptionCodeValidationMessage(error: ApiError, locale: AppLocale): string | undefined {
-  if (error.errorCode !== "billing.invalid_redemption_code") return undefined;
-  if (!isRedemptionCodeErrorDetails(error.details) || typeof error.details.reason !== "string") return undefined;
+  if (error.errorCode !== "billing.invalid_redemption_code") {
+    return undefined;
+  }
+  if (!isRedemptionCodeErrorDetails(error.details) || typeof error.details.reason !== "string") {
+    return undefined;
+  }
   const reason = error.details.reason.trim();
-  if (!reason) return undefined;
+  if (!reason) {
+    return undefined;
+  }
   return lookupErrorMessage(locale, `billing.redemption_validation.${reason}`);
 }
 

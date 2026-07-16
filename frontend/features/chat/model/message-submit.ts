@@ -90,30 +90,30 @@ export function toPendingProcessTrace(trace: MessageProcessTraceDTO | undefined)
   }
   const promptTrace = trace.promptTrace
     ? {
-        mode: trace.promptTrace.mode,
-        promptFingerprint: trace.promptTrace.promptFingerprint,
-        statefulUsed: trace.promptTrace.statefulUsed,
-        statefulDisabledReason: trace.promptTrace.statefulDisabledReason,
-        totalTokenEstimate: trace.promptTrace.totalTokenEstimate,
-        sentTokenEstimate: trace.promptTrace.sentTokenEstimate,
-        fullMessageCount: trace.promptTrace.fullMessageCount,
-        sentMessageCount: trace.promptTrace.sentMessageCount,
-        statefulSavedMessages: trace.promptTrace.statefulSavedMessages,
-        statefulSavedTokens: trace.promptTrace.statefulSavedTokens,
-        blocks: trace.promptTrace.blocks?.map((block) => ({
-          kind: block.kind,
-          title: block.title,
-          tokenEstimate: block.tokenEstimate,
-          cacheable: block.cacheable,
-          sourceCount: block.sourceCount,
-          sourceRefs: block.sourceRefs?.map((ref) => ({
-            sourceType: ref.sourceType,
-            sourceID: ref.sourceID,
-            title: ref.title,
-            artifactID: ref.artifactID,
-          })),
-        })) ?? [],
-      }
+      mode: trace.promptTrace.mode,
+      promptFingerprint: trace.promptTrace.promptFingerprint,
+      statefulUsed: trace.promptTrace.statefulUsed,
+      statefulDisabledReason: trace.promptTrace.statefulDisabledReason,
+      totalTokenEstimate: trace.promptTrace.totalTokenEstimate,
+      sentTokenEstimate: trace.promptTrace.sentTokenEstimate,
+      fullMessageCount: trace.promptTrace.fullMessageCount,
+      sentMessageCount: trace.promptTrace.sentMessageCount,
+      statefulSavedMessages: trace.promptTrace.statefulSavedMessages,
+      statefulSavedTokens: trace.promptTrace.statefulSavedTokens,
+      blocks: trace.promptTrace.blocks?.map((block) => ({
+        kind: block.kind,
+        title: block.title,
+        tokenEstimate: block.tokenEstimate,
+        cacheable: block.cacheable,
+        sourceCount: block.sourceCount,
+        sourceRefs: block.sourceRefs?.map((ref) => ({
+          sourceType: ref.sourceType,
+          sourceID: ref.sourceID,
+          title: ref.title,
+          artifactID: ref.artifactID,
+        })),
+      })) ?? [],
+    }
     : undefined;
   return {
     enabled: true,

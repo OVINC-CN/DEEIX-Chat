@@ -179,9 +179,9 @@ export function ModelOrderSheet({
       const nextGroups = groups.map((group, index) =>
         index === groupIndex
           ? {
-              ...group,
-              items: moveSortableItem(group.items, itemIndex, targetIndex),
-            }
+            ...group,
+            items: moveSortableItem(group.items, itemIndex, targetIndex),
+          }
           : group,
       );
       commitGroups(nextGroups);

@@ -19,9 +19,13 @@ export function buildTaskModelOptions({
   const options: ModelSelectOption[] = [{ label: followLabel, value: followValue, iconUrl: null }];
 
   for (const item of models) {
-    if (!isRoutableChatPlatformModel(item)) continue;
+    if (!isRoutableChatPlatformModel(item)) {
+      continue;
+    }
     const platformModelName = item.platformModelName.trim();
-    if (!platformModelName || seen.has(platformModelName)) continue;
+    if (!platformModelName || seen.has(platformModelName)) {
+      continue;
+    }
     seen.add(platformModelName);
     options.push({
       label: resolveModelOptionLabel(platformModelName),

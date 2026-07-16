@@ -71,7 +71,9 @@ const ARTIFACT_IFRAME_PERMISSIONS = [
 ].join("; ");
 
 function artifactLanguageLabel(artifact: ChatArtifact): string {
-  if (artifact.kind === "javascript") return "JS";
+  if (artifact.kind === "javascript") {
+    return "JS";
+  }
   return (artifact.language || artifact.kind).toUpperCase();
 }
 
@@ -153,7 +155,9 @@ function ChatArtifactPanel({
   );
 
   const handleDownload = React.useCallback(() => {
-    if (!canPreview) return;
+    if (!canPreview) {
+      return;
+    }
     downloadArtifactHTML(resolveArtifactDownloadName(artifact.kind), previewHTML);
   }, [artifact.kind, canPreview, previewHTML]);
 

@@ -59,8 +59,8 @@ export function ChangePasswordDialog({
   const dialogDescription = required
     ? t("description.required")
     : passwordEnabled
-    ? t("description.change")
-    : t("description.set");
+      ? t("description.change")
+      : t("description.set");
   const passwordLabel = passwordEnabled ? t("labels.newPassword") : t("labels.loginPassword");
   const currentPasswordValue = passwordEnabled ? currentPassword : "";
   const submitDisabled = disabled || (passwordEnabled && !currentPassword) || !isPasswordPolicyValid(newPassword);
@@ -84,7 +84,9 @@ export function ChangePasswordDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={(nextOpen) => {
-        if (required && !nextOpen) return;
+        if (required && !nextOpen) {
+          return;
+        }
         onOpenChange(nextOpen);
       }}>
         <DialogContent>

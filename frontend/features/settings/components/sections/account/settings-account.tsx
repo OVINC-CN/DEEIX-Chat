@@ -125,7 +125,9 @@ export function SettingsAccount() {
   const providerLogoBySlug = React.useMemo(() => {
     const result = new Map<string, string>();
     for (const provider of identityProviders) {
-      if (provider.logoURL) result.set(provider.slug, provider.logoURL);
+      if (provider.logoURL) {
+        result.set(provider.slug, provider.logoURL);
+      }
     }
     return result;
   }, [identityProviders]);
@@ -138,7 +140,9 @@ export function SettingsAccount() {
     setTwoFactorOpening(true);
     void handleStartTwoFactorSetup()
       .then((started) => {
-        if (started) setTwoFactorDialogOpen(true);
+        if (started) {
+          setTwoFactorDialogOpen(true);
+        }
       })
       .finally(() => setTwoFactorOpening(false));
   }, [handleStartTwoFactorSetup]);

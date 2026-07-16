@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { Spinner, SpinnerLabel } from "@/components/ui/spinner"
-import { useTableViewportHeight } from "@/components/ui/use-table-viewport-height"
+import { cn } from "@/lib/utils";
+import { Spinner, SpinnerLabel } from "@/components/ui/spinner";
+import { useTableViewportHeight } from "@/components/ui/use-table-viewport-height";
 
-type TableBodyProps = React.ComponentProps<"tbody">
+type TableBodyProps = React.ComponentProps<"tbody">;
 
 type TableProps = React.ComponentProps<"table"> & {
-  shellClassName?: string
-  viewportClassName?: string
-  viewportRef?: React.Ref<HTMLDivElement>
-  viewportStyle?: React.CSSProperties
-}
+  shellClassName?: string;
+  viewportClassName?: string;
+  viewportRef?: React.Ref<HTMLDivElement>;
+  viewportStyle?: React.CSSProperties;
+};
 
 function Table({
   className,
@@ -26,12 +26,12 @@ function Table({
   const viewportHeight = useTableViewportHeight({
     disabled: viewportStyle?.height !== undefined,
     externalRef: viewportRef,
-  })
+  });
   const {
     contentRef,
     heightStyle,
     viewportRef: resolvedViewportRef,
-  } = viewportHeight
+  } = viewportHeight;
 
   return (
     <div
@@ -55,14 +55,14 @@ function Table({
               "[&_[data-slot=select-trigger]]:h-6 [&_[data-slot=select-trigger]]:px-2 [&_[data-slot=select-trigger]]:text-xs",
               "[&_[data-slot=input-group]]:h-6 [&_[data-slot=input-group-control]]:h-6 [&_[data-slot=input-group-control]]:px-2 [&_[data-slot=input-group-control]]:text-xs [&_[data-slot=input-group-control]]:placeholder:text-xs",
               "[&_[role=combobox]]:h-6 [&_[role=combobox]]:text-xs",
-              className
+              className,
             )}
             {...props}
           />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
@@ -72,7 +72,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
       className={cn("data-table-header", className)}
       {...props}
     />
-  )
+  );
 }
 
 function TableBody({ className, ...props }: TableBodyProps) {
@@ -82,7 +82,7 @@ function TableBody({ className, ...props }: TableBodyProps) {
       className={className}
       {...props}
     />
-  )
+  );
 }
 
 function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
@@ -91,21 +91,21 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
       data-slot="table-footer"
       className={cn(
         "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 type TableRowProps = React.ComponentProps<"tr"> & {
-  interactive?: boolean
-  selected?: boolean
-  tone?: "muted" | "warning"
-  "data-interactive"?: string
-  "data-selected"?: string
-  "data-tone"?: "muted" | "warning" | string
-}
+  interactive?: boolean;
+  selected?: boolean;
+  tone?: "muted" | "warning";
+  "data-interactive"?: string;
+  "data-selected"?: string;
+  "data-tone"?: "muted" | "warning" | string;
+};
 
 function TableRow({
   className,
@@ -122,19 +122,19 @@ function TableRow({
       data-slot="table-row"
       className={cn(
         "data-table-row border-b border-border/60 last:border-b-0",
-        className
+        className,
       )}
       data-interactive={interactive === false ? "false" : dataInteractive}
       data-selected={selected ? "true" : dataSelected}
       data-tone={tone ?? dataTone}
       {...props}
     />
-  )
+  );
 }
 
 type TableHeadProps = React.ComponentProps<"th"> & {
-  stickyEnd?: boolean
-}
+  stickyEnd?: boolean;
+};
 
 function TableHead({ className, stickyEnd, ...props }: TableHeadProps) {
   return (
@@ -143,16 +143,16 @@ function TableHead({ className, stickyEnd, ...props }: TableHeadProps) {
       className={cn(
         "h-8 px-3 py-1.5 text-left align-middle text-[11px] font-medium text-muted-foreground whitespace-nowrap",
         stickyEnd && "data-table-sticky-end-head sticky right-0 z-10",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 type TableCellProps = React.ComponentProps<"td"> & {
-  stickyEnd?: boolean
-}
+  stickyEnd?: boolean;
+};
 
 function TableCell({ className, stickyEnd, ...props }: TableCellProps) {
   return (
@@ -161,11 +161,11 @@ function TableCell({ className, stickyEnd, ...props }: TableCellProps) {
       className={cn(
         "px-3 py-2.5 align-middle text-xs leading-5 whitespace-nowrap",
         stickyEnd && "data-table-sticky-end-cell sticky right-0 z-10",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableCaption({
@@ -178,15 +178,15 @@ function TableCaption({
       className={cn("mt-4 text-sm text-muted-foreground", className)}
       {...props}
     />
-  )
+  );
 }
 
 type TableEmptyRowProps = {
-  colSpan: number
-  children: React.ReactNode
-  rowClassName?: string
-  cellClassName?: string
-}
+  colSpan: number;
+  children: React.ReactNode;
+  rowClassName?: string;
+  cellClassName?: string;
+};
 
 function TableEmptyRow({
   colSpan,
@@ -200,21 +200,21 @@ function TableEmptyRow({
         colSpan={colSpan}
         className={cn(
           "py-8 text-center text-xs text-muted-foreground",
-          cellClassName
+          cellClassName,
         )}
       >
         {children}
       </TableCell>
     </TableRow>
-  )
+  );
 }
 
 type TableLoadingRowProps = {
-  colSpan: number
-  children?: React.ReactNode
-  rowClassName?: string
-  cellClassName?: string
-}
+  colSpan: number;
+  children?: React.ReactNode;
+  rowClassName?: string;
+  cellClassName?: string;
+};
 
 function TableLoadingRow({
   colSpan,
@@ -237,7 +237,7 @@ function TableLoadingRow({
         )}
       </TableCell>
     </TableRow>
-  )
+  );
 }
 
 export {
@@ -251,4 +251,4 @@ export {
   TableCaption,
   TableEmptyRow,
   TableLoadingRow,
-}
+};

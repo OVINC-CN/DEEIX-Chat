@@ -59,7 +59,9 @@ export type TraceDisplayEvent = {
 };
 
 export function parseRAGCitations(payloadJson: string | undefined): RAGCitation[] {
-  if (!payloadJson) return [];
+  if (!payloadJson) {
+    return [];
+  }
   try {
     const parsed = JSON.parse(payloadJson) as { citations?: RAGCitation[] };
     return Array.isArray(parsed.citations) ? parsed.citations : [];
@@ -69,7 +71,9 @@ export function parseRAGCitations(payloadJson: string | undefined): RAGCitation[
 }
 
 function readStringArray(value: unknown): string[] {
-  if (!Array.isArray(value)) return [];
+  if (!Array.isArray(value)) {
+    return [];
+  }
   return value.map((item) => (typeof item === "string" ? item.trim() : "")).filter(Boolean);
 }
 
@@ -92,13 +96,17 @@ function readNumber(value: unknown): number | null {
 function firstStringFromRecord(record: Record<string, unknown>, keys: string[]): string {
   for (const key of keys) {
     const value = readString(record[key]);
-    if (value) return value;
+    if (value) {
+      return value;
+    }
   }
   return "";
 }
 
 function parseTracePayload(payloadJson: string | undefined): Record<string, unknown> | null {
-  if (!payloadJson) return null;
+  if (!payloadJson) {
+    return null;
+  }
   try {
     const parsed = JSON.parse(payloadJson) as unknown;
     return isRecord(parsed) ? parsed : null;
@@ -109,7 +117,9 @@ function parseTracePayload(payloadJson: string | undefined): Record<string, unkn
 
 function parseFileContextCounts(payloadJson: string | undefined): FileContextCounts | null {
   const parsed = parseTracePayload(payloadJson);
-  if (!parsed) return null;
+  if (!parsed) {
+    return null;
+  }
   const groups = isRecord(parsed.file_group_refs)
     ? parsed.file_group_refs
     : isRecord(parsed.file_groups)
@@ -127,30 +137,40 @@ function parseFileContextCounts(payloadJson: string | undefined): FileContextCou
     readArrayCount(groups.adaptive) +
     readArrayCount(groups.retrieval) +
     readArrayCount(groups.full_context);
-  if (included <= 0 && skipped <= 0) return null;
+  if (included <= 0 && skipped <= 0) {
+    return null;
+  }
   return { included, skipped };
 }
 
 function parseRAGTraceCounts(payloadJson: string | undefined): RAGTraceCounts | null {
   const parsed = parseTracePayload(payloadJson);
-  if (!parsed) return null;
+  if (!parsed) {
+    return null;
+  }
   const fileCount = readArrayCount(parsed.file_names);
   const chunkCount =
     typeof parsed.hit_chunk_count === "number" && Number.isFinite(parsed.hit_chunk_count)
       ? parsed.hit_chunk_count
       : readArrayCount(parsed.citations);
-  if (fileCount <= 0 && chunkCount <= 0) return null;
+  if (fileCount <= 0 && chunkCount <= 0) {
+    return null;
+  }
   return { fileCount, chunkCount };
 }
 
 function parseCompactionTracePayload(payloadJson: string | undefined): CompactionTracePayload | null {
   const parsed = parseTracePayload(payloadJson);
-  if (!parsed) return null;
+  if (!parsed) {
+    return null;
+  }
   const fromTurn = readNumber(parsed.from_turn);
   const toTurn = readNumber(parsed.to_turn);
   const sourceTokens = readNumber(parsed.source_tokens);
   const summaryTokens = readNumber(parsed.summary_tokens);
-  if (fromTurn === null || toTurn === null || sourceTokens === null || summaryTokens === null) return null;
+  if (fromTurn === null || toTurn === null || sourceTokens === null || summaryTokens === null) {
+    return null;
+  }
   return { fromTurn, toTurn, sourceTokens, summaryTokens };
 }
 
@@ -175,13 +195,17 @@ function readFileContextBadges(
   description: string,
   tab: "extract" | "preview",
 ): FileContextBadge[] {
-  if (!Array.isArray(value)) return [];
+  if (!Array.isArray(value)) {
+    return [];
+  }
   return value.flatMap((item) => {
     if (typeof item === "string") {
       const name = item.trim();
       return name ? [{ name, label, description, tab }] : [];
     }
-    if (!isRecord(item)) return [];
+    if (!isRecord(item)) {
+      return [];
+    }
     const fileID = firstStringFromRecord(item, ["file_id", "fileID", "id"]);
     const name = firstStringFromRecord(item, ["file_name", "fileName", "name", "title"]) || fileID;
     return name ? [{ fileID, name, label, description, tab }] : [];
@@ -189,7 +213,9 @@ function readFileContextBadges(
 }
 
 export function parseFileContextBadges(payloadJson: string | undefined, labels: ProcessTraceLabels): FileContextBadge[] {
-  if (!payloadJson) return [];
+  if (!payloadJson) {
+    return [];
+  }
   try {
     const parsed = JSON.parse(payloadJson) as {
       file_names?: string[];
@@ -210,9 +236,13 @@ export function parseFileContextBadges(payloadJson: string | undefined, labels: 
       ),
       ...readFileContextBadges(groups.skipped, labels.fileBadges.skipped, labels.fileBadges.descriptions.skipped, "extract"),
     ];
-    if (badges.length > 0) return badges;
+    if (badges.length > 0) {
+      return badges;
+    }
     const refs = readFileContextBadges(parsed.file_refs, labels.fileBadges.file, labels.fileBadges.descriptions.file, "extract");
-    if (refs.length > 0) return refs;
+    if (refs.length > 0) {
+      return refs;
+    }
     return readStringArray(parsed.file_names).map((name) => ({
       name,
       label: labels.fileBadges.file,
@@ -226,7 +256,9 @@ export function parseFileContextBadges(payloadJson: string | undefined, labels: 
 
 function readTraceStagePayloads(payloadJson: string | undefined): Record<string, unknown>[] {
   const parsed = parseTracePayload(payloadJson);
-  if (!parsed) return [];
+  if (!parsed) {
+    return [];
+  }
   const stages = parsed.trace_stages;
   if (Array.isArray(stages)) {
     return stages.filter(isRecord);
@@ -235,7 +267,9 @@ function readTraceStagePayloads(payloadJson: string | undefined): Record<string,
 }
 
 function traceStageKind(stage: TraceStage): string {
-  if (stage.kind) return stage.kind;
+  if (stage.kind) {
+    return stage.kind;
+  }
   switch (stage.label) {
     case TRACE_LABEL_CONTEXT_PLANNING:
       return TRACE_KIND_CONTEXT_PLANNING;
@@ -325,9 +359,13 @@ export function parseStructuredTraceStages(payloadJson: string | undefined, labe
   return readTraceStagePayloads(payloadJson)
     .flatMap((payload) => {
       const kind = readString(payload.kind);
-      if (!kind) return [];
+      if (!kind) {
+        return [];
+      }
       const details = structuredTraceStageDetails(payload, labels);
-      if (details.length === 0) return [];
+      if (details.length === 0) {
+        return [];
+      }
       return [
         {
           label: kind,
@@ -349,7 +387,9 @@ export function parseStructuredTraceStages(payloadJson: string | undefined, labe
 function structuredProcessSummaryFromPayload(payloadJson: string | undefined, labels: ProcessTraceLabels): string {
   const stages = readTraceStagePayloads(payloadJson);
   const last = [...stages].reverse().find((stage) => readString(stage.kind));
-  if (!last) return "";
+  if (!last) {
+    return "";
+  }
   const kind = readString(last.kind);
   if (kind === TRACE_KIND_FILE_CONTEXT) {
     const included = readNumber(last.included_count) ?? 0;
@@ -385,12 +425,16 @@ function structuredProcessSummaryFromPayload(payloadJson: string | undefined, la
 }
 
 export function parseTraceStages(content: unknown): TraceStage[] {
-  if (typeof content !== "string") return [];
+  if (typeof content !== "string") {
+    return [];
+  }
   const stages: TraceStage[] = [];
 
   for (const rawLine of content.split(/\n+/)) {
     const line = rawLine.trim();
-    if (!line) continue;
+    if (!line) {
+      continue;
+    }
 
     const match = line.match(/^\*\*([^*]+)\*\*(?:[：:]\s*)?(.*)$/);
     if (match) {
@@ -409,7 +453,9 @@ export function parseTraceStages(content: unknown): TraceStage[] {
     }
 
     const current = stages[stages.length - 1];
-    if (!current) continue;
+    if (!current) {
+      continue;
+    }
     current.details.push(line);
     current.detail = [current.detail, line].filter(Boolean).join("\n");
   }
@@ -599,7 +645,9 @@ function promptTraceReasonLabel(reason: string, labels: ProcessTraceLabels): str
 }
 
 function promptTraceStage(trace: ChatPromptTrace | undefined, labels: ProcessTraceLabels): TraceStage | null {
-  if (!trace) return null;
+  if (!trace) {
+    return null;
+  }
   const cacheableBlocks = trace.blocks.filter((block) => block.cacheable).length;
   const historicalEvidence = trace.blocks
     .filter((block) => block.kind === "historical_evidence")
@@ -621,9 +669,15 @@ function promptTraceStage(trace: ChatPromptTrace | undefined, labels: ProcessTra
   }
 
   const extras = [];
-  if (cacheableBlocks > 0) extras.push(labels.promptTrace.cacheableBlocks(cacheableBlocks));
-  if (historicalEvidence > 0) extras.push(labels.promptTrace.historicalEvidence(historicalEvidence));
-  if (dynamicSources > 0) extras.push(labels.promptTrace.dynamicSources(dynamicSources));
+  if (cacheableBlocks > 0) {
+    extras.push(labels.promptTrace.cacheableBlocks(cacheableBlocks));
+  }
+  if (historicalEvidence > 0) {
+    extras.push(labels.promptTrace.historicalEvidence(historicalEvidence));
+  }
+  if (dynamicSources > 0) {
+    extras.push(labels.promptTrace.dynamicSources(dynamicSources));
+  }
   if (extras.length > 0) {
     details.push(labels.promptTrace.extraSummary(extras.join(labels.promptTrace.listSeparator)));
   }

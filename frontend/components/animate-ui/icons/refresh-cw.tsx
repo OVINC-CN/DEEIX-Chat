@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { RefreshCw as LucideRefreshCw } from 'lucide-react';
+import { RefreshCw as LucideRefreshCw } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type RefreshCwProps = IconProps<string>;

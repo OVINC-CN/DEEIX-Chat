@@ -875,8 +875,8 @@ export function ChatModelPicker({
                 </div>
               </div>
             )}
-        </PopoverContent>
-      </Popover>
+          </PopoverContent>
+        </Popover>
       </div>
     </>
   );

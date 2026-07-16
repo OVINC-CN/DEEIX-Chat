@@ -62,7 +62,9 @@ export function DeleteUpstreamDialog({
   const stableUpstream = useDialogSnapshot(upstream);
 
   async function handleConfirm() {
-    if (!upstream) return;
+    if (!upstream) {
+      return;
+    }
     setPending(true);
     try {
       const token = await resolveAccessToken();
@@ -127,7 +129,9 @@ export function BulkDeleteUpstreamsDialog({
   const visibleTargets = targets.slice(0, 6);
 
   async function handleConfirm() {
-    if (targets.length === 0) return;
+    if (targets.length === 0) {
+      return;
+    }
     setPending(true);
     try {
       const token = await resolveAccessToken();
@@ -223,7 +227,9 @@ export function CircuitActionDialog({
     : t("circuitDialog.resetDescription", { name: stableUpstream?.name ?? "" });
 
   async function handleConfirm() {
-    if (!upstream) return;
+    if (!upstream) {
+      return;
+    }
     setPending(true);
     try {
       const token = await resolveAccessToken();

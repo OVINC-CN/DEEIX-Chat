@@ -726,12 +726,12 @@ function MessageInlineVideoPreview({
         const result = loadContent
           ? await loadContent(file)
           : await (async () => {
-              const token = await resolveAccessToken();
-              if (!token) {
-                throw new Error(tPreview("sessionExpired"));
-              }
-              return fetchFileContent(token, fileID);
-            })();
+            const token = await resolveAccessToken();
+            if (!token) {
+              throw new Error(tPreview("sessionExpired"));
+            }
+            return fetchFileContent(token, fileID);
+          })();
         const objectURL = URL.createObjectURL(result.blob);
         objectURLRef.current = objectURL;
 

@@ -9,7 +9,9 @@ type ThemeContextValue = {
 const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
 function resolveSystemTheme(): "light" | "dark" {
-  if (typeof window === "undefined") return "light";
+  if (typeof window === "undefined") {
+    return "light";
+  }
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 

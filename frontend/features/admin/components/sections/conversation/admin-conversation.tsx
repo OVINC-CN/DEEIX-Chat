@@ -33,7 +33,6 @@ import {
 } from "@/shared/components/settings-layout";
 import { exportAllConversations, getAdminReferenceData, listAdminSettings, patchAdminSettings } from "@/features/admin/api";
 import {
-  applyConversationDefaults,
   buildConversationSettingsFields,
   CONVERSATION_DEFAULT_MODEL_SYSTEM,
   CONVERSATION_TASK_MODEL_FOLLOW,
@@ -182,7 +181,7 @@ function ModelOptionPolicyGuideButton({ t }: { t: (key: string) => string }) {
               <div className="space-y-1.5">
                 <p className="text-xs font-medium text-foreground">options</p>
                 <pre className="max-h-44 overflow-auto rounded-md bg-muted/50 p-3 text-xs text-foreground">
-{`{
+                  {`{
   "temperature": 0.7,
   "thinking": {
     "type": "enabled"
@@ -198,7 +197,7 @@ function ModelOptionPolicyGuideButton({ t }: { t: (key: string) => string }) {
               <div className="space-y-1.5">
                 <p className="text-xs font-medium text-foreground">{t("guide.pathLabel")}</p>
                 <pre className="max-h-44 overflow-auto rounded-md bg-muted/50 p-3 text-xs text-foreground">
-{`temperature
+                  {`temperature
 thinking.type
 generationConfig.safetySettings.threshold`}
                 </pre>
@@ -218,7 +217,7 @@ generationConfig.safetySettings.threshold`}
               <TabsContent value="allowlist" className="space-y-2">
                 <p className="text-xs">{t("guide.allowlistDescription")}</p>
                 <pre className="max-h-48 overflow-auto rounded-md bg-muted/50 p-3 text-xs text-foreground">
-{`{
+                  {`{
   "default": [
     "temperature",
     "top_p",
@@ -313,7 +312,7 @@ generationConfig.safetySettings.threshold`}
               <TabsContent value="denylist" className="space-y-2">
                 <p className="text-xs">{t("guide.denylistDescription")}</p>
                 <pre className="max-h-48 overflow-auto rounded-md bg-muted/50 p-3 text-xs text-foreground">
-{`{
+                  {`{
   "default": [
     "headers",
     "api_key",
@@ -386,7 +385,9 @@ export function AdminConversationSettingsPage() {
     setExporting(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       const { blob, fileName } = await exportAllConversations(token);
       const manifest = await readExportManifest(blob);
       downloadBlob(blob, fileName);

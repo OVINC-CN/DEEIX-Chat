@@ -254,8 +254,12 @@ function useUsageBillingLabels(): UsageBillingLabels {
 }
 
 function formatUsageCost(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "$0";
-  if (value < 0.000001) return "< $0.000001";
+  if (!Number.isFinite(value) || value <= 0) {
+    return "$0";
+  }
+  if (value < 0.000001) {
+    return "< $0.000001";
+  }
   return `$${value.toLocaleString("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 6,
@@ -263,7 +267,9 @@ function formatUsageCost(value: number): string {
 }
 
 function formatTooltipUsageCost(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "$0.000000";
+  if (!Number.isFinite(value) || value <= 0) {
+    return "$0.000000";
+  }
   return `$${value.toLocaleString("en-US", {
     minimumFractionDigits: 6,
     maximumFractionDigits: 6,
@@ -289,7 +295,9 @@ function formatMoneyCents(value: number | null | undefined, currency: string): s
 }
 
 function formatTooltipUnitPrice(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "$0.00";
+  if (!Number.isFinite(value) || value <= 0) {
+    return "$0.00";
+  }
   return `$${value.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -297,7 +305,9 @@ function formatTooltipUnitPrice(value: number): string {
 }
 
 function nanousdToUSD(value: number): number {
-  if (!Number.isFinite(value) || value <= 0) return 0;
+  if (!Number.isFinite(value) || value <= 0) {
+    return 0;
+  }
   return value / 1_000_000_000;
 }
 
@@ -316,12 +326,16 @@ function readUsageSnapshotNumber(snapshot: UsagePricingSnapshot, key: keyof Usag
 }
 
 function normalizePricingMode(value: string | null | undefined): "token" | "call" | "duration" | "tiered" {
-  if (value === "call" || value === "duration" || value === "tiered") return value;
+  if (value === "call" || value === "duration" || value === "tiered") {
+    return value;
+  }
   return "token";
 }
 
 function calcTokenBilledNanousd(tokens: number, rateNanousd: number): number {
-  if (!Number.isFinite(tokens) || !Number.isFinite(rateNanousd) || tokens <= 0 || rateNanousd <= 0) return 0;
+  if (!Number.isFinite(tokens) || !Number.isFinite(rateNanousd) || tokens <= 0 || rateNanousd <= 0) {
+    return 0;
+  }
   return Math.round((tokens * rateNanousd) / 1_000_000);
 }
 
@@ -332,13 +346,19 @@ function resolveTokenBilledNanousd(snapshot: UsagePricingSnapshot, billedKey: ke
 
 function resolveCountBilledNanousd(snapshot: UsagePricingSnapshot, billedKey: keyof UsagePricingSnapshot, count: number, rateNanousd: number): number {
   const billed = readUsageSnapshotNumber(snapshot, billedKey);
-  if (billed > 0) return billed;
-  if (!Number.isFinite(count) || !Number.isFinite(rateNanousd) || count <= 0 || rateNanousd <= 0) return 0;
+  if (billed > 0) {
+    return billed;
+  }
+  if (!Number.isFinite(count) || !Number.isFinite(rateNanousd) || count <= 0 || rateNanousd <= 0) {
+    return 0;
+  }
   return Math.round(count * rateNanousd);
 }
 
 function formatFormulaTokenCount(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) return "0";
+  if (!Number.isFinite(value) || value <= 0) {
+    return "0";
+  }
   return value.toLocaleString("en-US");
 }
 
@@ -696,9 +716,9 @@ function LogDetailSheet({ detail: rawDetail, onClose }: { detail: LogDetail | nu
           ? t("titles.order")
           : detail?.kind === "conversation"
             ? t("titles.conversation")
-        : detail?.kind === "system"
-          ? t("titles.system")
-          : t("titles.audit");
+            : detail?.kind === "system"
+              ? t("titles.system")
+              : t("titles.audit");
   const description =
     detail?.kind === "auth"
       ? `${detail.item.eventType || t("fallbacks.authEvent")} · ${formatDateTime(detail.item.occurredAt, locale)}`
@@ -708,9 +728,9 @@ function LogDetailSheet({ detail: rawDetail, onClose }: { detail: LogDetail | nu
           ? `${detail.item.orderNo || t("fallbacks.order")} · ${formatDateTime(detail.item.createdAt, locale)}`
           : detail?.kind === "conversation"
             ? `${detail.item.eventType || detail.item.eventScope || t("fallbacks.conversationEvent")} · ${formatDateTime(detail.item.createdAt, locale)}`
-      : detail?.kind === "system"
-        ? `${detail.item.event || t("fallbacks.systemEvent")} · ${formatDateTime(detail.item.createdAt, locale)}`
-        : `${detail?.item.action || t("fallbacks.auditEvent")} · ${formatDateTime(detail?.item.createdAt, locale)}`;
+            : detail?.kind === "system"
+              ? `${detail.item.event || t("fallbacks.systemEvent")} · ${formatDateTime(detail.item.createdAt, locale)}`
+              : `${detail?.item.action || t("fallbacks.auditEvent")} · ${formatDateTime(detail?.item.createdAt, locale)}`;
   const requestID = detail && detail.kind !== "usage" && detail.kind !== "order" && detail.kind !== "conversation" ? detail.item.requestID : "";
   const detailJSON =
     detail?.kind === "usage"
@@ -1168,6 +1188,7 @@ function AuthLogTable({ onOpenDetail }: { onOpenDetail: (item: AdminUserAuthEven
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Keep the hidden system-event view ready for a future tab restoration.
 function SystemEventTable({ onOpenDetail }: { onOpenDetail: (item: AdminSystemEventDTO) => void }) {
   const locale = useLocale();
   const t = useTranslations("adminLogs");

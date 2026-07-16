@@ -41,7 +41,7 @@ const PlusIcon = forwardRef<PlusIconHandle, PlusIconProps>(
         </svg>
       </div>
     );
-  }
+  },
 );
 
 PlusIcon.displayName = "PlusIcon";

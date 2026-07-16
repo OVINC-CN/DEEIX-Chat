@@ -173,13 +173,27 @@ export async function listAdminSystemEvents(
   const params = new URLSearchParams();
   params.set("page", String(page));
   params.set("page_size", String(pageSize));
-  if (options.query?.trim()) params.set("query", options.query.trim());
-  if (options.level?.trim()) params.set("level", options.level.trim());
-  if (options.source?.trim()) params.set("source", options.source.trim());
-  if (options.event?.trim()) params.set("event", options.event.trim());
-  if (options.createdFrom?.trim()) params.set("created_from", options.createdFrom.trim());
-  if (options.createdTo?.trim()) params.set("created_to", options.createdTo.trim());
-  if (options.sort?.trim()) params.set("sort", options.sort.trim());
+  if (options.query?.trim()) {
+    params.set("query", options.query.trim());
+  }
+  if (options.level?.trim()) {
+    params.set("level", options.level.trim());
+  }
+  if (options.source?.trim()) {
+    params.set("source", options.source.trim());
+  }
+  if (options.event?.trim()) {
+    params.set("event", options.event.trim());
+  }
+  if (options.createdFrom?.trim()) {
+    params.set("created_from", options.createdFrom.trim());
+  }
+  if (options.createdTo?.trim()) {
+    params.set("created_to", options.createdTo.trim());
+  }
+  if (options.sort?.trim()) {
+    params.set("sort", options.sort.trim());
+  }
 
   const data = await authedRequest<PagePayload<AdminSystemEventDTO>>(
     `/api/v1/admin/system-events?${params.toString()}`,
@@ -198,13 +212,27 @@ export async function listAdminUsageLogs(
   const params = new URLSearchParams();
   params.set("page", String(page));
   params.set("page_size", String(pageSize));
-  if (options.query?.trim()) params.set("query", options.query.trim());
-  if (options.platformModelName?.trim()) params.set("platform_model_name", options.platformModelName.trim());
-  if (options.billingMode?.trim()) params.set("billing_mode", options.billingMode.trim());
-  if (options.userID && options.userID > 0) params.set("user_id", String(options.userID));
-  if (options.createdFrom?.trim()) params.set("created_from", options.createdFrom.trim());
-  if (options.createdTo?.trim()) params.set("created_to", options.createdTo.trim());
-  if (options.sort?.trim()) params.set("sort", options.sort.trim());
+  if (options.query?.trim()) {
+    params.set("query", options.query.trim());
+  }
+  if (options.platformModelName?.trim()) {
+    params.set("platform_model_name", options.platformModelName.trim());
+  }
+  if (options.billingMode?.trim()) {
+    params.set("billing_mode", options.billingMode.trim());
+  }
+  if (options.userID && options.userID > 0) {
+    params.set("user_id", String(options.userID));
+  }
+  if (options.createdFrom?.trim()) {
+    params.set("created_from", options.createdFrom.trim());
+  }
+  if (options.createdTo?.trim()) {
+    params.set("created_to", options.createdTo.trim());
+  }
+  if (options.sort?.trim()) {
+    params.set("sort", options.sort.trim());
+  }
 
   const data = await authedRequest<PagePayload<AdminUsageLogDTO>>(
     `/api/v1/admin/call-logs?${params.toString()}`,
@@ -223,14 +251,30 @@ export async function listAdminPaymentOrders(
   const params = new URLSearchParams();
   params.set("page", String(page));
   params.set("page_size", String(pageSize));
-  if (options.query?.trim()) params.set("query", options.query.trim());
-  if (options.orderType?.trim()) params.set("order_type", options.orderType.trim());
-  if (options.provider?.trim()) params.set("provider", options.provider.trim());
-  if (options.status?.trim()) params.set("status", options.status.trim());
-  if (options.userID && options.userID > 0) params.set("user_id", String(options.userID));
-  if (options.createdFrom?.trim()) params.set("created_from", options.createdFrom.trim());
-  if (options.createdTo?.trim()) params.set("created_to", options.createdTo.trim());
-  if (options.sort?.trim()) params.set("sort", options.sort.trim());
+  if (options.query?.trim()) {
+    params.set("query", options.query.trim());
+  }
+  if (options.orderType?.trim()) {
+    params.set("order_type", options.orderType.trim());
+  }
+  if (options.provider?.trim()) {
+    params.set("provider", options.provider.trim());
+  }
+  if (options.status?.trim()) {
+    params.set("status", options.status.trim());
+  }
+  if (options.userID && options.userID > 0) {
+    params.set("user_id", String(options.userID));
+  }
+  if (options.createdFrom?.trim()) {
+    params.set("created_from", options.createdFrom.trim());
+  }
+  if (options.createdTo?.trim()) {
+    params.set("created_to", options.createdTo.trim());
+  }
+  if (options.sort?.trim()) {
+    params.set("sort", options.sort.trim());
+  }
 
   const data = await authedRequest<PagePayload<AdminPaymentOrderDTO>>(
     `/api/v1/admin/payment-orders?${params.toString()}`,
@@ -249,15 +293,33 @@ export async function listAdminConversationEvents(
   const params = new URLSearchParams();
   params.set("page", String(page));
   params.set("page_size", String(pageSize));
-  if (options.query?.trim()) params.set("query", options.query.trim());
-  if (options.eventScope?.trim()) params.set("event_scope", options.eventScope.trim());
-  if (options.eventType?.trim()) params.set("event_type", options.eventType.trim());
-  if (options.status?.trim()) params.set("status", options.status.trim());
-  if (options.userID && options.userID > 0) params.set("user_id", String(options.userID));
-  if (options.conversationID && options.conversationID > 0) params.set("conversation_id", String(options.conversationID));
-  if (options.createdFrom?.trim()) params.set("created_from", options.createdFrom.trim());
-  if (options.createdTo?.trim()) params.set("created_to", options.createdTo.trim());
-  if (options.sort?.trim()) params.set("sort", options.sort.trim());
+  if (options.query?.trim()) {
+    params.set("query", options.query.trim());
+  }
+  if (options.eventScope?.trim()) {
+    params.set("event_scope", options.eventScope.trim());
+  }
+  if (options.eventType?.trim()) {
+    params.set("event_type", options.eventType.trim());
+  }
+  if (options.status?.trim()) {
+    params.set("status", options.status.trim());
+  }
+  if (options.userID && options.userID > 0) {
+    params.set("user_id", String(options.userID));
+  }
+  if (options.conversationID && options.conversationID > 0) {
+    params.set("conversation_id", String(options.conversationID));
+  }
+  if (options.createdFrom?.trim()) {
+    params.set("created_from", options.createdFrom.trim());
+  }
+  if (options.createdTo?.trim()) {
+    params.set("created_to", options.createdTo.trim());
+  }
+  if (options.sort?.trim()) {
+    params.set("sort", options.sort.trim());
+  }
 
   const data = await authedRequest<PagePayload<AdminConversationEventDTO>>(
     `/api/v1/admin/conversation-events?${params.toString()}`,

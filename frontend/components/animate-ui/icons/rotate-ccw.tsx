@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { RotateCcw as LucideRotateCcw } from 'lucide-react';
+import { RotateCcw as LucideRotateCcw } from "lucide-react";
 
 import {
   createStaticIcon,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+} from "@/components/animate-ui/icons/icon";
 
 const animations = { default: {} } as const;
 type RotateCcwProps = IconProps<string>;

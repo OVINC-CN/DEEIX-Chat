@@ -791,7 +791,9 @@ export function useAdminUsageLogs(): UseAdminUsageLogsState {
         createdTo: toRFC3339DateRangeBound(createdToFilter, "end"),
         sort: sortValue,
       });
-      if (requestSeq !== requestSeqRef.current) return;
+      if (requestSeq !== requestSeqRef.current) {
+        return;
+      }
       setLogs(data.results);
       setTotal(data.total);
       setPage(nextPage);
@@ -942,7 +944,9 @@ export function useAdminPaymentOrders(): UseAdminPaymentOrdersState {
         createdTo: toRFC3339DateRangeBound(createdToFilter, "end"),
         sort: sortValue,
       });
-      if (requestSeq !== requestSeqRef.current) return;
+      if (requestSeq !== requestSeqRef.current) {
+        return;
+      }
       setOrders(data.results);
       setTotal(data.total);
       setPage(nextPage);
@@ -1058,7 +1062,9 @@ export function useAdminConversationEvents(): UseAdminConversationEventsState {
         createdTo: toRFC3339DateRangeBound(createdToFilter, "end"),
         sort: sortValue,
       });
-      if (requestSeq !== requestSeqRef.current) return;
+      if (requestSeq !== requestSeqRef.current) {
+        return;
+      }
       setEvents(data.results);
       setTotal(data.total);
       setPage(nextPage);

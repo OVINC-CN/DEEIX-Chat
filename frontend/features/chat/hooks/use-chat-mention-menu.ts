@@ -463,9 +463,9 @@ function buildSections({
     : [];
   const modelItems = enabledKinds.has("model")
     ? filterModels(modelOptions, query).map((item) => ({
-        ...item,
-        selected: item.model.platformModelName === selectedPlatformModelName,
-      }))
+      ...item,
+      selected: item.model.platformModelName === selectedPlatformModelName,
+    }))
     : [];
 
   return [

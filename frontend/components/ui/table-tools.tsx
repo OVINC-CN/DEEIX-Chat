@@ -438,11 +438,11 @@ export function TableToolbar({
       <div className="ml-auto flex min-h-8 shrink-0 items-center gap-1 md:gap-1">
         <ToolbarButton
           onClick={onRefresh}
-          disabled={refreshDisabled ?? loading}
+          disabled={refreshDisabled ?? (loading || refreshLoading)}
           aria-label={refreshLabel ?? t("refresh")}
           title={refreshLabel ?? t("refresh")}
         >
-          <RefreshCw className="size-3.5 stroke-1" />
+          <RefreshCw className={cn("size-3.5 stroke-1", refreshLoading && "animate-spin")} />
         </ToolbarButton>
         {children}
       </div>

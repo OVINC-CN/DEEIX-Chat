@@ -52,50 +52,50 @@ export function PeriodBillingTable({
         {!loading && plans.length === 0 ? <TableEmptyRow colSpan={6}>{t("plans.empty")}</TableEmptyRow> : null}
         {showPlans
           ? plans.map((plan) => {
-              const defaultPrice = plan.prices.find((item) => item.isDefault) || plan.prices[0];
-              return (
-                <TableRow key={plan.id}>
-                  <TableCell className="py-1.5">
-                    <span className="font-medium text-foreground">{plan.name}</span>
-                  </TableCell>
-                  <TableCell className="max-w-[280px] py-1.5 text-muted-foreground">
-                    <span className="block truncate" title={plan.description || "-"}>
-                      {plan.description || "-"}
-                    </span>
-                  </TableCell>
-                  <TableCell className="py-1.5">
-                    {defaultPrice ? (
-                      <span>
-                        {formatAmountCents(defaultPrice.amountCents, defaultPrice.currency)} / {t(`plans.intervals.${defaultPrice.billingInterval}`)}
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground">-</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="py-1.5">
+            const defaultPrice = plan.prices.find((item) => item.isDefault) || plan.prices[0];
+            return (
+              <TableRow key={plan.id}>
+                <TableCell className="py-1.5">
+                  <span className="font-medium text-foreground">{plan.name}</span>
+                </TableCell>
+                <TableCell className="max-w-[280px] py-1.5 text-muted-foreground">
+                  <span className="block truncate" title={plan.description || "-"}>
+                    {plan.description || "-"}
+                  </span>
+                </TableCell>
+                <TableCell className="py-1.5">
+                  {defaultPrice ? (
                     <span>
-                      {formatCreditUSD(plan.periodCreditUSD)}
-                      <span className="ml-1 text-xs text-muted-foreground">{t("plans.perPeriod")}</span>
+                      {formatAmountCents(defaultPrice.amountCents, defaultPrice.currency)} / {t(`plans.intervals.${defaultPrice.billingInterval}`)}
                     </span>
-                  </TableCell>
-                  <TableCell className="py-1.5">{plan.discountPercent}%</TableCell>
-                  <TableCell stickyEnd className="w-[56px] py-1.5 text-right">
-                    <div className="flex h-7 items-center justify-end">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-xs"
-                        className="h-7 w-7 text-muted-foreground shadow-none"
-                        onClick={() => onEdit(plan)}
-                        aria-label={t("actions.editPlan")}
-                      >
-                        <Pencil className="size-3.5 stroke-1" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
-            })
+                  ) : (
+                    <span className="text-muted-foreground">-</span>
+                  )}
+                </TableCell>
+                <TableCell className="py-1.5">
+                  <span>
+                    {formatCreditUSD(plan.periodCreditUSD)}
+                    <span className="ml-1 text-xs text-muted-foreground">{t("plans.perPeriod")}</span>
+                  </span>
+                </TableCell>
+                <TableCell className="py-1.5">{plan.discountPercent}%</TableCell>
+                <TableCell stickyEnd className="w-[56px] py-1.5 text-right">
+                  <div className="flex h-7 items-center justify-end">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-xs"
+                      className="h-7 w-7 text-muted-foreground shadow-none"
+                      onClick={() => onEdit(plan)}
+                      aria-label={t("actions.editPlan")}
+                    >
+                      <Pencil className="size-3.5 stroke-1" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })
           : null}
       </TableBody>
     </Table>
@@ -113,12 +113,22 @@ function PricingCell({ value, suffix }: { value: number; suffix: string }) {
 
 export function PricingUnitCell({ pricing }: { pricing: AdminModelPricingDTO | null }) {
   const t = useTranslations("adminBilling");
-  if (!pricing) return <span className="text-muted-foreground">-</span>;
-  if (pricing.isFree) return <span className="text-muted-foreground">{t("modelPricing.freeLabel")}</span>;
+  if (!pricing) {
+    return <span className="text-muted-foreground">-</span>;
+  }
+  if (pricing.isFree) {
+    return <span className="text-muted-foreground">{t("modelPricing.freeLabel")}</span>;
+  }
   const mode = normalizePricingMode(pricing.pricingMode);
-  if (mode === "call") return <PricingCell value={pricing.callUSDPerCall} suffix={t("modelPricing.units.call")} />;
-  if (mode === "duration") return <PricingCell value={pricing.durationUSDPerSecond} suffix={t("modelPricing.units.second")} />;
-  if (mode === "tiered") return <span className="text-xs text-foreground">{t("modelPricing.tieredLabel")}</span>;
+  if (mode === "call") {
+    return <PricingCell value={pricing.callUSDPerCall} suffix={t("modelPricing.units.call")} />;
+  }
+  if (mode === "duration") {
+    return <PricingCell value={pricing.durationUSDPerSecond} suffix={t("modelPricing.units.second")} />;
+  }
+  if (mode === "tiered") {
+    return <span className="text-xs text-foreground">{t("modelPricing.tieredLabel")}</span>;
+  }
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-0.5">
       <PricingCell value={pricing.inputUSDPerMTokens} suffix={t("modelPricing.units.input")} />

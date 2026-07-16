@@ -10,7 +10,9 @@ function normalizeKinds(kinds: string[]): string[] {
   const result: string[] = [];
   for (const item of kinds) {
     const kind = item.trim().toLowerCase();
-    if (!kind || seen.has(kind)) continue;
+    if (!kind || seen.has(kind)) {
+      continue;
+    }
     seen.add(kind);
     result.push(kind);
   }
@@ -18,10 +20,14 @@ function normalizeKinds(kinds: string[]): string[] {
 }
 
 export function parseKindsJSON(raw: string | null | undefined): string[] {
-  if (!raw?.trim()) return [];
+  if (!raw?.trim()) {
+    return [];
+  }
   try {
     const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
     return normalizeKinds(parsed.filter((item): item is string => typeof item === "string"));
   } catch {
     return [];

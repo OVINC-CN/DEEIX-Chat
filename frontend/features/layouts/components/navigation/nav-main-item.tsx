@@ -134,7 +134,9 @@ export function NavMainItem({
               onClick={() => {
                 if (item.id === "newChat") {
                   onCreateConversation();
-                  if (isMobile) onCloseMobileSidebar();
+                  if (isMobile) {
+                    onCloseMobileSidebar();
+                  }
                 } else {
                   onOpenSearch();
                 }
@@ -155,7 +157,9 @@ export function NavMainItem({
                 href={item.href}
                 prefetch={false}
                 onClick={() => {
-                  if (isMobile) onCloseMobileSidebar();
+                  if (isMobile) {
+                    onCloseMobileSidebar();
+                  }
                 }}
               >
                 {itemContent}

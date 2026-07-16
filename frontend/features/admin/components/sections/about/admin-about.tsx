@@ -29,7 +29,6 @@ import {
 } from "@/features/admin/model/update-check";
 import { AboutSettingsContent } from "@/shared/components/about-settings-content";
 import { useDialogSnapshot } from "@/shared/hooks/use-dialog-snapshot";
-import { cn } from "@/lib/utils";
 
 type GitHubRelease = {
   tag_name?: string;
@@ -47,7 +46,9 @@ function AdminUpdateCheck() {
   const [dialogState, setDialogState] = useState<UpdateDialogState | null>(null);
 
   async function handleCheckUpdate() {
-    if (checking) return;
+    if (checking) {
+      return;
+    }
 
     setChecking(true);
     try {
@@ -101,7 +102,9 @@ function AdminUpdateCheck() {
       <UpdateResultDialog
         state={dialogState}
         onOpenChange={(open) => {
-          if (!open) setDialogState(null);
+          if (!open) {
+            setDialogState(null);
+          }
         }}
         onRetry={() => void handleCheckUpdate()}
       />

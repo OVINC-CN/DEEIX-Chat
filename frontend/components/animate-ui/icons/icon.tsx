@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import type { LucideIcon, LucideProps } from 'lucide-react';
+import type { LucideIcon, LucideProps } from "lucide-react";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 type TriggerProp<T = string> = boolean | T;
 
@@ -50,7 +50,7 @@ function IconWrapper<T extends string>({
   return (
     <IconComponent
       size={size}
-      className={cn('icon-no-motion', className)}
+      className={cn("icon-no-motion", className)}
       {...props}
     />
   );

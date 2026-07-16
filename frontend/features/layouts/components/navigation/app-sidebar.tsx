@@ -32,16 +32,16 @@ export function AppSidebar({
   const username = sessionUser?.username.trim() ?? "";
   const user = sessionUser
     ? {
-        name: sessionUser.displayName || username || t("fallbackUser"),
-        email: sessionUser.email || username || t("fallbackUser"),
-        avatar: resolveAvatarImageSrc(sessionUser.avatarURL, sessionUser),
-        role: sessionUser.role,
-      }
+      name: sessionUser.displayName || username || t("fallbackUser"),
+      email: sessionUser.email || username || t("fallbackUser"),
+      avatar: resolveAvatarImageSrc(sessionUser.avatarURL, sessionUser),
+      role: sessionUser.role,
+    }
     : {
-        name: branding.title,
-        email: "deeix.com",
-        avatar: "",
-      };
+      name: branding.title,
+      email: "deeix.com",
+      avatar: "",
+    };
 
   return (
     <Sidebar collapsible="icon" {...props}>

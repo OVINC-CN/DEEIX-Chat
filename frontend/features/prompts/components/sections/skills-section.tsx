@@ -60,7 +60,9 @@ function hasSkillMarkdown(item: SkillListItem): item is SkillDTO {
 function orderSkills<T extends SkillListItem>(items: T[]): T[] {
   return [...items].sort((a, b) => {
     const rank = (item: SkillListItem) => {
-      if (!item.enabled) return 2;
+      if (!item.enabled) {
+        return 2;
+      }
       return item.scope === "builtin" ? 1 : 0;
     };
     return rank(a) - rank(b) || a.sortOrder - b.sortOrder || b.id - a.id;
@@ -69,8 +71,22 @@ function orderSkills<T extends SkillListItem>(items: T[]): T[] {
 
 function skillMatchesQuery(item: SkillListItem, query: string): boolean {
   const normalized = query.trim().toLowerCase();
-  if (!normalized) return true;
+  if (!normalized) {
+    return true;
+  }
   return [item.title, item.trigger, item.description].join(" ").toLowerCase().includes(normalized);
+}
+
+function replaceSkill(items: SkillListItem[], replacement: SkillDTO): SkillListItem[] {
+  return orderSkills(items.map((item) => (skillKey(item) === skillKey(replacement) ? replacement : item)));
+}
+
+function removeSkill(items: SkillListItem[], target: SkillDTO): SkillListItem[] {
+  return items.filter((item) => skillKey(item) !== skillKey(target));
+}
+
+function updateSkillEnabled(items: SkillListItem[], target: SkillDTO, enabled: boolean): SkillListItem[] {
+  return orderSkills(items.map((item) => (skillKey(item) === skillKey(target) ? { ...item, enabled } : item)));
 }
 
 function SkillCard({
@@ -228,7 +244,9 @@ export const SkillsSection = React.forwardRef<SkillsSectionHandle, { query: stri
     }
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       const data = await getVisibleSkill(token, item.id);
       setViewTarget(data.skill);
     } catch (error) {
@@ -249,10 +267,12 @@ export const SkillsSection = React.forwardRef<SkillsSectionHandle, { query: stri
     setSaving(true);
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       if (form.id) {
         const data = await updateMySkill(token, form.id, payload);
-        setItems((current) => orderSkills(current.map((item) => (skillKey(item) === skillKey(data.skill) ? data.skill : item))));
+        setItems((current) => replaceSkill(current, data.skill));
         toast.success(t("skillUpdated"));
       } else {
         const data = await createMySkill(token, payload);
@@ -268,14 +288,18 @@ export const SkillsSection = React.forwardRef<SkillsSectionHandle, { query: stri
   }, [form, resolveErrorMessage, t]);
 
   const confirmDelete = React.useCallback(async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget) {
+      return;
+    }
     const target = deleteTarget;
     setDeleteTarget(null);
     try {
       const token = await resolveAccessToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       await deleteMySkill(token, target.id);
-      setItems((current) => current.filter((item) => skillKey(item) !== skillKey(target)));
+      setItems((current) => removeSkill(current, target));
       toast.success(t("skillDeleted"));
     } catch (error) {
       toast.error(t("skillDeleteFailed"), { description: resolveErrorMessage(error) });
@@ -284,16 +308,20 @@ export const SkillsSection = React.forwardRef<SkillsSectionHandle, { query: stri
 
   const toggleEnabled = React.useCallback(
     async (item: SkillDTO, enabled: boolean) => {
-      if (item.scope !== "user") return;
+      if (item.scope !== "user") {
+        return;
+      }
       const previous = item;
-      setItems((current) => orderSkills(current.map((row) => (skillKey(row) === skillKey(item) ? { ...row, enabled } : row))));
+      setItems((current) => updateSkillEnabled(current, item, enabled));
       try {
         const token = await resolveAccessToken();
-        if (!token) return;
+        if (!token) {
+          return;
+        }
         const data = await updateMySkill(token, item.id, { enabled });
-        setItems((current) => orderSkills(current.map((row) => (skillKey(row) === skillKey(data.skill) ? data.skill : row))));
+        setItems((current) => replaceSkill(current, data.skill));
       } catch (error) {
-        setItems((current) => orderSkills(current.map((row) => (skillKey(row) === skillKey(previous) ? previous : row))));
+        setItems((current) => replaceSkill(current, previous));
         toast.error(t("skillUpdateFailed"), { description: resolveErrorMessage(error) });
       }
     },

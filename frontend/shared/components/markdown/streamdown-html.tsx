@@ -149,7 +149,7 @@ function renderInlineStrongMarkdownText(source: string): React.ReactNode {
   INLINE_MARKDOWN_STRONG_RE.lastIndex = 0;
 
   while ((match = INLINE_MARKDOWN_STRONG_RE.exec(source)) !== null) {
-    const [raw, _delimiter, content] = match;
+    const [raw, , content] = match;
     if (!content.trim()) {
       continue;
     }
