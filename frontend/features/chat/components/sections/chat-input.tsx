@@ -2,14 +2,11 @@
 
 import * as React from "react";
 import dynamic from "next/dynamic";
-import { Box, CornerDownRight, Film, Image, ImageOff, ImagePlus, LoaderCircle, PencilLine, Trash2 } from "lucide-react";
+import { ArrowUp, Box, CornerDownRight, Film, Image, ImageOff, ImagePlus, LoaderCircle, PencilLine, Square, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-import { AudioLines } from "@/components/animate-ui/icons/audio-lines";
 import { Blocks } from "@/components/animate-ui/icons/blocks";
-import { Pause } from "@/components/animate-ui/icons/pause";
-import { Send } from "@/components/animate-ui/icons/send";
 import { Link as LinkIcon } from "@/components/animate-ui/icons/link";
 import { Crop } from "@/components/animate-ui/icons/crop";
 import { X as XIcon } from "@/components/animate-ui/icons/x";
@@ -19,7 +16,6 @@ import type {
   PendingAttachment,
   UploadingAttachment,
 } from "@/features/chat/types/chat-runtime";
-import { useChatSpeechInput } from "@/features/chat/hooks/use-chat-speech-input";
 import {
   useChatMentionMenu,
   type ChatMentionMenuKind,
@@ -273,17 +269,10 @@ function ChatInputComponent({
   const tComposer = useTranslations("chat.composer");
   const tFileStatus = useTranslations("files.status");
   const [isBlocksHovered, setIsBlocksHovered] = React.useState(false);
-  const [isVoiceHovered, setIsVoiceHovered] = React.useState(false);
   const [toolsMenuHovered, setToolsMenuHovered] = React.useState(false);
   const [toolsMenuOpen, setToolsMenuOpen] = React.useState(false);
   const [editingQueuedMessageID, setEditingQueuedMessageID] = React.useState<string | null>(null);
   const [editingQueuedMessageContent, setEditingQueuedMessageContent] = React.useState("");
-  const speechInput = useChatSpeechInput({
-    draft,
-    listeningPlaceholder: tComposer("voiceListeningPlaceholder"),
-    onDraftChange,
-    placeholder: tComposer("inputPlaceholder"),
-  });
   const [hoveredTool, setHoveredTool] = React.useState<"upload" | "screenshot" | null>(null);
   const [ragWarnDismissed, setRagWarnDismissed] = React.useState(false);
   const [previewAttachment, setPreviewAttachment] = React.useState<PendingAttachment | null>(null);
@@ -739,8 +728,7 @@ function ChatInputComponent({
             ref={textareaRef}
             value={draft}
             disabled={loading || uploading}
-            readOnly={speechInput.active}
-            placeholder={dropActive ? tChat("attachments.dropTitle") : speechInput.placeholder}
+            placeholder={dropActive ? tChat("attachments.dropTitle") : tComposer("inputPlaceholder")}
             rows={1}
             aria-controls={showMentionMenu ? mentionMenuID : undefined}
             aria-expanded={showMentionMenu ? true : undefined}
@@ -749,7 +737,6 @@ function ChatInputComponent({
               "rounded-3xl min-h-12 overflow-y-auto px-5 text-[15px] leading-6 placeholder:text-muted-foreground placeholder:font-[inherit] placeholder:leading-[inherit]",
               showSelectedSkills || hasComposerAttachments ? "pt-2" : "pt-4",
               inputHeightClassName,
-              speechInput.active ? "placeholder:font-normal placeholder:text-muted-foreground" : "",
             )}
             onFocus={handleMentionFocus}
             onBlur={handleMentionBlur}
@@ -949,38 +936,16 @@ function ChatInputComponent({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
-                className="size-7 rounded-md text-muted-foreground hover:text-foreground sm:size-8"
-                disabled={loading || uploading || (!sending && !hasSubmitContent && !speechInput.supported)}
-                onClick={hasSubmitContent ? onSendMessage : sending ? onStopMessage : speechInput.toggle}
-                onMouseEnter={() => setIsVoiceHovered(true)}
-                onMouseLeave={() => setIsVoiceHovered(false)}
-                aria-label={hasSubmitContent ? (sending ? tComposer("queueMessage") : tChat("send")) : sending ? tComposer("pauseGeneration") : speechInput.active ? tComposer("cancelVoiceInput") : tComposer("voiceInput")}
-                title={hasSubmitContent ? (sending ? tComposer("queueMessage") : tChat("send")) : sending ? tComposer("pauseGeneration") : speechInput.supported ? (speechInput.active ? tComposer("cancelVoiceInput") : tComposer("voiceInput")) : tComposer("voiceUnsupported")}
+                className="size-7 rounded-full bg-foreground text-background hover:bg-foreground/85 hover:text-background disabled:bg-muted disabled:text-muted-foreground"
+                disabled={loading || uploading || (!sending && !hasSubmitContent)}
+                onClick={hasSubmitContent ? onSendMessage : sending ? onStopMessage : undefined}
+                aria-label={hasSubmitContent ? (sending ? tComposer("queueMessage") : tChat("send")) : sending ? tComposer("pauseGeneration") : tChat("send")}
+                title={hasSubmitContent ? (sending ? tComposer("queueMessage") : tChat("send")) : sending ? tComposer("pauseGeneration") : tChat("send")}
               >
-                {hasSubmitContent ? (
-                  <Send
-                    size={20}
-                    strokeWidth={1.4}
-                    animate={isVoiceHovered ? "default" : undefined}
-                  />
-                ) : sending ? (
-                  <Pause
-                    size={20}
-                    strokeWidth={1.4}
-                    animate="default-loop"
-                  />
-                ) : speechInput.active ? (
-                  <AudioLines
-                    size={20}
-                    strokeWidth={1.4}
-                    animate="default"
-                  />
+                {sending && !hasSubmitContent ? (
+                  <Square className="size-2.5 fill-current" strokeWidth={2} />
                 ) : (
-                  <AudioLines
-                    size={20}
-                    strokeWidth={1.4}
-                    animate={isVoiceHovered ? "default" : undefined}
-                  />
+                  <ArrowUp className="size-4" strokeWidth={2.2} />
                 )}
               </InputGroupButton>
             </div>
