@@ -48,11 +48,11 @@ html[data-branding-pending] body {
   --sidebar-accent-foreground: #0d0d0d;
   --sidebar-border: #0000000d;
   --sidebar-ring: #0d0d0d;
-  --font-sans: -apple-system-body, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --font-serif: var(--font-sans);
+  --font-sans: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
+  --font-serif: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
   --font-mono: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
-  --font-economist: var(--font-sans);
-  --font-chat: var(--font-sans);
+  --font-economist: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
+  --font-chat: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
   --font-chat-weight: 400;
   --font-chat-strong-weight: 600;
   --ui-font-scale: 1;
@@ -111,11 +111,11 @@ html[data-branding-pending] body {
   --sidebar-accent-foreground: #ececec;
   --sidebar-border: #ffffff0d;
   --sidebar-ring: #b4b4b4;
-  --font-sans: -apple-system-body, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --font-serif: var(--font-sans);
+  --font-sans: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
+  --font-serif: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
   --font-mono: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
-  --font-economist: var(--font-sans);
-  --font-chat: var(--font-sans);
+  --font-economist: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
+  --font-chat: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
   --font-chat-weight: 400;
   --font-chat-strong-weight: 600;
   --radius: 0.625rem;
@@ -171,10 +171,10 @@ html[data-branding-pending] body {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: -apple-system-body, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-sans: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
   --font-mono: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
-  --font-serif: -apple-system-body, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --font-economist: -apple-system-body, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-serif: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
+  --font-economist: var(--font-jetbrains-mono, "JetBrains Mono"), monospace;
 
   --text-xs: calc(0.75rem * var(--ui-font-scale));
   --text-sm: calc(0.875rem * var(--ui-font-scale));

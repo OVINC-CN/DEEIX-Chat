@@ -100,7 +100,7 @@ function artifactRuntimeScript(): string {
     const message = formatError(value);
     const node = document.createElement("pre");
     node.textContent = message;
-    node.style.cssText = "margin:16px;padding:12px;border:1px solid #ef4444;border-radius:8px;background:#fef2f2;color:#991b1b;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;";
+    node.style.cssText = "margin:16px;padding:12px;border:1px solid #ef4444;border-radius:8px;background:#fef2f2;color:#991b1b;font:12px/1.5 'JetBrains Mono',monospace;white-space:pre-wrap;";
     document.body.appendChild(node);
   };
   window.addEventListener("error", (event) => showError(event.error || event.message));
@@ -116,6 +116,7 @@ body {
   min-height: 100%;
   width: 100%;
   margin: 0;
+  font-family: "JetBrains Mono", monospace;
 }
 
 body {
@@ -191,9 +192,9 @@ function javascriptPreviewDocument(code: string): string {
 <head>
 ${previewHead("JavaScript Preview")}
 <style>
-body { margin: 0; font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #111827; background: #ffffff; }
+body { margin: 0; font: 14px/1.5 "JetBrains Mono", monospace; color: #111827; background: #ffffff; }
 #root { min-height: 100vh; padding: 20px; box-sizing: border-box; }
-.artifact-console { position: fixed; inset-inline: 12px; bottom: 12px; max-height: 32vh; overflow: auto; border: 1px solid #d1d5db; border-radius: 8px; background: #f9fafb; color: #374151; padding: 10px; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; }
+.artifact-console { position: fixed; inset-inline: 12px; bottom: 12px; max-height: 32vh; overflow: auto; border: 1px solid #d1d5db; border-radius: 8px; background: #f9fafb; color: #374151; padding: 10px; font: 12px/1.5 "JetBrains Mono", monospace; white-space: pre-wrap; }
 </style>
 </head>
 <body>

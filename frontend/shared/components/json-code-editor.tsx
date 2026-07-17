@@ -218,7 +218,7 @@ export function JsonCodeEditor({
         editContext: false,
         fixedOverflowWidgets: true,
         folding: true,
-        fontFamily: "var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+        fontFamily: "var(--font-mono)",
         fontSize: BASE_EDITOR_FONT_SIZE,
         lineDecorationsWidth: 8,
         lineNumbersMinChars: 3,
