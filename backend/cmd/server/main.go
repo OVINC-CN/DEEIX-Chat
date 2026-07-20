@@ -9,7 +9,7 @@ import (
 )
 
 // @title OVINC Chat API
-// @version 0.3.2
+// @version 0.3.3
 // @description OVINC Chat 后端 API 文档
 // @BasePath /api/v1
 // @securityDefinitions.apikey BearerAuth

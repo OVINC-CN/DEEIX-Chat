@@ -5411,7 +5411,7 @@ info:
   contact: {}
   description: OVINC Chat 后端 API 文档
   title: OVINC Chat API
-  version: 0.3.2
+  version: "0.3.3"
 paths:
   /admin/announcements:
     get:
