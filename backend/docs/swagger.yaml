@@ -4867,11 +4867,6 @@ definitions:
           type: string
         maxItems: 20
         type: array
-      htmlVisualColorMode:
-        enum:
-        - light
-        - dark
-        type: string
       htmlVisualPrompt:
         type: boolean
       model:

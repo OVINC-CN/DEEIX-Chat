@@ -17689,13 +17689,6 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
-                "htmlVisualColorMode": {
-                    "type": "string",
-                    "enum": [
-                        "light",
-                        "dark"
-                    ]
-                },
                 "htmlVisualPrompt": {
                     "type": "boolean"
                 },

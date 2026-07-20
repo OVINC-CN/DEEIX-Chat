@@ -95,7 +95,6 @@ type SendMessageRequest struct {
 	SelectedToolIDs         []uint                 `json:"selectedToolIDs" binding:"max=128"`
 	SkillIDs                []uint                 `json:"skillIDs" binding:"max=128"`
 	HTMLVisualPromptEnabled bool                   `json:"htmlVisualPrompt"`
-	HTMLVisualColorMode     string                 `json:"htmlVisualColorMode" binding:"omitempty,oneof=light dark"`
 	ParentMessagePublicID   string                 `json:"parentMessagePublicID" binding:"omitempty,max=32"`
 	SourceMessagePublicID   string                 `json:"sourceMessagePublicID" binding:"omitempty,max=32"`
 	BranchReason            string                 `json:"branchReason" binding:"omitempty,oneof=default retry edit"`

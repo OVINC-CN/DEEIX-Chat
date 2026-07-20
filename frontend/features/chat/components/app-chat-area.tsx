@@ -54,7 +54,6 @@ import { resolveAccessToken } from "@/shared/auth/resolve-access-token";
 import type { ConversationDTO, ConversationOptions } from "@/shared/api/conversation.types";
 import type { FileObjectDTO } from "@/shared/api/file.types";
 import type { MCPToolDTO } from "@/shared/api/mcp.types";
-import { useTheme } from "@/shared/components/theme-provider";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_MCP_TOOLS_SETTING_KEY = "chat.default_mcp_tool_ids";
@@ -329,7 +328,6 @@ export function AppChatArea() {
     setSelectedSkills,
   });
   const htmlVisualPrompt = useChatVisualPrompt();
-  const { resolvedTheme } = useTheme();
   const initializedOptionsKeyRef = React.useRef("");
   const selectedModelDefaultOptionsRef = React.useRef<ConversationOptions>({});
   const fileDragDepthRef = React.useRef(0);
@@ -517,7 +515,6 @@ export function AppChatArea() {
     selectedToolIDs,
     selectedSkills,
     htmlVisualPromptEnabled: htmlVisualPrompt.enabled,
-    htmlVisualColorMode: resolvedTheme,
     options: modelOptionPolicyDisabled ? EMPTY_CONVERSATION_OPTIONS : options,
     draft,
     attachments,

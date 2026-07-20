@@ -416,7 +416,6 @@ export type SendMessageRequest = {
   selectedToolIDs?: number[];
   skillIDs?: number[];
   htmlVisualPrompt?: boolean;
-  htmlVisualColorMode?: "light" | "dark";
   parentMessagePublicID?: string;
   sourceMessagePublicID?: string;
   branchReason?: "default" | "retry" | "edit";
