@@ -40,6 +40,8 @@ type SidebarContextProps = {
   state: "expanded" | "collapsed";
   open: boolean;
   setOpen: (open: boolean) => void;
+  hoverExpanded: boolean;
+  setHoverExpanded: (expanded: boolean) => void;
   openMobile: boolean;
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
@@ -132,6 +134,7 @@ function SidebarProvider({
   const isMobile = useIsMobile();
   const { shouldCollapse, shouldRestore } = useSidebarAutoViewport();
   const [openMobile, setOpenMobile] = React.useState(false);
+  const [hoverExpanded, setHoverExpanded] = React.useState(false);
   const autoCollapsedRef = React.useRef(readSidebarInitialOpen(defaultOpen) && shouldAutoCollapseSidebar());
   const wasAutoCollapseViewportRef = React.useRef(shouldAutoCollapseSidebar());
   const wasAutoRestoreViewportRef = React.useRef(shouldAutoRestoreSidebar());
@@ -195,6 +198,12 @@ function SidebarProvider({
     _setOpen(true);
   }, [open, setOpenProp, shouldCollapse, shouldRestore]);
 
+  React.useEffect(() => {
+    if (isMobile || open) {
+      setHoverExpanded(false);
+    }
+  }, [isMobile, open]);
+
   // Helper to toggle the sidebar.
   const toggleSidebar = React.useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
@@ -218,19 +227,21 @@ function SidebarProvider({
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
-  const state = open ? "expanded" : "collapsed";
+  const state = open || hoverExpanded ? "expanded" : "collapsed";
 
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
       state,
       open,
       setOpen,
+      hoverExpanded,
+      setHoverExpanded,
       isMobile,
       openMobile,
       setOpenMobile,
       toggleSidebar,
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+    [state, open, setOpen, hoverExpanded, isMobile, openMobile, setOpenMobile, toggleSidebar],
   );
 
   return (
@@ -262,16 +273,59 @@ function Sidebar({
   side = "left",
   variant = "sidebar",
   collapsible = "offcanvas",
+  expandOnHover = false,
   className,
   children,
+  onPointerEnter,
+  onPointerLeave,
   ...props
 }: React.ComponentProps<"div"> & {
   side?: "left" | "right";
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
+  expandOnHover?: boolean;
 }) {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+  const {
+    isMobile,
+    state,
+    open,
+    hoverExpanded,
+    setHoverExpanded,
+    openMobile,
+    setOpenMobile,
+  } = useSidebar();
   const t = useTranslations("common.navigation");
+
+  React.useEffect(() => {
+    if (!expandOnHover || collapsible !== "icon") {
+      setHoverExpanded(false);
+    }
+  }, [collapsible, expandOnHover, setHoverExpanded]);
+
+  const handlePointerEnter = React.useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      onPointerEnter?.(event);
+      if (
+        expandOnHover
+        && collapsible === "icon"
+        && event.pointerType === "mouse"
+        && !open
+      ) {
+        setHoverExpanded(true);
+      }
+    },
+    [collapsible, expandOnHover, onPointerEnter, open, setHoverExpanded],
+  );
+
+  const handlePointerLeave = React.useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      onPointerLeave?.(event);
+      if (expandOnHover && event.pointerType === "mouse") {
+        setHoverExpanded(false);
+      }
+    },
+    [expandOnHover, onPointerLeave, setHoverExpanded],
+  );
 
   if (collapsible === "none") {
     return (
@@ -281,6 +335,8 @@ function Sidebar({
           "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground",
           className,
         )}
+        onPointerEnter={onPointerEnter}
+        onPointerLeave={onPointerLeave}
         {...props}
       >
         {children}
@@ -302,6 +358,8 @@ function Sidebar({
             } as React.CSSProperties
           }
           side={side}
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>{t("sidebarTitle")}</SheetTitle>
@@ -317,6 +375,7 @@ function Sidebar({
     <div
       className="group peer hidden text-sidebar-foreground md:block"
       data-state={state}
+      data-hover-expanded={hoverExpanded && !open ? "true" : "false"}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
       data-side={side}
@@ -329,9 +388,11 @@ function Sidebar({
           "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
           "group-data-[collapsible=offcanvas]:w-0",
           "group-data-[side=right]:rotate-180",
-          variant === "floating" || variant === "inset"
-            ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
-            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
+          collapsible === "icon" && !open && (
+            variant === "floating" || variant === "inset"
+              ? "w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
+              : "w-(--sidebar-width-icon)"
+          ),
         )}
       />
       <div
@@ -345,14 +406,23 @@ function Sidebar({
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r-[0.5px] group-data-[side=right]:border-l-[0.5px]",
+          "group-data-[hover-expanded=true]:z-30 group-data-[hover-expanded=true]:shadow-lg",
+          side === "left"
+            ? "group-data-[hover-expanded=true]:border-r-[0.5px]"
+            : "group-data-[hover-expanded=true]:border-l-[0.5px]",
           className,
         )}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
         {...props}
       >
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow-sm"
+          className={cn(
+            "flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow-sm",
+            expandOnHover && "whitespace-nowrap",
+          )}
         >
           {children}
         </div>
