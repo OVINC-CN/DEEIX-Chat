@@ -35,6 +35,7 @@ const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 const SIDEBAR_AUTO_COLLAPSE_AT = 1180;
 const SIDEBAR_AUTO_RESTORE_AT = 1360;
+const SIDEBAR_HOVER_EXPAND_DELAY_MS = 150;
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed";
@@ -297,24 +298,39 @@ function Sidebar({
   const t = useTranslations("common.navigation");
   const hoverContainerRef = React.useRef<HTMLDivElement | null>(null);
   const hoverExpandedRef = React.useRef(hoverExpanded);
+  const hoverExpandTimerRef = React.useRef<number | null>(null);
+  const persistentOpenRef = React.useRef(open);
 
   React.useEffect(() => {
     hoverExpandedRef.current = hoverExpanded;
   }, [hoverExpanded]);
 
+  React.useEffect(() => {
+    persistentOpenRef.current = open;
+  }, [open]);
+
+  const cancelHoverExpandTimer = React.useCallback(() => {
+    if (hoverExpandTimerRef.current === null) {
+      return;
+    }
+    window.clearTimeout(hoverExpandTimerRef.current);
+    hoverExpandTimerRef.current = null;
+  }, []);
+
   const clearHoverExpansion = React.useCallback(() => {
+    cancelHoverExpandTimer();
     if (!hoverExpandedRef.current) {
       return;
     }
     hoverExpandedRef.current = false;
     setHoverExpanded(false);
-  }, [setHoverExpanded]);
+  }, [cancelHoverExpandTimer, setHoverExpanded]);
 
   React.useEffect(() => {
-    if (!expandOnHover || collapsible !== "icon") {
+    if (!expandOnHover || collapsible !== "icon" || isMobile || open) {
       clearHoverExpansion();
     }
-  }, [clearHoverExpansion, collapsible, expandOnHover]);
+  }, [clearHoverExpansion, collapsible, expandOnHover, isMobile, open]);
 
   React.useEffect(() => {
     if (!expandOnHover || collapsible !== "icon" || isMobile) {
@@ -322,7 +338,10 @@ function Sidebar({
     }
 
     const handleDocumentPointerMove = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse" || !hoverExpandedRef.current) {
+      if (
+        event.pointerType !== "mouse"
+        || (!hoverExpandedRef.current && hoverExpandTimerRef.current === null)
+      ) {
         return;
       }
 
@@ -379,11 +398,23 @@ function Sidebar({
         && event.pointerType === "mouse"
         && !open
       ) {
-        hoverExpandedRef.current = true;
-        setHoverExpanded(true);
+        cancelHoverExpandTimer();
+        hoverExpandTimerRef.current = window.setTimeout(() => {
+          hoverExpandTimerRef.current = null;
+          const container = hoverContainerRef.current;
+          if (
+            persistentOpenRef.current
+            || !container?.isConnected
+            || !container.matches(":hover")
+          ) {
+            return;
+          }
+          hoverExpandedRef.current = true;
+          setHoverExpanded(true);
+        }, SIDEBAR_HOVER_EXPAND_DELAY_MS);
       }
     },
-    [collapsible, expandOnHover, onPointerEnter, open, setHoverExpanded],
+    [cancelHoverExpandTimer, collapsible, expandOnHover, onPointerEnter, open, setHoverExpanded],
   );
 
   const handlePointerLeave = React.useCallback(
