@@ -295,15 +295,83 @@ function Sidebar({
     setOpenMobile,
   } = useSidebar();
   const t = useTranslations("common.navigation");
+  const hoverContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const hoverExpandedRef = React.useRef(hoverExpanded);
+
+  React.useEffect(() => {
+    hoverExpandedRef.current = hoverExpanded;
+  }, [hoverExpanded]);
+
+  const clearHoverExpansion = React.useCallback(() => {
+    if (!hoverExpandedRef.current) {
+      return;
+    }
+    hoverExpandedRef.current = false;
+    setHoverExpanded(false);
+  }, [setHoverExpanded]);
 
   React.useEffect(() => {
     if (!expandOnHover || collapsible !== "icon") {
-      setHoverExpanded(false);
+      clearHoverExpansion();
     }
-  }, [collapsible, expandOnHover, setHoverExpanded]);
+  }, [clearHoverExpansion, collapsible, expandOnHover]);
+
+  React.useEffect(() => {
+    if (!expandOnHover || collapsible !== "icon" || isMobile) {
+      return;
+    }
+
+    const handleDocumentPointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse" || !hoverExpandedRef.current) {
+        return;
+      }
+
+      const container = hoverContainerRef.current;
+      if (!container?.isConnected) {
+        clearHoverExpansion();
+        return;
+      }
+
+      const bounds = container.getBoundingClientRect();
+      const isWithinBounds = (
+        event.clientX >= bounds.left
+        && event.clientX <= bounds.right
+        && event.clientY >= bounds.top
+        && event.clientY <= bounds.bottom
+      );
+      const isWithinContainer = event.composedPath().includes(container);
+      if (!isWithinBounds || !isWithinContainer) {
+        clearHoverExpansion();
+      }
+    };
+    const handlePointerCancel = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") {
+        clearHoverExpansion();
+      }
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== "visible") {
+        clearHoverExpansion();
+      }
+    };
+
+    document.addEventListener("pointermove", handleDocumentPointerMove);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("blur", clearHoverExpansion);
+    window.addEventListener("pointercancel", handlePointerCancel);
+    return () => {
+      document.removeEventListener("pointermove", handleDocumentPointerMove);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("blur", clearHoverExpansion);
+      window.removeEventListener("pointercancel", handlePointerCancel);
+      hoverContainerRef.current = null;
+      clearHoverExpansion();
+    };
+  }, [clearHoverExpansion, collapsible, expandOnHover, isMobile]);
 
   const handlePointerEnter = React.useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
+      hoverContainerRef.current = event.currentTarget;
       onPointerEnter?.(event);
       if (
         expandOnHover
@@ -311,6 +379,7 @@ function Sidebar({
         && event.pointerType === "mouse"
         && !open
       ) {
+        hoverExpandedRef.current = true;
         setHoverExpanded(true);
       }
     },
@@ -321,10 +390,10 @@ function Sidebar({
     (event: React.PointerEvent<HTMLDivElement>) => {
       onPointerLeave?.(event);
       if (expandOnHover && event.pointerType === "mouse") {
-        setHoverExpanded(false);
+        clearHoverExpansion();
       }
     },
-    [expandOnHover, onPointerLeave, setHoverExpanded],
+    [clearHoverExpansion, expandOnHover, onPointerLeave],
   );
 
   if (collapsible === "none") {
