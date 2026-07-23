@@ -5,7 +5,12 @@ import { Activity, BadgeDollarSign, Braces, Timer } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { useTranslations } from "next-intl";
 
-import { ChartContainer, ChartInteractiveLegend, ChartTooltip } from "@/components/ui/chart";
+import {
+  ChartContainer,
+  ChartInteractiveLegend,
+  ChartStackedBarShape,
+  ChartTooltip,
+} from "@/components/ui/chart";
 import type { ChartConfig, ChartInteractiveLegendItem } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -415,6 +420,10 @@ function DailyUsageChart({
     }
     return Object.fromEntries(modelSeries.map((item) => [item.key, { label: item.modelLabel, color: item.color }])) satisfies ChartConfig;
   }, [modelSeries]);
+  const stackedBarSeries = React.useMemo(
+    () => modelSeries.map((item) => ({ id: item.platformModelName, key: item.key })),
+    [modelSeries],
+  );
   const rangeLabel = chartData.length > 0 ? `${chartData[0].fullDayLabel} - ${chartData[chartData.length - 1].fullDayLabel}` : "";
   const hasUsageData = chartData.some((item) => item.billedUsd > 0 || item.totalTokens > 0 || item.callCount > 0 || item.recordCount > 0);
   const legendItems = React.useMemo<ChartInteractiveLegendItem[]>(
@@ -427,11 +436,6 @@ function DailyUsageChart({
       : [{ id: "totalTokens", label: "Tokens", color: "var(--chart-1)" }],
     [modelSeries],
   );
-  const topVisibleModelName = React.useMemo(
-    () => [...modelSeries].reverse().find((item) => !hiddenSeries.has(item.platformModelName))?.platformModelName,
-    [hiddenSeries, modelSeries],
-  );
-
   return (
     <div className="space-y-3 rounded-md bg-muted/35 p-3">
       <div className="flex h-7 items-center justify-between gap-3 px-1">
@@ -473,7 +477,14 @@ function DailyUsageChart({
                     fill={model.color}
                     maxBarSize={42}
                     hide={hiddenSeries.has(model.platformModelName)}
-                    radius={model.platformModelName === topVisibleModelName ? [4, 4, 0, 0] : 0}
+                    shape={(props) => (
+                      <ChartStackedBarShape
+                        {...props}
+                        series={stackedBarSeries}
+                        seriesKey={model.key}
+                        hiddenSeries={hiddenSeries}
+                      />
+                    )}
                     isAnimationActive
                     animationDuration={CHART_ANIMATION_DURATION_MS}
                     animationEasing="ease-out"

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
-import type { TooltipValueType } from "recharts";
+import type { BarShapeProps, TooltipValueType } from "recharts";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -33,6 +33,11 @@ type ChartInteractiveLegendItem = {
   label: string;
   title?: string;
   color: string;
+};
+
+type ChartStackedBarSeries = {
+  id: string;
+  key: string;
 };
 
 const ChartContext = React.createContext<ChartContextProps | null>(null);
@@ -371,6 +376,43 @@ function ChartInteractiveLegend({
   );
 }
 
+function ChartStackedBarShape({
+  series,
+  seriesKey,
+  hiddenSeries,
+  payload,
+  ...props
+}: BarShapeProps & {
+  series: readonly ChartStackedBarSeries[];
+  seriesKey: string;
+  hiddenSeries: ReadonlySet<string>;
+}) {
+  let topVisibleSeriesKey: string | undefined;
+  if (typeof payload === "object" && payload !== null) {
+    const values = payload as Record<string, unknown>;
+    for (let index = series.length - 1; index >= 0; index -= 1) {
+      const item = series[index];
+      const value = values[item.key];
+      if (
+        !hiddenSeries.has(item.id) &&
+        typeof value === "number" &&
+        Number.isFinite(value) &&
+        value > 0
+      ) {
+        topVisibleSeriesKey = item.key;
+        break;
+      }
+    }
+  }
+
+  return (
+    <RechartsPrimitive.Rectangle
+      {...props}
+      radius={seriesKey === topVisibleSeriesKey ? [4, 4, 0, 0] : 0}
+    />
+  );
+}
+
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(
   config: ChartConfig,
@@ -415,6 +457,7 @@ export {
   ChartLegend,
   ChartLegendContent,
   ChartInteractiveLegend,
+  ChartStackedBarShape,
   ChartStyle,
 };
 export type { ChartInteractiveLegendItem };

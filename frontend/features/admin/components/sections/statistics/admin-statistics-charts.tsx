@@ -7,6 +7,7 @@ import { Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis }
 import {
   ChartContainer,
   ChartInteractiveLegend,
+  ChartStackedBarShape,
   ChartTooltip,
   type ChartConfig,
   type ChartInteractiveLegendItem,
@@ -524,10 +525,6 @@ function StatisticsStackedTrendChart({
     () => series.map((item) => ({ id: item.id, label: item.label, title: item.fullLabel, color: item.color })),
     [series],
   );
-  const topVisibleSeriesID = React.useMemo(
-    () => [...series].reverse().find((item) => !hiddenSeries.has(item.id))?.id,
-    [hiddenSeries, series],
-  );
   if (loading) {
     return <ChartLoadingSkeleton />;
   }
@@ -580,7 +577,14 @@ function StatisticsStackedTrendChart({
               animationDuration={CHART_ANIMATION_DURATION_MS}
               animationEasing="ease-out"
               hide={hiddenSeries.has(item.id)}
-              radius={item.id === topVisibleSeriesID ? [4, 4, 0, 0] : 0}
+              shape={(props) => (
+                <ChartStackedBarShape
+                  {...props}
+                  series={series}
+                  seriesKey={item.key}
+                  hiddenSeries={hiddenSeries}
+                />
+              )}
             />
           ))}
         </BarChart>
