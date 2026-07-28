@@ -8,7 +8,6 @@ import { AssistantMessageMeta } from "@/features/chat/components/message/message
 import { MessageAttachmentRow } from "@/features/chat/components/message/message-attachment";
 import { MessageProcessTrace, MessageTraceEventBlocks } from "@/features/chat/components/message/message-process-trace";
 import { GrainientBackground } from "@/components/reactbits/backgrounds/grainient";
-import type { AssistantReaction } from "@/features/chat/components/message/message-meta";
 import type {
   ChatAreaMessage,
   ChatInlineAlert,
@@ -126,12 +125,10 @@ function resolveEditableImageAttachment(
 type ChatMessageBotProps = {
   item: ChatAreaMessage;
   busy?: boolean;
-  reaction: AssistantReaction;
   onRetryAssistantMessage: (message: ChatAreaMessage) => Promise<void> | void;
   onContinueAssistantMessage?: (message: ChatAreaMessage) => Promise<void> | void;
   onEditAssistantMessage: (message: ChatAreaMessage, content: string) => Promise<boolean> | boolean;
   onCycleMessageBranch: (parentPublicID: string | null, direction: "previous" | "next") => void;
-  onReactAssistantMessage: (publicID: string, reaction: AssistantReaction) => void;
   onCopy: () => void;
   copySucceeded?: boolean;
   markdownRender?: boolean;
@@ -153,12 +150,10 @@ type ChatMessageBotProps = {
 export function ChatMessageBot({
   item,
   busy = false,
-  reaction,
   onRetryAssistantMessage,
   onContinueAssistantMessage,
   onEditAssistantMessage,
   onCycleMessageBranch,
-  onReactAssistantMessage,
   onCopy,
   copySucceeded = false,
   markdownRender = true,
@@ -404,14 +399,12 @@ export function ChatMessageBot({
       <AssistantMessageMeta
         item={item}
         busy={busy}
-        reaction={reaction}
         onCycleBranch={onCycleMessageBranch}
         onRetry={onRetry}
         onContinue={onContinueAssistantMessage ? onContinue : undefined}
         onEdit={() => setIsEditing(true)}
         onCopy={onCopy}
         copySucceeded={copySucceeded}
-        onReact={(value) => onReactAssistantMessage(item.publicID, value)}
         showModelInfo={showModelInfo}
         showLatency={showLatency}
         showTokenUsage={showTokenUsage}

@@ -5,14 +5,12 @@ import { ArrowDownToLine, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { ChatLabel } from "@/features/chat/components/sections/chat-label";
-import { useChatMessageFeedback } from "@/features/chat/hooks/use-chat-message-feedback";
 import {
   AssistantMessageSkeleton,
   ChatInlineAlertCard,
   ChatMessageBot,
 } from "@/features/chat/components/message/message-bot";
 import { areChatAreaMessagesRenderEqual } from "@/features/chat/model/chat-message-render";
-import { type AssistantReaction } from "@/features/chat/components/message/message-meta";
 import type { ChatAreaMessage, MessageAttachment } from "@/features/chat/types/messages";
 import { ChatMessageUser } from "@/features/chat/components/message/message-user";
 import { StreamdownRender } from "@/shared/components/markdown/streamdown-render";
@@ -236,7 +234,6 @@ function useStableEvent<Args extends unknown[], Return>(callback: (...args: Args
 const ChatMessageRow = React.memo(function ChatMessageRow({
   item,
   busy,
-  reaction,
   onRetryUserMessage,
   onRetryAssistantMessage,
   onContinueAssistantMessage,
@@ -249,7 +246,6 @@ const ChatMessageRow = React.memo(function ChatMessageRow({
   attachmentContentLoader,
   onEditImageAttachment,
   onCycleMessageBranch,
-  onReactAssistantMessage,
   onOpenCodeArtifact,
   markdownRender,
   showModelInfo,
@@ -265,7 +261,6 @@ const ChatMessageRow = React.memo(function ChatMessageRow({
 }: {
   item: ChatAreaMessage;
   busy: boolean;
-  reaction: AssistantReaction;
   onRetryUserMessage: (message: ChatAreaMessage) => Promise<void> | void;
   onRetryAssistantMessage: (message: ChatAreaMessage) => Promise<void> | void;
   onContinueAssistantMessage?: (message: ChatAreaMessage) => Promise<void> | void;
@@ -278,7 +273,6 @@ const ChatMessageRow = React.memo(function ChatMessageRow({
   attachmentContentLoader?: (file: PreviewDialogFile) => Promise<FileContentResult>;
   onEditImageAttachment?: (attachment: MessageAttachment, sourceModelName?: string) => void;
   onCycleMessageBranch: (parentPublicID: string | null, direction: "previous" | "next") => void;
-  onReactAssistantMessage: (publicID: string, reaction: AssistantReaction) => void;
   onOpenCodeArtifact?: (message: ChatAreaMessage, artifact: OpenCodeArtifactInput) => void;
   markdownRender: boolean;
   showModelInfo: boolean;
@@ -349,12 +343,10 @@ const ChatMessageRow = React.memo(function ChatMessageRow({
       <ChatMessageBot
         item={item}
         busy={busy}
-        reaction={reaction}
         onRetryAssistantMessage={onRetryAssistantMessage}
         onContinueAssistantMessage={onContinueAssistantMessage}
         onEditAssistantMessage={onEditAssistantMessage}
         onCycleMessageBranch={onCycleMessageBranch}
-        onReactAssistantMessage={onReactAssistantMessage}
         onCopy={() => void onCopy()}
         copySucceeded={isCopied(copyKey)}
         attachmentContentLoader={attachmentContentLoader}
@@ -388,7 +380,6 @@ const ChatMessageRow = React.memo(function ChatMessageRow({
   );
 }, (previous, next) => (
   previous.busy === next.busy &&
-  previous.reaction === next.reaction &&
   previous.markdownRender === next.markdownRender &&
   previous.showModelInfo === next.showModelInfo &&
   previous.showLatency === next.showLatency &&
@@ -453,7 +444,6 @@ export function ChatArea({
   screenshot,
 }: ChatAreaProps) {
   const t = useTranslations("chat");
-  const { getReaction, onReactAssistantMessage } = useChatMessageFeedback(messages);
   const stableOnRetryUserMessage = useStableEvent(onRetryUserMessage);
   const stableOnRetryAssistantMessage = useStableEvent(onRetryAssistantMessage);
   const stableOnContinueAssistantMessage = useStableEvent(onContinueAssistantMessage ?? (() => undefined));
@@ -465,7 +455,6 @@ export function ChatArea({
     onEditImageAttachment?.(attachment, sourceModelName);
   });
   const stableOnCycleMessageBranch = useStableEvent(onCycleMessageBranch);
-  const stableOnReactAssistantMessage = useStableEvent(onReactAssistantMessage);
   const editImageAttachmentHandler = onEditImageAttachment ? stableOnEditImageAttachment : undefined;
   const shareLabel = shareActive ? t("manageShare") : t("shareConversation");
   const shareExportLabel = t("labelMenu.shareAndExport");
@@ -596,7 +585,6 @@ export function ChatArea({
                     <ChatMessageRow
                       item={item}
                       busy={busy}
-                      reaction={getReaction(item)}
                       onRetryUserMessage={stableOnRetryUserMessage}
                       onRetryAssistantMessage={stableOnRetryAssistantMessage}
                       onContinueAssistantMessage={onContinueAssistantMessage ? stableOnContinueAssistantMessage : undefined}
@@ -609,7 +597,6 @@ export function ChatArea({
                       attachmentContentLoader={attachmentContentLoader}
                       onEditImageAttachment={editImageAttachmentHandler}
                       onCycleMessageBranch={stableOnCycleMessageBranch}
-                      onReactAssistantMessage={stableOnReactAssistantMessage}
                       onOpenCodeArtifact={onOpenCodeArtifact}
                       markdownRender={markdownRender}
                       showModelInfo={showModelInfo}

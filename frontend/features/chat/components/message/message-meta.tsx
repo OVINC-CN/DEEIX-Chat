@@ -16,24 +16,14 @@ import {
   Forward,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
 
 import { Brush } from "@/components/animate-ui/icons/brush";
 import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left";
 import { ChevronRight } from "@/components/animate-ui/icons/chevron-right";
 import { Check } from "@/components/animate-ui/icons/check";
 import { Copy } from "@/components/animate-ui/icons/copy";
-import { Heart } from "@/components/animate-ui/icons/heart";
 import { RotateCcw } from "@/components/animate-ui/icons/rotate-ccw";
-import { ThumbsDown } from "@/components/animate-ui/icons/thumbs-down";
-import { ThumbsUp } from "@/components/animate-ui/icons/thumbs-up";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { resolveAccessToken } from "@/shared/auth/resolve-access-token";
-import { upsertUserMemory } from "@/shared/api/memory";
-import { useLocalizedErrorMessage } from "@/i18n/use-localized-error";
 import { resolvePersistedPublicID } from "@/features/chat/model/message-submit";
 import {
   billingRateMultiplierNote,
@@ -67,8 +57,6 @@ export type ChatMetaMessage = {
   latencyMS?: number;
   billingCost?: ChatBillingCost;
 };
-
-export type AssistantReaction = "up" | "down" | null;
 
 type MessageTimestampLabel = {
   label: string;
@@ -853,107 +841,15 @@ function TieredBillingTable({ line }: { line: Extract<BillingTooltipLine, { type
   );
 }
 
-function QuickMemoryPin({ disabled }: { disabled?: boolean }) {
-  const t = useTranslations("chat.messages");
-  const resolveErrorMessage = useLocalizedErrorMessage();
-  const [open, setOpen] = React.useState(false);
-  const [key, setKey] = React.useState("");
-  const [value, setValue] = React.useState("");
-  const [saving, setSaving] = React.useState(false);
-
-  const handleSave = React.useCallback(async () => {
-    const trimmedKey = key.trim();
-    const trimmedValue = value.trim();
-    if (!trimmedKey || !trimmedValue) {
-      return;
-    }
-    setSaving(true);
-    try {
-      const token = await resolveAccessToken();
-      if (!token) {
-        toast.error(t("authTokenMissing"));
-        return;
-      }
-      await upsertUserMemory(token, trimmedKey, trimmedValue, "preference");
-      toast.success(t("memorySaved"), { description: t("memorySavedDescription") });
-      setKey("");
-      setValue("");
-      setOpen(false);
-    } catch (error) {
-      toast.error(t("memorySaveFailed"), { description: resolveErrorMessage(error) });
-    } finally {
-      setSaving(false);
-    }
-  }, [key, resolveErrorMessage, t, value]);
-
-  const handleKeyDown = React.useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        void handleSave();
-      }
-    },
-    [handleSave],
-  );
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              data-screenshot-exclude="true"
-              className="inline-flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground disabled:opacity-40"
-              aria-label={t("rememberPreference")}
-              disabled={disabled}
-            >
-              <Heart size={14} strokeWidth={1.8} animateOnHover="default" />
-            </button>
-          </PopoverTrigger>
-        </TooltipTrigger>
-        <TooltipContent side="top">{t("rememberPreference")}</TooltipContent>
-      </Tooltip>
-      <PopoverContent align="start" className="w-64 p-3">
-        <p className="mb-2 text-[12px] font-medium text-foreground">{t("rememberPreference")}</p>
-        <div className="space-y-2">
-          <Input
-            placeholder={t("memoryNamePlaceholder")}
-            value={key}
-            onChange={(e) => setKey(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <Input
-            placeholder={t("memoryValuePlaceholder")}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <Button
-            size="sm"
-            className="h-7 w-full text-[12px]"
-            disabled={!key.trim() || !value.trim() || saving}
-            onClick={() => void handleSave()}
-          >
-            {saving ? t("savingPreference") : t("savePreference")}
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
 export function AssistantMessageMeta({
   item,
   busy,
-  reaction,
   onCycleBranch,
   onRetry,
   onContinue,
   onEdit,
   onCopy,
   copySucceeded = false,
-  onReact,
   showModelInfo = true,
   showLatency = true,
   showTokenUsage = true,
@@ -966,14 +862,12 @@ export function AssistantMessageMeta({
 }: {
   item: ChatMetaMessage;
   busy: boolean;
-  reaction: AssistantReaction;
   onCycleBranch: (parentPublicID: string | null, direction: "previous" | "next") => void;
   onRetry: () => void;
   onContinue?: () => void;
   onEdit?: () => void;
   onCopy: () => void;
   copySucceeded?: boolean;
-  onReact: (value: AssistantReaction) => void;
   showModelInfo?: boolean;
   showLatency?: boolean;
   showTokenUsage?: boolean;
@@ -1071,22 +965,6 @@ export function AssistantMessageMeta({
                     <Brush size={14} strokeWidth={1.8} animateOnHover="default" />
                   </MetaIconButton>
                 ) : null}
-                <MetaIconButton
-                  label={t("likeReply")}
-                  className={reaction === "up" ? "text-foreground" : undefined}
-                  disabled={messagePending}
-                  onClick={() => onReact(reaction === "up" ? null : "up")}
-                >
-                  <ThumbsUp size={14} strokeWidth={1.8} animateOnHover="default" />
-                </MetaIconButton>
-                <MetaIconButton
-                  label={t("dislikeReply")}
-                  className={reaction === "down" ? "text-foreground" : undefined}
-                  disabled={messagePending}
-                  onClick={() => onReact(reaction === "down" ? null : "down")}
-                >
-                  <ThumbsDown size={14} strokeWidth={1.8} animateOnHover="default" />
-                </MetaIconButton>
                 {canRetry ? (
                   <MetaIconButton
                     label={t("retryReply")}
@@ -1103,7 +981,6 @@ export function AssistantMessageMeta({
                     <Forward className="size-3.5" strokeWidth={1.8} />
                   </MetaIconButton>
                 ) : null}
-                <QuickMemoryPin disabled={messagePending} />
               </>
             ) : null}
             {canShowBranchNavigator ? <BranchSwitcher item={item} onCycle={onCycleBranch} /> : null}
