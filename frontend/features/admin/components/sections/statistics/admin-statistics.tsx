@@ -256,7 +256,7 @@ export function AdminStatisticsPage() {
               title={t("refresh")}
             >
               <span className="flex size-3.5 shrink-0 items-center justify-center">
-                <RefreshCw className="size-3.5 stroke-1" />
+                <RefreshCw className={cn("size-3.5 stroke-1", statistics.loading && "animate-spin")} />
               </span>
               <span>{t("refresh")}</span>
             </Button>

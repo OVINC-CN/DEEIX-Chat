@@ -546,7 +546,7 @@ export function SettingsFieldEditor({
                         disabled={disabled || action.disabled}
                         onClick={action.onClick}
                       >
-                        {Icon ? <Icon className="size-3.5 stroke-1" /> : null}
+                        {Icon ? <Icon className={cn("size-3.5 stroke-1", action.spinning && "animate-spin")} /> : null}
                         {action.label}
                       </Button>
                     );
@@ -593,7 +593,7 @@ export function SettingsFieldEditor({
                         disabled={disabled || action.disabled}
                         onClick={action.onClick}
                       >
-                        {Icon ? <Icon className="size-3.5 stroke-1" /> : null}
+                        {Icon ? <Icon className={cn("size-3.5 stroke-1", action.spinning && "animate-spin")} /> : null}
                       </Button>
                     );
                   })}

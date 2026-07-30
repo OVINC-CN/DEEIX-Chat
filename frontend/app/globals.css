@@ -259,8 +259,6 @@ html[data-branding-pending] body {
     font-family: var(--font-sans);
   }
 
-  .lucide,
-  .lucide *,
   .icon-no-motion,
   .icon-no-motion * {
     animation: none !important;

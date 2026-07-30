@@ -11,7 +11,7 @@ function Spinner({ className, label, ...props }: React.ComponentProps<"svg"> & {
       role={accessibleLabel ? "status" : undefined}
       aria-label={accessibleLabel}
       aria-hidden={accessibleLabel ? undefined : true}
-      className={cn("size-4", className)}
+      className={cn("size-4 animate-spin", className)}
       {...props}
     />
   );

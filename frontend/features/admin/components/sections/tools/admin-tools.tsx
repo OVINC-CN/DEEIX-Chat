@@ -5,6 +5,7 @@ import { CheckCircle2, FileBraces, ListOrdered, Pencil, Plus, RefreshCw, Save, T
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 
+import { cn } from "@/lib/utils";
 import { SettingsFieldEditor } from "../shared/settings-runtime-panel";
 import { CollapsibleMotionContent } from "@/shared/components/collapsible-motion-content";
 import { Button } from "@/components/ui/button";
@@ -863,7 +864,7 @@ export function AdminToolsPage() {
                               title={t("toolbar.syncTools")}
                               aria-label={t("toolbar.syncTools")}
                             >
-                              <RefreshCw className="size-3.5 stroke-1" />
+                              <RefreshCw className={cn("size-3.5 stroke-1", syncingServerID === server.id && "animate-spin")} />
                             </Button>
                             <Button type="button" size="icon-xs" variant="ghost" className="text-muted-foreground shadow-none" onClick={() => openEditServerDialog(server)} title={t("toolbar.editServer")} aria-label={t("toolbar.editServer")}>
                               <Pencil className="size-3.5 stroke-1" />
@@ -959,7 +960,7 @@ export function AdminToolsPage() {
                   disabled={syncingServerID === toolSheetServer.id}
                   onClick={() => void syncTools(toolSheetServer.id)}
                 >
-                  <RefreshCw className="size-3.5 stroke-1" />
+                  <RefreshCw className={cn("size-3.5 stroke-1", syncingServerID === toolSheetServer.id && "animate-spin")} />
                   {t("toolbar.sync")}
                 </Button>
               ) : null}

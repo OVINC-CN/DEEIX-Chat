@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AdminUpdateTooltipContent } from "@/features/admin/components/admin-update-tooltip-content";
+import { cn } from "@/lib/utils";
 import {
   compareReleaseVersions,
   formatReleaseVersion,
@@ -96,7 +97,7 @@ function AdminUpdateCheck() {
         onClick={() => void handleCheckUpdate()}
         disabled={checking}
       >
-        <RefreshCw className="size-3" />
+        <RefreshCw className={cn("size-3", checking && "animate-spin")} />
         <span>{checking ? t("checkingUpdate") : t("checkUpdate")}</span>
       </button>
       <UpdateResultDialog

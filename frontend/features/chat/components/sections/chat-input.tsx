@@ -635,7 +635,7 @@ function ChatInputComponent({
                     >
                       <AttachmentMedia className="size-6 bg-transparent text-muted-foreground">
                         {processing ? (
-                          <LoaderCircle className="size-5" strokeWidth={1.8} />
+                          <LoaderCircle className="size-5 animate-spin" strokeWidth={1.8} />
                         ) : (
                           <FileIcon className="size-5" strokeWidth={1.6} />
                         )}
@@ -684,7 +684,7 @@ function ChatInputComponent({
                     aria-label={tComposer("uploadingAttachment", { name: item.fileName })}
                   >
                     <AttachmentMedia className="size-6 bg-transparent text-muted-foreground">
-                      <LoaderCircle className="size-5" strokeWidth={1.8} />
+                      <LoaderCircle className="size-5 animate-spin" strokeWidth={1.8} />
                     </AttachmentMedia>
                     <AttachmentContent className="flex min-w-0 flex-1 flex-col justify-center px-0 py-0">
                       <AttachmentTitle className="text-[12px] leading-4 text-foreground/90" title={item.fileName}>

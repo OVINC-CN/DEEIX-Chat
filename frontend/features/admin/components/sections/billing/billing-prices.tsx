@@ -46,6 +46,7 @@ import {
   type OfficialPricingCatalogItem,
 } from "@/features/admin/model/official-pricing";
 import { resolveAdminErrorMessage } from "@/features/admin/utils/admin-error";
+import { cn } from "@/lib/utils";
 import { LobeHubIcon } from "@/shared/components/lobehub-icon";
 import { resolveAccessToken } from "@/shared/auth/resolve-access-token";
 import { useDialogSnapshot } from "@/shared/hooks/use-dialog-snapshot";
@@ -759,7 +760,7 @@ export function BillingPricesSection({ models, pricingItems, setPricingItems, lo
                       aria-label={t("modelPricing.officialPricingSync")}
                       title={t("modelPricing.officialPricingSync")}
                     >
-                      <RefreshCw className="size-3.5 stroke-1" />
+                      <RefreshCw className={cn("size-3.5 stroke-1", officialPricingCatalogLoading && "animate-spin")} />
                       {t("modelPricing.officialPricingSync")}
                     </Button>
                   </div>
