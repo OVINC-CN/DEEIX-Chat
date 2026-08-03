@@ -151,7 +151,6 @@ function buildStreamdownRehypePlugins(): StreamdownRehypePlugins {
     defaultRehypePlugins.raw,
     sanitizeWithAllowedTags,
     normalizeBareURLRehypePlugin,
-    defaultRehypePlugins.harden,
   ];
 }
 const STREAMDOWN_REHYPE_PLUGINS = buildStreamdownRehypePlugins();
