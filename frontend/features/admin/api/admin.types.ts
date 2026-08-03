@@ -159,6 +159,8 @@ export type AdminUsageLogDTO = {
   billedCurrency: string;
   billedNanousd: number;
   billedUSD: number;
+  balanceAfterNanousd?: number | null;
+  balanceAfterUSD?: number | null;
   pricingSnapshotJSON: string;
   createdAt: string;
   updatedAt: string;
