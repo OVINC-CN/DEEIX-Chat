@@ -320,6 +320,7 @@ func (s *Service) StreamMediaImage(ctx context.Context, input MediaImageInput) (
 			Usage:            usage,
 			StartedAt:        startedAt,
 			Failure:          failure,
+			Billable:         true,
 		})
 		applyMediaRunUsage(run, result)
 		return result
@@ -383,6 +384,7 @@ func (s *Service) StreamMediaImage(ctx context.Context, input MediaImageInput) (
 				EffectiveOptions: filteredOptions,
 				GenerateInput:    generateInput,
 				StartedAt:        startedAt,
+				Billable:         true,
 			})
 			if cancelErr != nil {
 				retErr = cancelErr

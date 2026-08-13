@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	model "github.com/DEEIX-AI/DEEIX-Chat/backend/internal/domain/conversation"
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/infra/llm"
 )
 
@@ -321,14 +322,23 @@ func TestTrimToolFollowUpHistoryRemovesOldCompleteTurns(t *testing.T) {
 }
 
 func TestSendMessageBillingDurationSeconds(t *testing.T) {
-	if got := sendMessageBillingDurationSeconds(&SendMessageResult{DurationSeconds: 5}, 1200); got != 5 {
+	videoResult := &SendMessageResult{
+		AssistantMessage: model.Message{ContentType: "video", Status: "success"},
+		DurationSeconds:  5,
+		UpstreamProtocol: llm.AdapterXAIVideo,
+		Billable:         true,
+	}
+	if got := sendMessageBillingDurationSeconds(videoResult); got != 5 {
 		t.Fatalf("expected explicit duration seconds to win, got %d", got)
 	}
-	if got := sendMessageBillingDurationSeconds(&SendMessageResult{}, 1201); got != 2 {
-		t.Fatalf("expected latency to be rounded up to seconds, got %d", got)
+	videoResult.AssistantMessage.Status = "error"
+	if got := sendMessageBillingDurationSeconds(videoResult); got != 0 {
+		t.Fatalf("expected failed video duration to remain zero, got %d", got)
 	}
-	if got := sendMessageBillingDurationSeconds(&SendMessageResult{}, 0); got != 0 {
-		t.Fatalf("expected empty duration for zero latency, got %d", got)
+	videoResult.AssistantMessage.Status = "success"
+	videoResult.Billable = false
+	if got := sendMessageBillingDurationSeconds(videoResult); got != 0 {
+		t.Fatalf("expected non-billable video duration to remain zero, got %d", got)
 	}
 }
 

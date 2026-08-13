@@ -8,9 +8,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httptrace"
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 	"unicode"
 
@@ -27,6 +29,8 @@ const (
 	EndpointImageGenerations = "image_generations"
 	// EndpointImageEdits 表示 OpenAI Images API 编辑端点。
 	EndpointImageEdits = "image_edits"
+	// EndpointVideoGenerations 表示异步视频生成端点。
+	EndpointVideoGenerations = "video_generations"
 	// EndpointInteractions 表示 Gemini Interactions API 端点。
 	EndpointInteractions = "interactions"
 )
@@ -657,10 +661,49 @@ type GeneratedImage struct {
 
 // GeneratedVideo 表示视频生成接口返回的一个视频结果。
 type GeneratedVideo struct {
-	URL      string
-	B64JSON  string
-	MIMEType string
-	FileName string
+	URL             string
+	B64JSON         string
+	MIMEType        string
+	FileName        string
+	DurationSeconds int64
+}
+
+// generatedMediaDurationSeconds 将上游媒体时长统一向上取整为可计费秒数。
+func generatedMediaDurationSeconds(values ...interface{}) int64 {
+	for _, value := range values {
+		var seconds float64
+		switch typed := value.(type) {
+		case int:
+			seconds = float64(typed)
+		case int64:
+			seconds = float64(typed)
+		case float64:
+			seconds = typed
+		case float32:
+			seconds = float64(typed)
+		case string:
+			text := strings.TrimSpace(strings.ToLower(typed))
+			for _, suffix := range []string{"seconds", "second", "secs", "sec", "s"} {
+				text = strings.TrimSuffix(text, suffix)
+			}
+			parsed, err := strconv.ParseFloat(strings.TrimSpace(text), 64)
+			if err != nil {
+				continue
+			}
+			seconds = parsed
+		default:
+			continue
+		}
+		if seconds <= 0 {
+			continue
+		}
+		whole := int64(seconds)
+		if float64(whole) < seconds {
+			whole++
+		}
+		return whole
+	}
+	return 0
 }
 
 // ReasoningDelta 定义流式 reasoning 增量。
@@ -698,6 +741,60 @@ type UpstreamError struct {
 	Message    string
 	Body       string
 	Debug      *UpstreamDebugSnapshot
+}
+
+// AcceptedRequestError 表示上游已接受请求，或请求已写出但结果未知。
+// 生成请求不具备跨 Provider 幂等性，此类错误不得自动切换路由重试。
+type AcceptedRequestError struct {
+	cause error
+}
+
+func (e *AcceptedRequestError) Error() string {
+	if e == nil || e.cause == nil {
+		return "upstream request failed after acceptance"
+	}
+	return e.cause.Error()
+}
+
+func (e *AcceptedRequestError) Unwrap() error {
+	if e == nil {
+		return nil
+	}
+	return e.cause
+}
+
+// MarkRequestAccepted 标记错误发生时请求已被上游接受，或可能已被接受。
+func MarkRequestAccepted(err error) error {
+	if err == nil || RequestWasAccepted(err) {
+		return err
+	}
+	return &AcceptedRequestError{cause: err}
+}
+
+// RequestWasAccepted 判断错误是否发生在请求已被或可能已被上游接受之后。
+func RequestWasAccepted(err error) bool {
+	var acceptedErr *AcceptedRequestError
+	return errors.As(err, &acceptedErr)
+}
+
+// doGenerationRequest 记录 POST 请求是否已经写入连接。请求写出后若在响应头
+// 返回前断线，无法判断上游是否已开始生成，因此按已接受处理，避免重复生成。
+func doGenerationRequest(do func(*http.Request) (*http.Response, error), req *http.Request) (*http.Response, error) {
+	if do == nil || req == nil {
+		return nil, errors.New("generation request is nil")
+	}
+	var wroteRequest atomic.Bool
+	trace := &httptrace.ClientTrace{
+		WroteRequest: func(httptrace.WroteRequestInfo) {
+			wroteRequest.Store(true)
+		},
+	}
+	tracedRequest := req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
+	resp, err := do(tracedRequest)
+	if err != nil && wroteRequest.Load() {
+		return resp, MarkRequestAccepted(err)
+	}
+	return resp, err
 }
 
 var errStreamDone = errors.New("llm stream done")
@@ -759,6 +856,7 @@ func NewClientWithEnv(env string, ssrfProtectionEnabled bool) *Client {
 		AdapterXAIResponses:           &xAIResponsesAdapter{client: client},
 		AdapterXAIImage:               &xAIImageAdapter{client: client},
 		AdapterXAIImageEdits:          &xAIImageEditsAdapter{client: client},
+		AdapterXAIVideo:               &xAIVideoAdapter{client: client},
 		AdapterAnthropicMessages:      &anthropicMessagesAdapter{client: client},
 		AdapterGoogleGenerateContent:  &geminiGenerateContentAdapter{client: client},
 		AdapterGoogleImageGeneration:  &geminiImageGenerationAdapter{client: client},
@@ -803,6 +901,20 @@ func (c *Client) newHTTPClient(connectTimeoutMS int) *http.Client {
 		Timeout:   0,
 		Transport: platformtracing.NewHTTPTransport(transport),
 	}
+}
+
+func (c *Client) doRouteRequest(route RouteConfig, request *http.Request) (*http.Response, error) {
+	if request == nil || request.URL == nil {
+		return nil, fmt.Errorf("model provider request is nil")
+	}
+	return c.httpClientForRoute(route).Do(request)
+}
+
+func (c *Client) doRouteGenerationRequest(route RouteConfig, request *http.Request) (*http.Response, error) {
+	if request == nil || request.URL == nil {
+		return nil, fmt.Errorf("model provider request is nil")
+	}
+	return doGenerationRequest(c.httpClientForRoute(route).Do, request)
 }
 
 // Generate 调用上游适配器并解析响应（非流式）。
@@ -1506,6 +1618,8 @@ func normalizeEndpoint(raw string) string {
 		return EndpointImageGenerations
 	case EndpointImageEdits:
 		return EndpointImageEdits
+	case EndpointVideoGenerations:
+		return EndpointVideoGenerations
 	case EndpointInteractions:
 		return EndpointInteractions
 	default:

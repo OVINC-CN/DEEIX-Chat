@@ -134,6 +134,7 @@ type AttachmentInput struct {
 	ChunkCount             int  // 向量分块数；RAG 缓存 key 需要
 	Current                bool // 是否为本轮用户显式上传的附件
 	ContextMode            string
+	DurationSeconds        int64
 }
 
 // SendMessageInput 定义消息发送请求。

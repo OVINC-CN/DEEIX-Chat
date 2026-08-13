@@ -32,6 +32,7 @@ func TestBuildFailedMediaBillingResultPreservesUpstreamUsage(t *testing.T) {
 		},
 		StartedAt: time.Now().Add(-time.Second),
 		Failure:   errors.New("store generated artifact"),
+		Billable:  true,
 	})
 
 	if result == nil || !result.Billable {
