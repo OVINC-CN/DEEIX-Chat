@@ -756,6 +756,14 @@ definitions:
     type: object
   internal_transport_http_admin.UsageLogResponse:
     properties:
+      balanceAfterNanousd:
+        type: integer
+        x-nullable: true
+        x-omitempty: false
+      balanceAfterUSD:
+        type: number
+        x-nullable: true
+        x-omitempty: false
       billedCurrency:
         type: string
       billedNanousd:
@@ -2744,6 +2752,14 @@ definitions:
     type: object
   internal_transport_http_billing.UsageLedgerResponse:
     properties:
+      balanceAfterNanousd:
+        type: integer
+        x-nullable: true
+        x-omitempty: false
+      balanceAfterUSD:
+        type: number
+        x-nullable: true
+        x-omitempty: false
       billedCurrency:
         type: string
       billedNanousd:
@@ -2920,6 +2936,22 @@ definitions:
       reset:
         type: boolean
     type: object
+  internal_transport_http_channel.CreateModelDisplayGroupRequest:
+    properties:
+      icon:
+        maxLength: 2048
+        type: string
+      modelIDs:
+        items:
+          type: integer
+        maxItems: 10000
+        type: array
+      name:
+        maxLength: 64
+        type: string
+    required:
+    - name
+    type: object
   internal_transport_http_channel.CreateModelRequest:
     properties:
       accessScope:
@@ -2947,6 +2979,8 @@ definitions:
       description:
         maxLength: 10000
         type: string
+      displayGroupID:
+        type: integer
       icon:
         maxLength: 128
         type: string
@@ -2977,6 +3011,21 @@ definitions:
         $ref: '#/definitions/internal_transport_http_channel.ModelDataResponse'
       errorMsg:
         type: string
+    type: object
+  internal_transport_http_channel.CreateModelVendorRequest:
+    properties:
+      icon:
+        maxLength: 2048
+        type: string
+      key:
+        maxLength: 64
+        type: string
+      name:
+        maxLength: 64
+        type: string
+    required:
+    - key
+    - name
     type: object
   internal_transport_http_channel.CreateUpstreamRequest:
     properties:
@@ -3154,6 +3203,47 @@ definitions:
       model:
         $ref: '#/definitions/internal_transport_http_channel.ModelResponse'
     type: object
+  internal_transport_http_channel.ModelDisplayGroupDataResponse:
+    properties:
+      group:
+        $ref: '#/definitions/internal_transport_http_channel.ModelDisplayGroupResponse'
+    type: object
+  internal_transport_http_channel.ModelDisplayGroupDataResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/internal_transport_http_channel.ModelDisplayGroupDataResponse'
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_channel.ModelDisplayGroupListResponseDoc:
+    properties:
+      data:
+        properties:
+          results:
+            items:
+              $ref: '#/definitions/internal_transport_http_channel.ModelDisplayGroupResponse'
+            type: array
+          total:
+            type: integer
+        type: object
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_channel.ModelDisplayGroupResponse:
+    properties:
+      createdAt:
+        type: string
+      icon:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      sortOrder:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
   internal_transport_http_channel.ModelListResponseDoc:
     properties:
       data:
@@ -3295,6 +3385,14 @@ definitions:
         type: string
       description:
         type: string
+      displayGroupID:
+        type: integer
+        x-nullable: true
+        x-omitempty: false
+      displayGroupIcon:
+        type: string
+      displayGroupName:
+        type: string
       icon:
         type: string
       id:
@@ -3318,6 +3416,10 @@ definitions:
       upstreamNamesJSON:
         type: string
       vendor:
+        type: string
+      vendorIcon:
+        type: string
+      vendorName:
         type: string
     type: object
   internal_transport_http_channel.ModelUpstreamSourceDataResponse:
@@ -3394,6 +3496,51 @@ definitions:
       weight:
         type: integer
     type: object
+  internal_transport_http_channel.ModelVendorDataResponse:
+    properties:
+      vendor:
+        $ref: '#/definitions/internal_transport_http_channel.ModelVendorResponse'
+    type: object
+  internal_transport_http_channel.ModelVendorDataResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/internal_transport_http_channel.ModelVendorDataResponse'
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_channel.ModelVendorListResponseDoc:
+    properties:
+      data:
+        properties:
+          results:
+            items:
+              $ref: '#/definitions/internal_transport_http_channel.ModelVendorResponse'
+            type: array
+          total:
+            type: integer
+        type: object
+      errorMsg:
+        type: string
+    type: object
+  internal_transport_http_channel.ModelVendorResponse:
+    properties:
+      builtIn:
+        type: boolean
+      createdAt:
+        type: string
+      icon:
+        type: string
+      id:
+        type: integer
+      key:
+        type: string
+      name:
+        type: string
+      sortOrder:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
   internal_transport_http_channel.PublicModelListResponseDoc:
     properties:
       data:
@@ -3449,6 +3596,14 @@ definitions:
         type: string
       description:
         type: string
+      displayGroupID:
+        type: integer
+        x-nullable: true
+        x-omitempty: false
+      displayGroupIcon:
+        type: string
+      displayGroupName:
+        type: string
       icon:
         type: string
       kindsJSON:
@@ -3462,6 +3617,10 @@ definitions:
       sortOrder:
         type: integer
       vendor:
+        type: string
+      vendorIcon:
+        type: string
+      vendorName:
         type: string
     type: object
   internal_transport_http_channel.ReorderModelsRequest:
@@ -3480,6 +3639,20 @@ definitions:
         $ref: '#/definitions/internal_transport_http_channel.CircuitResetResponse'
       errorMsg:
         type: string
+    type: object
+  internal_transport_http_channel.SetModelsDisplayGroupRequest:
+    properties:
+      displayGroupID:
+        type: integer
+      modelIDs:
+        items:
+          type: integer
+        maxItems: 1000
+        minItems: 1
+        type: array
+    required:
+    - displayGroupID
+    - modelIDs
     type: object
   internal_transport_http_channel.SyncUpstreamModelsResponse:
     properties:
@@ -3503,6 +3676,20 @@ definitions:
       data:
         $ref: '#/definitions/internal_transport_http_channel.SyncUpstreamModelsResponse'
       errorMsg:
+        type: string
+    type: object
+  internal_transport_http_channel.UpdateModelDisplayGroupRequest:
+    properties:
+      icon:
+        maxLength: 2048
+        type: string
+      modelIDs:
+        items:
+          type: integer
+        maxItems: 10000
+        type: array
+      name:
+        maxLength: 64
         type: string
     type: object
   internal_transport_http_channel.UpdateModelRequest:
@@ -3532,6 +3719,8 @@ definitions:
       description:
         maxLength: 10000
         type: string
+      displayGroupID:
+        type: integer
       icon:
         maxLength: 128
         type: string
@@ -3590,6 +3779,15 @@ definitions:
       data:
         $ref: '#/definitions/internal_transport_http_channel.ModelUpstreamSourceDataResponse'
       errorMsg:
+        type: string
+    type: object
+  internal_transport_http_channel.UpdateModelVendorRequest:
+    properties:
+      icon:
+        maxLength: 2048
+        type: string
+      name:
+        maxLength: 64
         type: string
     type: object
   internal_transport_http_channel.UpdateUpstreamRequest:
@@ -6206,6 +6404,237 @@ paths:
       summary: 管理员导出全量对话数据
       tags:
       - admin
+  /admin/llm/model-display-groups:
+    get:
+      description: 分页查询自定义展示分组；未绑定分组的模型继续按技术厂商展示
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 搜索名称
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ModelDisplayGroupListResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+      security:
+      - BearerAuth: []
+      summary: 管理员查询模型展示分组
+      tags:
+      - llm
+    post:
+      consumes:
+      - application/json
+      description: 创建仅影响用户界面归类的自定义模型分组
+      parameters:
+      - description: 展示分组参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_channel.CreateModelDisplayGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ModelDisplayGroupDataResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+      security:
+      - BearerAuth: []
+      summary: 管理员创建模型展示分组
+      tags:
+      - llm
+  /admin/llm/model-display-groups/{id}:
+    delete:
+      description: 删除展示分组后，关联模型恢复按技术厂商展示
+      parameters:
+      - description: 展示分组 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_DEEIX-AI_DEEIX-Chat_backend_internal_shared_response.SuccessDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+      security:
+      - BearerAuth: []
+      summary: 管理员删除模型展示分组
+      tags:
+      - llm
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: 展示分组 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 展示分组参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_channel.UpdateModelDisplayGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ModelDisplayGroupDataResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+      security:
+      - BearerAuth: []
+      summary: 管理员更新模型展示分组
+      tags:
+      - llm
+  /admin/llm/model-vendors:
+    get:
+      description: 分页查询模型技术厂商目录；技术厂商是路由、权限和计费使用的稳定身份
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 搜索 key 或名称
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ModelVendorListResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+      security:
+      - BearerAuth: []
+      summary: 管理员查询模型技术厂商
+      tags:
+      - llm
+    post:
+      consumes:
+      - application/json
+      description: 创建新的稳定技术厂商身份；创建后可供平台模型选择
+      parameters:
+      - description: 技术厂商参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_channel.CreateModelVendorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ModelVendorDataResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+      security:
+      - BearerAuth: []
+      summary: 管理员创建模型技术厂商
+      tags:
+      - llm
+  /admin/llm/model-vendors/{key}:
+    patch:
+      consumes:
+      - application/json
+      description: 更新厂商展示名称和图标；稳定技术 key 不可修改
+      parameters:
+      - description: 技术厂商 key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: 技术厂商参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_channel.UpdateModelVendorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ModelVendorDataResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+      security:
+      - BearerAuth: []
+      summary: 管理员更新模型技术厂商
+      tags:
+      - llm
   /admin/llm/models:
     get:
       consumes:
@@ -6617,6 +7046,38 @@ paths:
       security:
       - BearerAuth: []
       summary: 管理员批量删除模型
+      tags:
+      - llm
+  /admin/llm/models/display-group:
+    patch:
+      consumes:
+      - application/json
+      description: 在单个事务中将指定模型归入展示分组；displayGroupID 为 0 时恢复按技术厂商展示
+      parameters:
+      - description: 批量归组参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_channel.SetModelsDisplayGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_DEEIX-AI_DEEIX-Chat_backend_internal_shared_response.SuccessDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_transport_http_channel.ErrorDoc'
+      security:
+      - BearerAuth: []
+      summary: 管理员批量设置模型展示分组
       tags:
       - llm
   /admin/llm/models/order:

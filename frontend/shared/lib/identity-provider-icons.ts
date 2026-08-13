@@ -1,4 +1,4 @@
-import { resolveLobeHubIconURL } from "@/shared/lib/model-identity";
+import { resolveModelIconURL } from "@/shared/lib/model-identity";
 
 const LOCAL_ICON_URLS: Record<string, string> = {
   discord: "/identity-providers/discord.svg",
@@ -34,7 +34,7 @@ export function resolveIdentityProviderIconURL(name: string, slug: string): stri
   if (LOCAL_ICON_URLS[icon]) {
     return LOCAL_ICON_URLS[icon];
   }
-  return resolveLobeHubIconURL(icon);
+  return resolveModelIconURL(icon);
 }
 
 export function resolveIdentityProviderIconScale(name: string, slug: string): number {

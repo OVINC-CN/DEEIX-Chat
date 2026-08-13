@@ -62,9 +62,9 @@ import type { AdminLLMModelDTO, AdminLLMUpstreamView } from "@/features/admin/ap
 import type { IdentityProviderDTO, UserDTO } from "@/shared/api/auth.types";
 import { cn } from "@/lib/utils";
 import { parseProtocolsJSON } from "@/shared/lib/model-protocols";
-import { KNOWN_VENDOR_OPTIONS } from "@/shared/lib/model-identity";
 import { GroupAccessPickerDialog } from "@/features/admin/components/sections/groups/group-access-picker-dialog";
 import { ModelAccessRulesPanel } from "@/features/admin/components/sections/groups/model-access-rules-panel";
+import { useAdminModelPresentation } from "@/features/admin/hooks/use-admin-model-presentation";
 import {
   createPermissionGroup,
   deletePermissionGroup,
@@ -555,6 +555,7 @@ function GroupEditSheet({
 }) {
   const t = useTranslations("adminGroups");
   const resolveSubscriptionStatusLabel = useSubscriptionStatusLabel();
+  const modelPresentation = useAdminModelPresentation();
   const [name, setName] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [rateMultiplier, setRateMultiplier] = React.useState("1");
@@ -914,6 +915,11 @@ function GroupEditSheet({
     [modelRows],
   );
 
+  const modelVendorOptions = React.useMemo(
+    () => modelPresentation.vendors.map((vendor) => ({ value: vendor.key, label: vendor.name })),
+    [modelPresentation.vendors],
+  );
+
   const userItems = React.useMemo(
     () =>
       userRows.map((user) => ({
@@ -949,7 +955,7 @@ function GroupEditSheet({
         onValueChange: handleModelVendorFilterChange,
         options: [
           { label: t("allVendors"), value: "" },
-          ...KNOWN_VENDOR_OPTIONS.map(({ label, value }) => ({ label, value })),
+          ...modelVendorOptions,
         ],
       },
       {
@@ -971,6 +977,7 @@ function GroupEditSheet({
       modelUpstreamFilter,
       modelUpstreamOptions,
       modelVendorFilter,
+      modelVendorOptions,
       t,
     ],
   );
@@ -1123,6 +1130,7 @@ function GroupEditSheet({
             rules={modelRules}
             onRulesChange={setModelRules}
             upstreamOptions={modelUpstreamOptions}
+            vendorOptions={modelVendorOptions}
             disabled={selectionLoading || modelLoading || modelBulkLoading}
           />
         }

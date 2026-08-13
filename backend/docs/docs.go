@@ -1260,6 +1260,371 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/llm/model-display-groups": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "分页查询自定义展示分组；未绑定分组的模型继续按技术厂商展示",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "summary": "管理员查询模型展示分组",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "搜索名称",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ModelDisplayGroupListResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "创建仅影响用户界面归类的自定义模型分组",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "summary": "管理员创建模型展示分组",
+                "parameters": [
+                    {
+                        "description": "展示分组参数",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.CreateModelDisplayGroupRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ModelDisplayGroupDataResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/llm/model-display-groups/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "删除展示分组后，关联模型恢复按技术厂商展示",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "summary": "管理员删除模型展示分组",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "展示分组 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_DEEIX-AI_DEEIX-Chat_backend_internal_shared_response.SuccessDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "summary": "管理员更新模型展示分组",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "展示分组 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "展示分组参数",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.UpdateModelDisplayGroupRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ModelDisplayGroupDataResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/llm/model-vendors": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "分页查询模型技术厂商目录；技术厂商是路由、权限和计费使用的稳定身份",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "summary": "管理员查询模型技术厂商",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "搜索 key 或名称",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ModelVendorListResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "创建新的稳定技术厂商身份；创建后可供平台模型选择",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "summary": "管理员创建模型技术厂商",
+                "parameters": [
+                    {
+                        "description": "技术厂商参数",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.CreateModelVendorRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ModelVendorDataResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/llm/model-vendors/{key}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "更新厂商展示名称和图标；稳定技术 key 不可修改",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "summary": "管理员更新模型技术厂商",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "技术厂商 key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "技术厂商参数",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.UpdateModelVendorRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ModelVendorDataResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/llm/models": {
             "get": {
                 "security": [
@@ -1449,6 +1814,57 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/llm/models/display-group": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "在单个事务中将指定模型归入展示分组；displayGroupID 为 0 时恢复按技术厂商展示",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "summary": "管理员批量设置模型展示分组",
+                "parameters": [
+                    {
+                        "description": "批量归组参数",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.SetModelsDisplayGroupRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_DEEIX-AI_DEEIX-Chat_backend_internal_shared_response.SuccessDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/internal_transport_http_channel.ErrorDoc"
                         }
@@ -11516,6 +11932,16 @@ const docTemplate = `{
         "internal_transport_http_admin.UsageLogResponse": {
             "type": "object",
             "properties": {
+                "balanceAfterNanousd": {
+                    "type": "integer",
+                    "x-nullable": true,
+                    "x-omitempty": false
+                },
+                "balanceAfterUSD": {
+                    "type": "number",
+                    "x-nullable": true,
+                    "x-omitempty": false
+                },
                 "billedCurrency": {
                     "type": "string"
                 },
@@ -14502,6 +14928,16 @@ const docTemplate = `{
         "internal_transport_http_billing.UsageLedgerResponse": {
             "type": "object",
             "properties": {
+                "balanceAfterNanousd": {
+                    "type": "integer",
+                    "x-nullable": true,
+                    "x-omitempty": false
+                },
+                "balanceAfterUSD": {
+                    "type": "number",
+                    "x-nullable": true,
+                    "x-omitempty": false
+                },
                 "billedCurrency": {
                     "type": "string"
                 },
@@ -14767,6 +15203,29 @@ const docTemplate = `{
                 }
             }
         },
+        "internal_transport_http_channel.CreateModelDisplayGroupRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "maxLength": 2048
+                },
+                "modelIDs": {
+                    "type": "array",
+                    "maxItems": 10000,
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 64
+                }
+            }
+        },
         "internal_transport_http_channel.CreateModelRequest": {
             "type": "object",
             "required": [
@@ -14807,6 +15266,9 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 10000
                 },
+                "displayGroupID": {
+                    "type": "integer"
+                },
                 "icon": {
                     "type": "string",
                     "maxLength": 128
@@ -14845,6 +15307,27 @@ const docTemplate = `{
                 },
                 "errorMsg": {
                     "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_channel.CreateModelVendorRequest": {
+            "type": "object",
+            "required": [
+                "key",
+                "name"
+            ],
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "maxLength": 2048
+                },
+                "key": {
+                    "type": "string",
+                    "maxLength": 64
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 64
                 }
             }
         },
@@ -15103,6 +15586,70 @@ const docTemplate = `{
                 }
             }
         },
+        "internal_transport_http_channel.ModelDisplayGroupDataResponse": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "$ref": "#/definitions/internal_transport_http_channel.ModelDisplayGroupResponse"
+                }
+            }
+        },
+        "internal_transport_http_channel.ModelDisplayGroupDataResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/internal_transport_http_channel.ModelDisplayGroupDataResponse"
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_channel.ModelDisplayGroupListResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "results": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/internal_transport_http_channel.ModelDisplayGroupResponse"
+                            }
+                        },
+                        "total": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_channel.ModelDisplayGroupResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sortOrder": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "internal_transport_http_channel.ModelListResponseDoc": {
             "type": "object",
             "properties": {
@@ -15318,6 +15865,17 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "displayGroupID": {
+                    "type": "integer",
+                    "x-nullable": true,
+                    "x-omitempty": false
+                },
+                "displayGroupIcon": {
+                    "type": "string"
+                },
+                "displayGroupName": {
+                    "type": "string"
+                },
                 "icon": {
                     "type": "string"
                 },
@@ -15352,6 +15910,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "vendor": {
+                    "type": "string"
+                },
+                "vendorIcon": {
+                    "type": "string"
+                },
+                "vendorName": {
                     "type": "string"
                 }
             }
@@ -15469,6 +16033,76 @@ const docTemplate = `{
                 }
             }
         },
+        "internal_transport_http_channel.ModelVendorDataResponse": {
+            "type": "object",
+            "properties": {
+                "vendor": {
+                    "$ref": "#/definitions/internal_transport_http_channel.ModelVendorResponse"
+                }
+            }
+        },
+        "internal_transport_http_channel.ModelVendorDataResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/internal_transport_http_channel.ModelVendorDataResponse"
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_channel.ModelVendorListResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "results": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/internal_transport_http_channel.ModelVendorResponse"
+                            }
+                        },
+                        "total": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "errorMsg": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_channel.ModelVendorResponse": {
+            "type": "object",
+            "properties": {
+                "builtIn": {
+                    "type": "boolean"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sortOrder": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "internal_transport_http_channel.PublicModelListResponseDoc": {
             "type": "object",
             "properties": {
@@ -15553,6 +16187,17 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "displayGroupID": {
+                    "type": "integer",
+                    "x-nullable": true,
+                    "x-omitempty": false
+                },
+                "displayGroupIcon": {
+                    "type": "string"
+                },
+                "displayGroupName": {
+                    "type": "string"
+                },
                 "icon": {
                     "type": "string"
                 },
@@ -15572,6 +16217,12 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "vendor": {
+                    "type": "string"
+                },
+                "vendorIcon": {
+                    "type": "string"
+                },
+                "vendorName": {
                     "type": "string"
                 }
             }
@@ -15599,6 +16250,26 @@ const docTemplate = `{
                 },
                 "errorMsg": {
                     "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_channel.SetModelsDisplayGroupRequest": {
+            "type": "object",
+            "required": [
+                "displayGroupID",
+                "modelIDs"
+            ],
+            "properties": {
+                "displayGroupID": {
+                    "type": "integer"
+                },
+                "modelIDs": {
+                    "type": "array",
+                    "maxItems": 1000,
+                    "minItems": 1,
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -15639,6 +16310,26 @@ const docTemplate = `{
                 }
             }
         },
+        "internal_transport_http_channel.UpdateModelDisplayGroupRequest": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "maxLength": 2048
+                },
+                "modelIDs": {
+                    "type": "array",
+                    "maxItems": 10000,
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 64
+                }
+            }
+        },
         "internal_transport_http_channel.UpdateModelRequest": {
             "type": "object",
             "properties": {
@@ -15675,6 +16366,9 @@ const docTemplate = `{
                 "description": {
                     "type": "string",
                     "maxLength": 10000
+                },
+                "displayGroupID": {
+                    "type": "integer"
                 },
                 "icon": {
                     "type": "string",
@@ -15759,6 +16453,19 @@ const docTemplate = `{
                 },
                 "errorMsg": {
                     "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_channel.UpdateModelVendorRequest": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "maxLength": 2048
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 64
                 }
             }
         },

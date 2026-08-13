@@ -71,6 +71,11 @@ export type AdminLLMModelDTO = {
   id: number;
   platformModelName: string;
   vendor: AdminLLMModelVendor;
+  vendorName: string;
+  vendorIcon: string;
+  displayGroupID?: number | null;
+  displayGroupName: string;
+  displayGroupIcon: string;
   kindsJSON: string;
   icon: string;
   capabilitiesJSON: string;
@@ -227,6 +232,26 @@ export type AdminLLMSetting = {
   updatedAt: string;
 };
 
+export type AdminLLMModelVendorDTO = {
+  id: number;
+  key: string;
+  name: string;
+  icon: string;
+  builtIn: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AdminLLMModelDisplayGroupDTO = {
+  id: number;
+  name: string;
+  icon: string;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 // ---------------------------------------------------------------------------
 // Request types
 // ---------------------------------------------------------------------------
@@ -272,6 +297,7 @@ export type UpdateAdminLLMUpstreamRequest = {
 export type CreateAdminLLMModelRequest = {
   platformModelName: string;
   vendor?: AdminLLMModelVendor;
+  displayGroupID?: number;
   kindsJSON?: string;
   icon?: string;
   capabilitiesJSON?: string;
@@ -288,6 +314,7 @@ export type CreateAdminLLMModelRequest = {
 export type UpdateAdminLLMModelRequest = {
   platformModelName?: string;
   vendor?: AdminLLMModelVendor;
+  displayGroupID?: number;
   kindsJSON?: string;
   icon?: string;
   capabilitiesJSON?: string;
@@ -303,6 +330,34 @@ export type UpdateAdminLLMModelRequest = {
 
 export type ReorderAdminLLMModelsRequest = {
   modelIDs: number[];
+};
+
+export type CreateAdminLLMModelVendorRequest = {
+  key: string;
+  name: string;
+  icon?: string;
+};
+
+export type UpdateAdminLLMModelVendorRequest = {
+  name?: string;
+  icon?: string;
+};
+
+export type CreateAdminLLMModelDisplayGroupRequest = {
+  name: string;
+  icon?: string;
+  modelIDs?: number[];
+};
+
+export type UpdateAdminLLMModelDisplayGroupRequest = {
+  name?: string;
+  icon?: string;
+  modelIDs?: number[];
+};
+
+export type SetAdminLLMModelsDisplayGroupRequest = {
+  modelIDs: number[];
+  displayGroupID: number | null;
 };
 
 export type UpsertAdminLLMUpstreamModelRequest = {
@@ -372,6 +427,14 @@ export type AdminLLMUpstreamData = {
 
 export type AdminLLMModelData = {
   model: AdminLLMModelDTO;
+};
+
+export type AdminLLMModelVendorData = {
+  vendor: AdminLLMModelVendorDTO;
+};
+
+export type AdminLLMModelDisplayGroupData = {
+  group: AdminLLMModelDisplayGroupDTO;
 };
 
 export type AdminLLMUpstreamModelData = {
