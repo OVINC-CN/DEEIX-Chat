@@ -35,6 +35,7 @@
     "dev": "next dev --turbopack",
     "prebuild": "pnpm check:version && pnpm sync:icons",
     "build": "next build --turbopack",
+    "postbuild": "node scripts/inject-head-fragment.mjs",
     "analyze": "next experimental-analyze",
     "analyze:output": "next experimental-analyze --output",
     "start": "next start",

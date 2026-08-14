@@ -9,6 +9,7 @@ ENV PATH=$PNPM_HOME:$PATH
 
 ARG NEXT_PUBLIC_API_BASE_URL=""
 ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+ARG BUILD_HEAD_FRAGMENT_FILE=""
 
 COPY VERSION /src/VERSION
 COPY scripts /src/scripts
@@ -25,7 +26,7 @@ COPY frontend ./
 
 # 如果你的 Next 版本支持，可以在 next.config 里开启 turbopack build filesystem cache
 RUN --mount=type=cache,id=next-cache,target=/src/frontend/.next/cache \
-    pnpm build
+    BUILD_HEAD_FRAGMENT_FILE="${BUILD_HEAD_FRAGMENT_FILE}" pnpm build
 
 
 FROM golang:1.26-bookworm AS backend-builder

@@ -162,6 +162,7 @@ data/*
 rules/*
 frontend/public/vendor/lobehub-icons/
 docker-compose.local.yml
+tracking.fragment.html
 
 .DS_Store
 .idea

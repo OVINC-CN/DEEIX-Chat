@@ -222,6 +222,22 @@ The default application image is `ghcr.io/deeix-ai/deeix-chat:latest`. Override 
 DEEIX_CHAT_IMAGE=deeix-chat:local docker compose up -d --build
 ```
 
+An optional trusted HTML fragment can be injected immediately after the opening `<head>` tag in every exported page. Set `BUILD_HEAD_FRAGMENT_FILE` when building the frontend; relative paths are resolved from the repository root:
+
+```bash
+BUILD_HEAD_FRAGMENT_FILE=frontend/tracking.fragment.html pnpm --dir frontend build
+```
+
+The fragment may contain executable tags such as `<script>`. It is treated as trusted build input, and the build fails if the file is missing, unreadable, empty, or any exported HTML page has no opening `<head>` tag. Changing the fragment requires rebuilding the frontend or Docker image. The recommended `tracking.fragment.html` filename is ignored by Git.
+
+For a Docker image build, keep the fragment under `frontend/` so it is available to the frontend builder, then pass the same repository-relative path as a build argument:
+
+```bash
+docker build \
+  --build-arg BUILD_HEAD_FRAGMENT_FILE=frontend/tracking.fragment.html \
+  -t deeix-chat:local .
+```
+
 `APP_ENV` accepts `dev`/`development` and `prod`/`production`, normalizes them to `dev` or `prod`, and defaults to `prod` when omitted. Use `dev` only for local development. Public production deployments should keep `APP_ENV=prod` or `APP_ENV=production` and use production secrets.
 
 #### Optional Installation Services
@@ -319,6 +335,7 @@ Static configuration environment variables:
 | Area | Environment variable | Purpose |
 | --- | --- | --- |
 | Frontend build | `NEXT_PUBLIC_API_BASE_URL` | Browser API base URL; set in `frontend/.env.local` for local dev or at build time for separated deployment. |
+| Frontend build | `BUILD_HEAD_FRAGMENT_FILE` | Trusted HTML fragment file injected into every exported page during a production build. |
 | Config file | `CONFIG_FILE` | Optional config file path; Docker values should use the container path. |
 | Application | `APP_NAME` | Application name. |
 | Application | `APP_ENV` | Runtime environment: `dev`/`development` or `prod`/`production`; omitted values default to `prod`. |
