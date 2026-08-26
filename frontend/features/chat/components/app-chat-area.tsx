@@ -61,6 +61,17 @@ const EMPTY_CONVERSATION_OPTIONS: ConversationOptions = {};
 const EMPTY_PROJECT_DEFAULT_SKILL_IDS: number[] = [];
 const TOP_LOAD_OLDER_MESSAGES_THRESHOLD_PX = 48;
 const SCREENSHOT_PREVIEW_CLOSE_DELAY_MS = 220;
+const ARTIFACT_MIN_RATIO = 1 / 3;
+const ARTIFACT_FALLBACK_MAX_RATIO = 1 / 2;
+const ARTIFACT_MIN_CHAT_WIDTH_PX = 360;
+
+function resolveArtifactMaxRatio(workspaceWidth: number): number {
+  if (!Number.isFinite(workspaceWidth) || workspaceWidth <= 0) {
+    return ARTIFACT_FALLBACK_MAX_RATIO;
+  }
+  return Math.max(ARTIFACT_MIN_RATIO, 1 - (ARTIFACT_MIN_CHAT_WIDTH_PX / workspaceWidth));
+}
+
 function dragEventContainsFiles(event: React.DragEvent<HTMLElement>): boolean {
   return Array.from(event.dataTransfer.types ?? []).includes("Files");
 }
@@ -871,9 +882,14 @@ export function AppChatArea() {
   const workspaceRef = React.useRef<HTMLDivElement | null>(null);
   const artifactResizeCleanupRef = React.useRef<(() => void) | null>(null);
   const [artifactResizing, setArtifactResizing] = React.useState(false);
+  const [workspaceWidth, setWorkspaceWidth] = React.useState(0);
   const hasInlineArtifact = Boolean(artifactWorkspace.activeArtifact && artifactWorkspace.isInlineViewport);
+  const effectiveArtifactRatio = Math.min(
+    artifactWorkspace.artifactRatio,
+    resolveArtifactMaxRatio(workspaceWidth),
+  );
   const workspaceGridColumns = hasInlineArtifact
-    ? `minmax(0, ${1 - artifactWorkspace.artifactRatio}fr) minmax(0, ${artifactWorkspace.artifactRatio}fr)`
+    ? `minmax(0, ${1 - effectiveArtifactRatio}fr) minmax(0, ${effectiveArtifactRatio}fr)`
     : "minmax(0, 1fr) minmax(0, 0fr)";
 
   React.useEffect(() => () => {
@@ -892,7 +908,10 @@ export function AppChatArea() {
     const resizeHandle = event.currentTarget;
     const pointerID = event.pointerId;
     const startClientX = event.clientX;
-    const startRatio = artifactWorkspace.artifactRatio;
+    const startRatio = Math.min(
+      artifactWorkspace.artifactRatio,
+      resolveArtifactMaxRatio(workspace.getBoundingClientRect().width),
+    );
 
     const previousCursor = document.body.style.cursor;
     const previousUserSelect = document.body.style.userSelect;
@@ -927,7 +946,10 @@ export function AppChatArea() {
         return;
       }
 
-      const ratio = startRatio - ((clientX - startClientX) / rect.width);
+      const ratio = Math.min(
+        startRatio - ((clientX - startClientX) / rect.width),
+        resolveArtifactMaxRatio(rect.width),
+      );
       artifactWorkspace.setArtifactRatio(ratio);
     };
     const onPointerMove = (moveEvent: PointerEvent) => updateRatio(moveEvent.clientX);
@@ -1059,6 +1081,32 @@ export function AppChatArea() {
   const isConversationLoadFailed = Boolean(conversationID) && !loading && errorMsg.trim().length > 0 && visibleMessageCount === 0;
   const shouldUseCenteredComposer =
     !isConversationLoading && !isConversationLoadFailed && !isConversationMode && messagesWithInlineError.length === 0;
+
+  React.useEffect(() => {
+    if (shouldUseCenteredComposer) {
+      setWorkspaceWidth(0);
+      return;
+    }
+
+    const workspace = workspaceRef.current;
+    if (!workspace) {
+      return;
+    }
+
+    const measureWorkspace = () => {
+      setWorkspaceWidth(workspace.getBoundingClientRect().width);
+    };
+    measureWorkspace();
+
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", measureWorkspace);
+      return () => window.removeEventListener("resize", measureWorkspace);
+    }
+
+    const resizeObserver = new ResizeObserver(measureWorkspace);
+    resizeObserver.observe(workspace);
+    return () => resizeObserver.disconnect();
+  }, [shouldUseCenteredComposer]);
 
   return (
     <div
