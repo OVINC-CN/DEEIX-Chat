@@ -130,7 +130,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             {isAdmin ? (
-              <DropdownMenuItem onSelect={navigateFromMenu("/admin")}>
+              <DropdownMenuItem onSelect={navigateFromMenu("/admin/statistics")}>
                 {t("admin")}
               </DropdownMenuItem>
             ) : null}
