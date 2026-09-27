@@ -1,9 +1,9 @@
-import { Layers } from "@/components/animate-ui/icons/layers";
-import { MessageCircleMore } from "@/components/animate-ui/icons/message-circle-more";
-import { PlusIcon } from "@/components/ui/plus";
-import { Search } from "@/components/animate-ui/icons/search";
-import { Blend } from "@/components/animate-ui/icons/blend";
-import { BookOpen } from "@/components/animate-ui/icons/book-open";
+import { Layers } from "lucide-react";
+import { MessageCircleMore } from "lucide-react";
+import { Plus as PlusIcon } from "lucide-react";
+import { Search } from "lucide-react";
+import { Blend } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import type { NavigationItem } from "@/features/layouts/types/navigation";
 
 export const NAVIGATION_ITEMS = [

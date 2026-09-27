@@ -17,7 +17,6 @@ COPY backend/package.json ./backend/package.json
 COPY packages/api-contract/package.json ./packages/api-contract/package.json
 COPY packages/core/package.json ./packages/core/package.json
 COPY apps/web/scripts ./apps/web/scripts
-COPY apps/web/public/pwa ./apps/web/public/pwa
 
 RUN corepack enable
 

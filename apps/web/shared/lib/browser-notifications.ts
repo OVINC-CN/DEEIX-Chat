@@ -91,7 +91,7 @@ export function notifyResponseCompletion(input: ResponseCompletionNotificationIn
   const notification = new Notification(conversationTitle || branding.title, {
     body: normalizeNotificationBody(normalizeTrimmedString(input.content)),
     tag: normalizeTrimmedString(input.conversationPublicID, `response-completion:${Date.now()}`),
-    icon: branding.pwaIcon192URL,
+    icon: branding.logoURL || "/logo.png",
   });
 
   notification.onclick = () => {

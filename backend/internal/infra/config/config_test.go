@@ -340,11 +340,7 @@ branding:
 		t.Fatalf("unexpected branding text: %+v", cfg)
 	}
 	if cfg.BrandLogoURL != "https://cdn.example.com/logo.svg" ||
-		cfg.BrandFaviconURL != "https://cdn.example.com/favicon.ico" ||
-		cfg.BrandPWAIcon192URL != "https://cdn.example.com/icon-192.png" ||
-		cfg.BrandPWAIcon512URL != "https://cdn.example.com/icon-512.png" ||
-		cfg.BrandPWAMaskableIcon512URL != "https://cdn.example.com/icon-maskable.png" ||
-		cfg.BrandAppleTouchIcon180URL != "https://cdn.example.com/apple-touch-icon.png" {
+		cfg.BrandFaviconURL != "https://cdn.example.com/favicon.ico" {
 		t.Fatalf("unexpected branding assets: %+v", cfg)
 	}
 }

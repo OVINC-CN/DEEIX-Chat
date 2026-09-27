@@ -5,7 +5,7 @@ import * as React from "react";
 import { Sparkles } from "lucide-react";
 
 import { AgentTraceStep } from "@/features/chat/components/message/message-agent-trace-step";
-import { ChevronDown } from "@/components/animate-ui/icons/chevron-down";
+import { ChevronDown } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -360,8 +360,8 @@ export function MessageAgentTrace({
   activeThinkBlock,
   messageStreaming,
   autoCollapseReady,
-  autoExpandThinking = true,
-  autoExpandToolCalls = true,
+  autoExpandThinking = false,
+  autoExpandToolCalls = false,
   runID,
   allowFullToolResults = false,
 }: {

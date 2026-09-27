@@ -76,12 +76,7 @@ func (s *Service) deleteExpiredContextArtifacts(ctx context.Context) {
 func (s *Service) GetChatFilePolicy(ctx context.Context, userID uint) (*ChatFilePolicyDTO, error) {
 	cfg := s.cfg.Snapshot()
 	capability := s.resolveChatFileCapability(ctx)
-	fileMode := "auto"
-	if userID != 0 {
-		if value, err := s.repo.GetUserSettingValue(ctx, userID, "chat.file_mode"); err == nil && strings.TrimSpace(value) != "" {
-			fileMode = strings.TrimSpace(value)
-		}
-	}
+	fileMode := "full_context"
 	return &ChatFilePolicyDTO{
 		MaxMessageFiles:        cfg.MaxMessageFiles,
 		MaxUploadFileBytes:     cfg.MaxUploadFileBytes,

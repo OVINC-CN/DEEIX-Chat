@@ -21,7 +21,7 @@ type ChatArtifactInlineLayout = "balanced" | "wide";
 const ARTIFACT_INLINE_BREAKPOINT = 768;
 const ARTIFACT_WIDE_BREAKPOINT = 1280;
 const ARTIFACT_MIN_RATIO = 1 / 3;
-const ARTIFACT_MAX_RATIO = 3 / 4;
+const ARTIFACT_MAX_RATIO = 1;
 const ARTIFACT_BALANCED_RATIO = 1 / 2;
 
 function resolveInlineLayout(viewportWidth: number): ChatArtifactInlineLayout {

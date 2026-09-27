@@ -4,7 +4,7 @@ import * as React from "react";
 import { ChevronDown, PencilLine, Star, StarOff, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { Sparkles } from "@/components/animate-ui/icons/sparkles";
+import { Sparkles } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -272,7 +272,7 @@ export function ChatLabel({
                   {autoRenaming ? (
                     <Spinner className="size-3.5" />
                   ) : (
-                    <Sparkles size={15} strokeWidth={1.5} animateOnHover="default" />
+                    <Sparkles size={15} strokeWidth={1.5} />
                   )}
                 </button>
               ) : null}

@@ -144,7 +144,7 @@ func (s *Service) UpdateConversationProject(
 		if patch.DefaultKnowledgeBaseIDs != nil {
 			knowledgeBaseIDs = *patch.DefaultKnowledgeBaseIDs
 		}
-		if mode == model.ConversationProjectMCPDefaultModeInherit {
+		if mode == model.ConversationProjectMCPDefaultModeInherit && (patch.MCPDefaultMode != nil || patch.DefaultMCPToolIDs != nil) {
 			mcpToolIDs = []uint{}
 		}
 		if err = s.validateConversationProjectDefaults(ctx, conversationProjectDefaultsValidationInput{
@@ -158,10 +158,10 @@ func (s *Service) UpdateConversationProject(
 		}); err != nil {
 			return nil, err
 		}
-		patch.MCPDefaultMode = &mode
-		patch.DefaultMCPToolIDs = &mcpToolIDs
-		patch.DefaultSkillIDs = &skillIDs
-		patch.DefaultKnowledgeBaseIDs = &knowledgeBaseIDs
+		if patch.MCPDefaultMode != nil || patch.DefaultMCPToolIDs != nil {
+			patch.MCPDefaultMode = &mode
+			patch.DefaultMCPToolIDs = &mcpToolIDs
+		}
 	}
 	item, err := s.repo.UpdateConversationProjectMetadataByPublicID(ctx, userID, strings.TrimSpace(publicID), patch)
 	if err != nil {

@@ -24,6 +24,7 @@ type UserSettingsEntry = {
   listeners: Set<() => void>;
   pendingLoad: Promise<UserSettingsMap> | null;
   pendingMutations: number;
+  pendingWrite: Promise<void>;
   mutationSequence: number;
   keySequences: Map<string, number>;
   cleanupTimer: ReturnType<typeof setTimeout> | null;
@@ -51,6 +52,7 @@ function createEntry(): UserSettingsEntry {
     listeners: new Set(),
     pendingLoad: null,
     pendingMutations: 0,
+    pendingWrite: Promise.resolve(),
     mutationSequence: 0,
     keySequences: new Map(),
     cleanupTimer: null,
@@ -253,7 +255,10 @@ export async function updateUserSettings(
   notify(entry);
 
   try {
-    const serverSettings = await patchUserSettings(token, changes);
+    // Preserve server write order as well as optimistic local state across chat remounts.
+    const request = entry.pendingWrite.then(() => patchUserSettings(token, changes));
+    entry.pendingWrite = request.then(() => undefined, () => undefined);
+    const serverSettings = await request;
     entry.snapshot = {
       settings: mergeMutationResponse(entry, serverSettings, requestSequences),
       loaded: true,

@@ -25,7 +25,7 @@ import { useTranslations } from "next-intl";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { Ellipsis } from "@/components/animate-ui/icons/ellipsis";
+import { Ellipsis } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,7 +50,7 @@ import {
 import { FolderArchiveIcon } from "@/components/ui/folder-archive";
 import { FolderOpenIcon } from "@/components/ui/folder-open";
 import { GripVerticalIcon, type GripVerticalIconHandle } from "@/components/ui/grip-vertical";
-import { PlusIcon } from "@/components/ui/plus";
+import { Plus as PlusIcon } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupAction,
@@ -129,7 +129,7 @@ function ProjectGroupHeader({
   onOpenChange: (open: boolean) => void;
   toggleLabel: string;
 }) {
-  const [createHovered, setCreateHovered] = React.useState(false);
+  const [_createHovered, setCreateHovered] = React.useState(false);
 
   return (
     <div className="group/project-create flex h-8 items-center gap-1">
@@ -164,7 +164,7 @@ function ProjectGroupHeader({
         onMouseLeave={() => setCreateHovered(false)}
         onClick={onCreate}
       >
-        <PlusIcon aria-hidden size={14} strokeWidth={1.8} animate={createHovered ? "default" : undefined} />
+        <PlusIcon aria-hidden size={14} strokeWidth={1.8} />
       </SidebarGroupAction>
     </div>
   );
@@ -609,20 +609,12 @@ export function NavProjects() {
       await updateProject(draft.publicID, {
         name,
         systemPrompt: draft.systemPrompt.trim(),
-        defaultModel: draft.defaultModel.trim(),
-        mcpDefaultMode: draft.mcpDefaultMode,
-        defaultMCPToolIDs: draft.mcpDefaultMode === "custom" ? draft.defaultMCPToolIDs : [],
-        defaultSkillIDs: draft.defaultSkillIDs,
         defaultKnowledgeBaseIDs: draft.defaultKnowledgeBaseIDs,
       });
     } else {
       await createProject({
         name,
         systemPrompt: draft.systemPrompt.trim(),
-        defaultModel: draft.defaultModel.trim(),
-        mcpDefaultMode: draft.mcpDefaultMode,
-        defaultMCPToolIDs: draft.mcpDefaultMode === "custom" ? draft.defaultMCPToolIDs : [],
-        defaultSkillIDs: draft.defaultSkillIDs,
         defaultKnowledgeBaseIDs: draft.defaultKnowledgeBaseIDs,
       });
     }
@@ -704,10 +696,6 @@ export function NavProjects() {
               onCreate={() => setDraft({
                 name: "",
                 systemPrompt: "",
-                defaultModel: "",
-                mcpDefaultMode: "inherit",
-                defaultMCPToolIDs: [],
-                defaultSkillIDs: [],
                 defaultKnowledgeBaseIDs: [],
               })}
               onOpenChange={setProjectsOpen}
@@ -748,7 +736,7 @@ export function NavProjects() {
                             hasActiveChild;
                           const rowHovered = hoveredProjectRowID === project.publicID;
                           const rowFocused = focusedProjectRowID === project.publicID;
-                          const createHovered = hoveredProjectCreateID === project.publicID;
+                          const _createHovered = hoveredProjectCreateID === project.publicID;
                           const menuHovered = hoveredProjectMenuID === project.publicID;
                           const menuOpen = openProjectMenuID === project.publicID;
                           const rowDragging = draggingProjectID === project.publicID;
@@ -806,7 +794,7 @@ export function NavProjects() {
                                       onHoverChange={(hovered) => setHoveredProjectCreateID(hovered ? project.publicID : null)}
                                       onClick={() => startProjectConversation(project.publicID)}
                                     >
-                                      <PlusIcon aria-hidden size={16} strokeWidth={1.6} animate={createHovered ? "default" : undefined} />
+                                      <PlusIcon aria-hidden size={16} strokeWidth={1.6} />
                                     </ProjectInlineAction>
                                     <DropdownMenu
                                       modal={false}
@@ -820,7 +808,7 @@ export function NavProjects() {
                                           className={projectMenuActionClassName}
                                           onHoverChange={(hovered) => setHoveredProjectMenuID(hovered ? project.publicID : null)}
                                         >
-                                          <Ellipsis aria-hidden size={16} strokeWidth={1.4} animate={menuHovered ? "pulse" : undefined} />
+                                          <Ellipsis aria-hidden size={16} strokeWidth={1.4} />
                                         </ProjectInlineAction>
                                       </DropdownMenuTrigger>
                                       <DropdownMenuContent align="end" className="w-max min-w-36 max-w-[calc(100vw-2rem)]">
@@ -831,10 +819,6 @@ export function NavProjects() {
                                               publicID: project.publicID,
                                               name: project.name,
                                               systemPrompt: project.systemPrompt ?? "",
-                                              defaultModel: project.defaultModel ?? "",
-                                              mcpDefaultMode: project.mcpDefaultMode ?? "inherit",
-                                              defaultMCPToolIDs: project.defaultMCPToolIDs ?? [],
-                                              defaultSkillIDs: project.defaultSkillIDs ?? [],
                                               defaultKnowledgeBaseIDs: project.defaultKnowledgeBaseIDs ?? [],
                                             });
                                           }}

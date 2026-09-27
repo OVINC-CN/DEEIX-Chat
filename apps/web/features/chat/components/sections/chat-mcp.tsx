@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-import { Unplug } from "@/components/animate-ui/icons/unplug";
+import { Unplug } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { InputGroupButton } from "@/components/ui/input-group";
@@ -158,7 +158,7 @@ export function ChatMCP({
   onDefaultToolsChange,
 }: ChatMCPProps) {
   const tComposer = useTranslations("chat.composer");
-  const [hovered, setHovered] = React.useState(false);
+  const [_hovered, setHovered] = React.useState(false);
   const [hoveredRowKey, setHoveredRowKey] = React.useState<string | null>(null);
   const [focusedRowKey, setFocusedRowKey] = React.useState<string | null>(null);
   const [open, setOpen] = React.useState(false);
@@ -300,7 +300,6 @@ export function ChatMCP({
               <Unplug
                 size={20}
                 strokeWidth={1.4}
-                animate={hovered ? "default" : undefined}
               />
               {selectedToolCount > 0 ? (
                 <span className="absolute -right-0.5 -top-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-medium leading-none text-primary-foreground">

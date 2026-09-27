@@ -10,7 +10,21 @@ export function useChatArtifactResize(artifactWorkspace: {
   artifactRatio: number;
   setArtifactRatio: (ratio: number) => void;
 }) {
-  const workspaceRef = React.useRef<HTMLDivElement | null>(null);
+  const [workspaceElement, setWorkspaceElement] = React.useState<HTMLDivElement | null>(null);
+  const [workspaceWidth, setWorkspaceWidth] = React.useState(0);
+  const workspaceRef = React.useCallback((element: HTMLDivElement | null) => setWorkspaceElement(element), []);
+  const maxRatio = workspaceWidth > 0 ? Math.max(0, 1 - 360 / workspaceWidth) : 2 / 3;
+  const effectiveArtifactRatio = Math.min(maxRatio, Math.max(1 / 3, artifactWorkspace.artifactRatio));
+  const canInlineArtifact = workspaceWidth === 0 || workspaceWidth >= 540;
+
+  React.useLayoutEffect(() => {
+    if (!workspaceElement) return;
+    const measure = () => setWorkspaceWidth(workspaceElement.getBoundingClientRect().width);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(workspaceElement);
+    return () => observer.disconnect();
+  }, [workspaceElement]);
   const artifactResizeCleanupRef = React.useRef<(() => void) | null>(null);
   const [artifactResizing, setArtifactResizing] = React.useState(false);
 
@@ -19,7 +33,7 @@ export function useChatArtifactResize(artifactWorkspace: {
   }, []);
 
   const onArtifactResizeStart = React.useCallback((event: React.PointerEvent<HTMLButtonElement>) => {
-    const workspace = workspaceRef.current;
+    const workspace = workspaceElement;
     if (!workspace || event.button !== 0) {
       return;
     }
@@ -30,7 +44,7 @@ export function useChatArtifactResize(artifactWorkspace: {
     const resizeHandle = event.currentTarget;
     const pointerID = event.pointerId;
     const startClientX = event.clientX;
-    const startRatio = artifactWorkspace.artifactRatio;
+    const startRatio = effectiveArtifactRatio;
 
     const previousCursor = document.body.style.cursor;
     const previousUserSelect = document.body.style.userSelect;
@@ -66,7 +80,7 @@ export function useChatArtifactResize(artifactWorkspace: {
       }
 
       const ratio = startRatio - ((clientX - startClientX) / rect.width);
-      artifactWorkspace.setArtifactRatio(ratio);
+      artifactWorkspace.setArtifactRatio(Math.min(Math.max(1 / 3, ratio), Math.max(0, 1 - 360 / rect.width)));
     };
     const onPointerMove = (moveEvent: PointerEvent) => updateRatio(moveEvent.clientX);
     const stopResizeWhenHidden = () => {
@@ -83,10 +97,12 @@ export function useChatArtifactResize(artifactWorkspace: {
     window.addEventListener("blur", stopResize);
     document.addEventListener("visibilitychange", stopResizeWhenHidden);
     resizeHandle.addEventListener("lostpointercapture", stopResize);
-  }, [artifactWorkspace]);
+  }, [artifactWorkspace, effectiveArtifactRatio, workspaceElement]);
 
   return {
     workspaceRef,
+    effectiveArtifactRatio,
+    canInlineArtifact,
     artifactResizing,
     onArtifactResizeStart,
   };

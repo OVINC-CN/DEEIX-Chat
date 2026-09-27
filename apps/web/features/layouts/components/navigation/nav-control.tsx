@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
-import { PanelLeft } from "@/components/animate-ui/icons/panel-left";
-import { PanelRight } from "@/components/animate-ui/icons/panel-right";
+import { PanelLeft } from "lucide-react";
+import { PanelRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   SidebarMenu,
@@ -65,9 +65,9 @@ export function NavControl() {
                 )}
               >
                 {isPersistentlyCollapsed ? (
-                  <PanelRight aria-hidden size={18} animateOnHover strokeWidth={1.4} />
+                  <PanelRight aria-hidden size={18} strokeWidth={1.4} />
                 ) : (
-                  <PanelLeft aria-hidden size={18} animateOnHover strokeWidth={1.4} />
+                  <PanelLeft aria-hidden size={18} strokeWidth={1.4} />
                 )}
               </Button>
             </TooltipTrigger>

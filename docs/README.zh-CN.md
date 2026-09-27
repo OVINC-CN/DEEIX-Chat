@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../apps/web/public/logo-white.svg" />
-    <img src="../apps/web/public/logo-black.svg" alt="DEEIX Chat" width="160" />
+    <source media="(prefers-color-scheme: dark)" srcset="../apps/web/public/logo-white.png" />
+    <img src="../apps/web/public/logo.png" alt="OVINC Chat" width="160" />
   </picture>
 </p>
 

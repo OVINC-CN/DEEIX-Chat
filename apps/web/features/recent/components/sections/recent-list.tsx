@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Archive, Check, PencilLine, Share2, Star, Tag, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { Ellipsis } from "@/components/animate-ui/icons/ellipsis";
+import { Ellipsis } from "lucide-react";
 import { AnimatedText } from "@/components/ui/animated-text";
 import { LoadingReveal } from "@/shared/components/loading-reveal";
 import type { RecentRowState } from "@/features/recent/types/recent";
@@ -259,7 +259,7 @@ function RecentConversationRow({
                 event.stopPropagation();
               }}
             >
-              <Ellipsis size={16} strokeWidth={1.4} animate={hovered ? "pulse" : undefined} />
+              <Ellipsis size={16} strokeWidth={1.4} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-max min-w-40 max-w-[calc(100vw-2rem)]">

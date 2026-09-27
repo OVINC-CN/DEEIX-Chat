@@ -47,6 +47,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ steps.image.outputs.name }}
+          flavor: |
+            latest=false
           tags: |
             type=ref,event=branch,suffix=-${{ matrix.arch }}
             # Tag refs arrive either as pushes or via workflow_dispatch from Release Tag.
@@ -96,6 +98,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ steps.image.outputs.name }}
+          flavor: |
+            latest=false
           tags: |
             type=ref,event=branch
             type=raw,value=${{ github.ref_name }},enable=${{ github.ref_type == 'tag' }}
