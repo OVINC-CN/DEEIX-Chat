@@ -822,7 +822,7 @@ func normalizeConversationLabelsForUpdate(raw []string) ([]string, error) {
 }
 
 func (s *Service) autoGenerateConversationTitleEnabled(ctx context.Context, userID uint) bool {
-	value, err := s.repo.GetUserSettingValue(ctx, userID, conversationAutoGenerateTitleSettingKey)
+	value, err := s.getUserSettingCached(ctx, userID, conversationAutoGenerateTitleSettingKey)
 	if err != nil {
 		if s.logger != nil {
 			s.logger.Warn("conversation_title_setting_load_failed", zap.Uint("user_id", userID), zap.Error(err))
@@ -833,7 +833,7 @@ func (s *Service) autoGenerateConversationTitleEnabled(ctx context.Context, user
 }
 
 func (s *Service) autoGenerateConversationLabelsEnabled(ctx context.Context, userID uint) bool {
-	value, err := s.repo.GetUserSettingValue(ctx, userID, conversationAutoGenerateLabelsSettingKey)
+	value, err := s.getUserSettingCached(ctx, userID, conversationAutoGenerateLabelsSettingKey)
 	if err != nil {
 		if s.logger != nil {
 			s.logger.Warn("conversation_labels_setting_load_failed", zap.Uint("user_id", userID), zap.Error(err))

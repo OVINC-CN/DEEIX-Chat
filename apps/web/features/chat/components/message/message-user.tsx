@@ -6,8 +6,8 @@ import { CircleAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
-import { ChevronDown } from "@/components/animate-ui/icons/chevron-down";
-import { ChevronUp } from "@/components/animate-ui/icons/chevron-up";
+import { ChevronDown } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 import { ChatMentionMenuPortal } from "@/features/chat/components/shared/chat-mention-menu";
 import { MessageAttachmentRow } from "@/features/chat/components/message/message-attachment";
 import { UserMessageMeta } from "@/features/chat/components/message/message-meta";
@@ -72,7 +72,7 @@ export function ChatMessageUser({
   const [editingValue, setEditingValue] = React.useState(item.content);
   const [expandedContentKey, setExpandedContentKey] = React.useState("");
   const [canCollapse, setCanCollapse] = React.useState(false);
-  const [isToggleHovered, setIsToggleHovered] = React.useState(false);
+  const [_isToggleHovered, setIsToggleHovered] = React.useState(false);
   const [contentHeight, setContentHeight] = React.useState(0);
   const [collapsedHeight, setCollapsedHeight] = React.useState(USER_MESSAGE_COLLAPSED_LINES * 24);
   const [measuredContentKey, setMeasuredContentKey] = React.useState("");
@@ -313,9 +313,9 @@ export function ChatMessageUser({
                 onMouseLeave={() => setIsToggleHovered(false)}
               >
                 {expanded ? (
-                  <ChevronUp className="size-4 shrink-0" animate={isToggleHovered ? "default" : undefined} />
+                  <ChevronUp className="size-4 shrink-0" />
                 ) : (
-                  <ChevronDown className="size-4 shrink-0" animate={isToggleHovered ? "default" : undefined} />
+                  <ChevronDown className="size-4 shrink-0" />
                 )}
                 <span>{expanded ? tMessages("collapseUserMessage") : tMessages("expandUserMessage")}</span>
               </button>

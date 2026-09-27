@@ -21,11 +21,6 @@ import {
   type ChatArtifact,
   resolveArtifactDownloadName,
 } from "@/features/chat/model/chat-artifacts";
-import {
-  useChatFontPreference,
-  useChatFontWeightPreference,
-  useFontSizePreference,
-} from "@/features/settings";
 import { cn } from "@/lib/utils";
 import { CopyActionButton } from "@/shared/components/copy-action";
 import { useTheme } from "@/shared/components/theme-provider";
@@ -138,9 +133,6 @@ function ChatArtifactPanel({
 }: ChatArtifactPanelProps) {
   const t = useTranslations("chat.artifacts");
   const { preset, resolvedTheme } = useTheme();
-  const chatFont = useChatFontPreference();
-  const chatFontWeight = useChatFontWeightPreference();
-  const fontSize = useFontSizePreference();
   const [previewTheme, setPreviewTheme] = React.useState<HTMLVisualThemeSnapshot>({
     colorScheme: "light",
     variables: [],
@@ -148,7 +140,7 @@ function ChatArtifactPanel({
 
   React.useEffect(() => {
     setPreviewTheme(captureHTMLVisualThemeSnapshot(resolvedTheme));
-  }, [chatFont, chatFontWeight, fontSize, preset, resolvedTheme]);
+  }, [preset, resolvedTheme]);
 
   const artifactPreview = React.useMemo(
     () =>

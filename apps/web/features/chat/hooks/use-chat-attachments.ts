@@ -446,7 +446,7 @@ export function useChatAttachments({
     uploading,
     uploadingAttachments,
     maxFilesPerMessage,
-    fileMode: temporary ? "full_context" : (chatFilePolicy?.fileMode ?? "auto"),
+    fileMode: "full_context" as const,
     ragAvailable: chatFilePolicy?.ragAvailable ?? null,
     ragAvailabilityReason: chatFilePolicy?.ragAvailabilityReason ?? "",
     releaseAttachments,

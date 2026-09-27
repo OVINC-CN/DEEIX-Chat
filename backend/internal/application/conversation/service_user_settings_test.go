@@ -92,63 +92,85 @@ func newUserSettingTestServices(repo userSettingTestRepository, runtimeCfg *conf
 	return conversationService, settingsService, cache
 }
 
-// TestIssue589UserSettingChangesTakeEffectImmediately covers every setting reported in #589.
-func TestIssue589UserSettingChangesTakeEffectImmediately(t *testing.T) {
+func TestFixedChatSettingsOverrideHistoricalRowsAndSharedCache(t *testing.T) {
 	const userID uint = 17
 	ctx := context.Background()
+	historical := map[string]string{
+		"chat.reasoning_content_passback": "false", "chat.context_compact_auto": "true", "chat.file_mode": "rag",
+		"chat.show_token_usage": "false", "chat.show_model_info": "false", "chat.show_latency": "false",
+		"chat.show_billing_cost": "false", "chat.auto_generate_title": "false", "chat.markdown_render": "false",
+		"chat.reuse_model_options": "true", "chat.input_height": "loose", "chat.content_width": "wide",
+		"chat.auto_generate_labels": "false", "chat.auto_expand_thinking": "true", "chat.auto_expand_tool_calls": "true",
+	}
+	want := map[string]string{
+		"chat.reasoning_content_passback": "true", "chat.context_compact_auto": "false", "chat.file_mode": "full_context",
+		"chat.show_token_usage": "true", "chat.show_model_info": "true", "chat.show_latency": "true",
+		"chat.show_billing_cost": "true", "chat.auto_generate_title": "true", "chat.markdown_render": "true",
+		"chat.reuse_model_options": "false", "chat.input_height": "standard", "chat.content_width": "compact",
+		"chat.auto_generate_labels": "true", "chat.auto_expand_thinking": "false", "chat.auto_expand_tool_calls": "false",
+	}
+	repo := &mutableUserSettingsRepository{values: map[uint]map[string]string{userID: historical}}
 	runtimeCfg := config.NewRuntime(config.Config{ContextCompactEnabled: true})
-	repo := &mutableUserSettingsRepository{
-		values: map[uint]map[string]string{
-			userID: {
-				"chat.reasoning_content_passback": "true",
-				"chat.context_compact_auto":       "true",
-				"chat.file_mode":                  "auto",
-			},
-		},
-	}
 	conversationService, settingsService, cache := newUserSettingTestServices(repo, runtimeCfg)
-
-	if !conversationService.reasoningContentPassbackEnabled(ctx, userID, &channel.ResolvedRoute{ReasoningContentPassback: true}) {
-		t.Fatal("expected initial reasoning passback to be enabled")
-	}
-	if !conversationService.resolveContextCompactionPolicy(ctx, runtimeCfg.Snapshot(), userID).EffectiveEnabled() {
-		t.Fatal("expected initial context compaction to be enabled")
-	}
-	if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.file_mode"); err != nil || value != "auto" {
-		t.Fatalf("initial file mode = %q (err %v), want auto", value, err)
-	}
-
-	if _, err := settingsService.PatchSettings(ctx, userID, map[string]string{
-		"chat.reasoning_content_passback": "false",
-		"chat.context_compact_auto":       "false",
-		"chat.file_mode":                  "rag",
-	}); err != nil {
-		t.Fatalf("patch settings: %v", err)
-	}
-
-	for key, want := range map[string]string{
-		"chat.reasoning_content_passback": "false",
-		"chat.context_compact_auto":       "false",
-		"chat.file_mode":                  "rag",
-	} {
+	for key, value := range historical {
 		version, err := cache.GetUserSettingCacheVersion(ctx, userID, key, userSettingCacheTTL)
-		if err != nil || version == "" {
-			t.Fatalf("cache version for %q = %q (err %v), want a version", key, version, err)
+		if err != nil {
+			t.Fatal(err)
 		}
-		value, ok, err := cache.GetUserSettingCache(ctx, userID, key, version)
-		if err != nil || !ok || value != want {
-			t.Fatalf("refreshed cache for %q = %q (ok %v, err %v), want %q", key, value, ok, err, want)
+		if err := cache.SetUserSettingCache(ctx, userID, key, version, value, userSettingCacheTTL); err != nil {
+			t.Fatal(err)
 		}
 	}
-
-	if conversationService.reasoningContentPassbackEnabled(ctx, userID, &channel.ResolvedRoute{ReasoningContentPassback: true}) {
-		t.Fatal("expected patched reasoning passback to be disabled")
+	listed, err := settingsService.ListSettings(ctx, userID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for key, value := range want {
+		got, err := conversationService.getUserSettingCached(ctx, userID, key)
+		if err != nil || got != value || listed[key] != value {
+			t.Fatalf("%s: runtime=%q listed=%q error=%v, want %q", key, got, listed[key], err, value)
+		}
+	}
+	if !conversationService.reasoningContentPassbackEnabled(ctx, userID, &channel.ResolvedRoute{ReasoningContentPassback: true}) {
+		t.Fatal("historical preference disabled reasoning passback")
 	}
 	if conversationService.resolveContextCompactionPolicy(ctx, runtimeCfg.Snapshot(), userID).EffectiveEnabled() {
-		t.Fatal("expected patched context compaction to be disabled")
+		t.Fatal("historical preference enabled automatic compaction")
 	}
-	if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.file_mode"); err != nil || value != "rag" {
-		t.Fatalf("updated file mode = %q (err %v), want rag", value, err)
+	if !conversationService.autoGenerateConversationTitleEnabled(ctx, userID) {
+		t.Fatal("historical preference disabled automatic titles")
+	}
+	if !conversationService.autoGenerateConversationLabelsEnabled(ctx, userID) {
+		t.Fatal("historical preference disabled automatic labels")
+	}
+	policy, err := conversationService.GetChatFilePolicy(ctx, userID)
+	if err != nil || policy.FileMode != "full_context" {
+		t.Fatalf("file policy = %+v, error = %v", policy, err)
+	}
+	if _, err := settingsService.PatchSettings(ctx, userID, historical); err != nil {
+		t.Fatal(err)
+	}
+	for key, value := range want {
+		if historical[key] != value {
+			t.Fatalf("%s: persisted %q, want %q", key, historical[key], value)
+		}
+		version, err := cache.GetUserSettingCacheVersion(ctx, userID, key, userSettingCacheTTL)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got, ok, err := cache.GetUserSettingCache(ctx, userID, key, version)
+		if err != nil || !ok || got != value {
+			t.Fatalf("%s: refreshed cache=%q present=%v error=%v, want %q", key, got, ok, err, value)
+		}
+	}
+	if _, err := settingsService.PatchSettings(ctx, userID, map[string]string{"chat.send_on_enter": "enter", "chat.restore_draft_on_failure": "false"}); err != nil {
+		t.Fatal(err)
+	}
+	if historical["chat.send_on_enter"] != "enter" || historical["chat.restore_draft_on_failure"] != "false" {
+		t.Fatal("configurable preferences were not preserved")
+	}
+	if _, err := settingsService.PatchSettings(ctx, userID, map[string]string{"chat.file_mode": "invalid"}); !errors.Is(err, appusersettings.ErrInvalidSettingValue) {
+		t.Fatalf("invalid fixed setting was accepted: %v", err)
 	}
 }
 
@@ -161,7 +183,7 @@ func TestConversationSettingsCacheDoesNotRepopulateAfterRefresh(t *testing.T) {
 	blockFirstRead.Store(true)
 	repo := &mutableUserSettingsRepository{
 		values: map[uint]map[string]string{
-			userID: {"chat.file_mode": "auto"},
+			userID: {"chat.restore_draft_on_failure": "true"},
 		},
 		beforeGet: func() {
 			if blockFirstRead.CompareAndSwap(true, false) {
@@ -175,28 +197,28 @@ func TestConversationSettingsCacheDoesNotRepopulateAfterRefresh(t *testing.T) {
 	readDone := make(chan struct{})
 	go func() {
 		defer close(readDone)
-		if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.file_mode"); err != nil || value != "auto" {
-			t.Errorf("initial concurrent read = %q (err %v), want auto", value, err)
+		if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.restore_draft_on_failure"); err != nil || value != "true" {
+			t.Errorf("initial concurrent read = %q (err %v), want true", value, err)
 		}
 	}()
 
 	<-readStarted
-	if _, err := settingsService.PatchSettings(ctx, userID, map[string]string{"chat.file_mode": "rag"}); err != nil {
+	if _, err := settingsService.PatchSettings(ctx, userID, map[string]string{"chat.restore_draft_on_failure": "false"}); err != nil {
 		t.Fatalf("patch settings: %v", err)
 	}
 	close(releaseRead)
 	<-readDone
 
-	version, err := cache.GetUserSettingCacheVersion(ctx, userID, "chat.file_mode", userSettingCacheTTL)
+	version, err := cache.GetUserSettingCacheVersion(ctx, userID, "chat.restore_draft_on_failure", userSettingCacheTTL)
 	if err != nil || version == "" {
 		t.Fatalf("cache version = %q (err %v), want a version", version, err)
 	}
-	value, ok, err := cache.GetUserSettingCache(ctx, userID, "chat.file_mode", version)
-	if err != nil || !ok || value != "rag" {
-		t.Fatalf("current cache = %q (ok %v, err %v), want rag", value, ok, err)
+	value, ok, err := cache.GetUserSettingCache(ctx, userID, "chat.restore_draft_on_failure", version)
+	if err != nil || !ok || value != "false" {
+		t.Fatalf("current cache = %q (ok %v, err %v), want false", value, ok, err)
 	}
-	if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.file_mode"); err != nil || value != "rag" {
-		t.Fatalf("updated file mode = %q (err %v), want rag", value, err)
+	if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.restore_draft_on_failure"); err != nil || value != "false" {
+		t.Fatalf("updated draft restore setting = %q (err %v), want false", value, err)
 	}
 }
 
@@ -205,7 +227,7 @@ func TestConversationSettingsRefreshIsSharedAcrossServiceInstances(t *testing.T)
 	ctx := context.Background()
 	repo := &mutableUserSettingsRepository{
 		values: map[uint]map[string]string{
-			userID: {"chat.file_mode": "auto"},
+			userID: {"chat.restore_draft_on_failure": "true"},
 		},
 	}
 	sharedCache := memorycache.New()
@@ -214,14 +236,14 @@ func TestConversationSettingsRefreshIsSharedAcrossServiceInstances(t *testing.T)
 	settingsService := appusersettings.NewService(repo)
 	settingsService.SetCacheRefresher(firstConversationService.RefreshUserSettingCache)
 
-	if value, err := secondConversationService.getUserSettingCached(ctx, userID, "chat.file_mode"); err != nil || value != "auto" {
-		t.Fatalf("initial second-instance read = %q (err %v), want auto", value, err)
+	if value, err := secondConversationService.getUserSettingCached(ctx, userID, "chat.restore_draft_on_failure"); err != nil || value != "true" {
+		t.Fatalf("initial second-instance read = %q (err %v), want true", value, err)
 	}
-	if _, err := settingsService.PatchSettings(ctx, userID, map[string]string{"chat.file_mode": "full_context"}); err != nil {
+	if _, err := settingsService.PatchSettings(ctx, userID, map[string]string{"chat.restore_draft_on_failure": "false"}); err != nil {
 		t.Fatalf("patch settings: %v", err)
 	}
-	if value, err := secondConversationService.getUserSettingCached(ctx, userID, "chat.file_mode"); err != nil || value != "full_context" {
-		t.Fatalf("second-instance read after refresh = %q (err %v), want full_context", value, err)
+	if value, err := secondConversationService.getUserSettingCached(ctx, userID, "chat.restore_draft_on_failure"); err != nil || value != "false" {
+		t.Fatalf("second-instance read after refresh = %q (err %v), want false", value, err)
 	}
 }
 
@@ -230,29 +252,29 @@ func TestConversationSettingsCacheSurvivesFailedUpsert(t *testing.T) {
 	ctx := context.Background()
 	base := &mutableUserSettingsRepository{
 		values: map[uint]map[string]string{
-			userID: {"chat.file_mode": "auto"},
+			userID: {"chat.restore_draft_on_failure": "true"},
 		},
 	}
 	repo := &failingUpsertUserSettingsRepository{mutableUserSettingsRepository: base}
 	conversationService, settingsService, cache := newUserSettingTestServices(repo, nil)
 
-	if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.file_mode"); err != nil || value != "auto" {
-		t.Fatalf("initial cached file mode = %q (err %v), want auto", value, err)
+	if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.restore_draft_on_failure"); err != nil || value != "true" {
+		t.Fatalf("initial cached draft restore setting = %q (err %v), want true", value, err)
 	}
-	versionBefore, err := cache.GetUserSettingCacheVersion(ctx, userID, "chat.file_mode", userSettingCacheTTL)
+	versionBefore, err := cache.GetUserSettingCacheVersion(ctx, userID, "chat.restore_draft_on_failure", userSettingCacheTTL)
 	if err != nil {
 		t.Fatalf("cache version before failed upsert: %v", err)
 	}
-	base.setValue(userID, "chat.file_mode", "rag")
+	base.setValue(userID, "chat.restore_draft_on_failure", "false")
 
-	if _, err := settingsService.PatchSettings(ctx, userID, map[string]string{"chat.file_mode": "full_context"}); err == nil {
+	if _, err := settingsService.PatchSettings(ctx, userID, map[string]string{"chat.restore_draft_on_failure": "false"}); err == nil {
 		t.Fatal("expected patch settings to fail")
 	}
-	versionAfter, err := cache.GetUserSettingCacheVersion(ctx, userID, "chat.file_mode", userSettingCacheTTL)
+	versionAfter, err := cache.GetUserSettingCacheVersion(ctx, userID, "chat.restore_draft_on_failure", userSettingCacheTTL)
 	if err != nil || versionAfter != versionBefore {
 		t.Fatalf("cache version after failed upsert = %q (err %v), want unchanged %q", versionAfter, err, versionBefore)
 	}
-	if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.file_mode"); err != nil || value != "auto" {
-		t.Fatalf("cached file mode after failed upsert = %q (err %v), want auto", value, err)
+	if value, err := conversationService.getUserSettingCached(ctx, userID, "chat.restore_draft_on_failure"); err != nil || value != "true" {
+		t.Fatalf("cached draft restore setting after failed upsert = %q (err %v), want true", value, err)
 	}
 }

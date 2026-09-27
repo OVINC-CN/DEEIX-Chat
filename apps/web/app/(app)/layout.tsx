@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 
 import { DesktopBootstrap } from "@/features/platform/components/desktop-bootstrap";
 import { DesktopUpdateNotifier } from "@/features/platform/components/desktop-update-notifier";
 import { AppVersionGuard } from "@/features/layouts";
-import { AppearancePreferencesProvider } from "@/features/settings";
 import { AppI18nProvider } from "@/i18n/app-i18n-provider";
 import { BrandingProvider } from "@/shared/config/branding-provider";
 import { DevtoolsBrandBanner } from "@/shared/components/devtools-brand-banner";
@@ -22,18 +21,6 @@ import "streamdown/styles.css";
 // `display: "optional"` avoids the metric-fallback swap frame on cold start —
 // the desktop webview has no warm cache, so it would show on every launch.
 // Options are written out per call: next/font rejects spreads.
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "optional",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "optional",
-});
-
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
@@ -41,10 +28,6 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-  },
   formatDetection: {
     telephone: false,
   },
@@ -65,8 +48,8 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${jetBrainsMono.variable} h-full`}
+      lang="zh-CN"
+      className={`${jetBrainsMono.variable} h-full`}
       data-branding-pending="true"
       suppressHydrationWarning
     >
@@ -79,16 +62,14 @@ export default function RootLayout({
         <BrandingProvider>
           <AppI18nProvider>
             <ThemeProvider>
-              <AppearancePreferencesProvider>
-                <DesktopBootstrap>
-                  {children}
-                  <AppVersionGuard />
-                  <DesktopUpdateNotifier />
-                  <LegacyPWAServiceWorkerMigration />
-                  <DevtoolsBrandBanner />
-                </DesktopBootstrap>
-                <Toaster />
-              </AppearancePreferencesProvider>
+              <DesktopBootstrap>
+                {children}
+                <AppVersionGuard />
+                <DesktopUpdateNotifier />
+                <LegacyPWAServiceWorkerMigration />
+                <DevtoolsBrandBanner />
+              </DesktopBootstrap>
+              <Toaster />
             </ThemeProvider>
           </AppI18nProvider>
         </BrandingProvider>

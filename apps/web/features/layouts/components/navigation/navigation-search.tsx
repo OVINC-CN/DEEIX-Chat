@@ -5,9 +5,9 @@ import dynamic from "next/dynamic";
 import { Archive, ArrowDown, ArrowUp, Folder, Maximize2, Minimize2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
-import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
-import { MessageCircleMore } from "@/components/animate-ui/icons/message-circle-more";
-import { Search } from "@/components/animate-ui/icons/search";
+import { ArrowRight } from "lucide-react";
+import { MessageCircleMore } from "lucide-react";
+import { Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DialogCollapsible } from "@/components/ui/dialog";

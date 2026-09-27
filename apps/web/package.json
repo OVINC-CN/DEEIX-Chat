@@ -8,7 +8,6 @@
     "check:version": "node ../../scripts/sync-version.mjs --check web",
     "sync:icons": "node scripts/sync-lobehub-icons.mjs",
     "sync:screenshot-worker": "node scripts/sync-screenshot-worker.mjs",
-    "sync:pwa-assets": "node scripts/sync-pwa-assets.mjs",
     "sync:assets": "node scripts/sync-assets.mjs",
     "predev": "node ../../scripts/sync-version.mjs --check web && node scripts/sync-assets.mjs",
     "dev": "next dev --turbopack",
@@ -22,7 +21,8 @@
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "clean": "rm -rf .next out",
-    "check:arch": "node scripts/check-architecture.mjs"
+    "check:arch": "node scripts/check-architecture.mjs",
+    "test": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

@@ -6,8 +6,8 @@ import { Archive, Loader2Icon, PencilLine, Trash, type LucideIcon } from "lucide
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 
-import { Ellipsis } from "@/components/animate-ui/icons/ellipsis";
-import { Sparkles } from "@/components/animate-ui/icons/sparkles";
+import { Ellipsis } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { AnimatedText } from "@/components/ui/animated-text";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -181,7 +181,7 @@ export function SidebarConversationItem({
           {isAutoRenaming ? (
             <Spinner className="size-3.5" />
           ) : (
-            <Sparkles aria-hidden size={14} strokeWidth={1.5} animateOnHover="default" />
+            <Sparkles aria-hidden size={14} strokeWidth={1.5} />
           )}
         </Button>
       ) : null}
@@ -240,7 +240,7 @@ export function SidebarConversationItem({
               event.stopPropagation();
             }}
           >
-            <Ellipsis aria-hidden size={16} strokeWidth={1.4} animateOnHover="pulse" />
+            <Ellipsis aria-hidden size={16} strokeWidth={1.4} />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-max min-w-36 max-w-[calc(100vw-2rem)]">

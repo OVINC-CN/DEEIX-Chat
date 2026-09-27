@@ -13,8 +13,8 @@ import (
 
 // allowedKeys 是用户可配置的 key 集合及其默认值。
 var allowedKeys = map[string]string{
-	"chat.file_mode":                            "auto",
-	"chat.send_on_enter":                        "enter",
+	"chat.file_mode":                            "full_context",
+	"chat.send_on_enter":                        "ctrl_enter",
 	"chat.show_token_usage":                     "true",
 	"chat.show_model_info":                      "true",
 	"chat.show_latency":                         "true",
@@ -23,17 +23,39 @@ var allowedKeys = map[string]string{
 	"chat.auto_generate_title":                  "true",
 	"chat.auto_generate_labels":                 "true",
 	"chat.delete_conversation_files_by_default": "false",
-	"chat.context_compact_auto":                 "true",
+	"chat.context_compact_auto":                 "false",
 	"chat.markdown_render":                      "true",
-	"chat.auto_expand_thinking":                 "true",
-	"chat.auto_expand_tool_calls":               "true",
+	"chat.auto_expand_thinking":                 "false",
+	"chat.auto_expand_tool_calls":               "false",
 	"chat.restore_draft_on_failure":             "true",
 	"chat.preserve_conversation_drafts":         "true",
-	"chat.reuse_model_options":                  "true",
+	"chat.reuse_model_options":                  "false",
 	"chat.reasoning_content_passback":           "true",
 	"chat.input_height":                         "standard",
 	"chat.content_width":                        "compact",
 	"chat.default_mcp_tool_ids":                 "[]",
+}
+
+// FixedValue keeps legacy setting keys compatible without allowing persisted
+// values or stale caches to override the application's fixed chat behavior.
+func FixedValue(key string) (string, bool) {
+	switch key {
+	case "chat.file_mode":
+		return "full_context", true
+	case "chat.show_token_usage", "chat.show_model_info", "chat.show_latency",
+		"chat.show_billing_cost", "chat.auto_generate_title", "chat.markdown_render",
+		"chat.reasoning_content_passback", "chat.auto_generate_labels":
+		return "true", true
+	case "chat.context_compact_auto", "chat.reuse_model_options",
+		"chat.auto_expand_thinking", "chat.auto_expand_tool_calls":
+		return "false", true
+	case "chat.input_height":
+		return "standard", true
+	case "chat.content_width":
+		return "compact", true
+	default:
+		return "", false
+	}
 }
 
 // boolKeys 取值只能是 "true" / "false"。
@@ -134,6 +156,11 @@ func (s *Service) ListSettings(ctx context.Context, userID uint) (map[string]str
 			result[row.Key] = row.Value
 		}
 	}
+	for key := range result {
+		if value, fixed := FixedValue(key); fixed {
+			result[key] = value
+		}
+	}
 	return result, nil
 }
 
@@ -148,6 +175,9 @@ func (s *Service) PatchSettings(ctx context.Context, userID uint, patches map[st
 		}
 		if err := validateValue(key, value); err != nil {
 			return nil, err
+		}
+		if fixedValue, fixed := FixedValue(key); fixed {
+			value = fixedValue
 		}
 		items = append(items, domainusersettings.UserSetting{
 			UserID:    userID,

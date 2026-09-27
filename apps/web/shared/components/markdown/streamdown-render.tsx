@@ -14,7 +14,7 @@ import {
   type StreamdownProps,
 } from "streamdown";
 
-import { ChevronDown } from "@/components/animate-ui/icons/chevron-down";
+import { ChevronDown } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -693,7 +693,7 @@ export const StreamdownRender = React.memo(function StreamdownRender({
   streaming = false,
   variant = "default",
   sourcePositions = false,
-  autoExpandThinking = true,
+  autoExpandThinking = false,
   imageActions,
   artifactActions,
 }: StreamdownRenderProps) {

@@ -672,3 +672,22 @@ func TestInjectUserContextCombinesDataContexts(t *testing.T) {
 		}
 	}
 }
+
+func TestFixedFileModeUsesFullAttachmentsWhileKnowledgeBaseRetrievalRemainsAvailable(t *testing.T) {
+	cfg := config.Config{KnowledgeBaseEnabled: true, FileFullContextMaxTokens: 1000}
+	service := &Service{cfg: config.NewRuntime(cfg), ragSvc: &apprag.Service{}, knowledgeBaseResolver: knowledgeBaseResolverStub{resolveFiles: func(context.Context, uint, []string) ([]domainknowledgebase.KnowledgeBase, []model.FileObject, error) {
+		return []domainknowledgebase.KnowledgeBase{{PublicID: "kb", ReadyFileCount: 1}}, []model.FileObject{{ID: 9, FileID: "kb-file", ProcessingReady: true, EmbedStatus: "ready", ChunkCount: 2}}, nil
+	}}}
+	mode, err := service.getUserSettingCached(context.Background(), 1, "chat.file_mode")
+	if err != nil {
+		t.Fatal(err)
+	}
+	plan := buildConversationFileContextPlan([]AttachmentInput{{FileID: "uploaded", FileName: "policy.md", FileCategory: "document", ExtractedText: "Entire uploaded document", EmbedStatus: "ready", ChunkCount: 2}}, mode, cfg, "gpt-5.5", "", true)
+	if len(plan.FullAttachments) != 1 || len(plan.RAGAttachments) != 0 || plan.FullAttachments[0].ContextMode != fileContextModeFull {
+		t.Fatalf("uploaded document was not kept in full context: %+v", plan)
+	}
+	knowledgeBaseFiles, err := service.resolveKnowledgeBaseRAGFiles(context.Background(), 1, []string{"kb"}, true)
+	if err != nil || len(knowledgeBaseFiles) != 1 || knowledgeBaseFiles[0].FileID != "kb-file" {
+		t.Fatalf("explicit knowledge base retrieval failed: %+v error=%v", knowledgeBaseFiles, err)
+	}
+}

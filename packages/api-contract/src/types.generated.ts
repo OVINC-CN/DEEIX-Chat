@@ -498,33 +498,7 @@ export interface BindModelUpstreamSourceRequest {
   weight?: number;
 }
 
-export interface BrandingManifestIcon {
-  purpose: string;
-  sizes: string;
-  src: string;
-  type: string;
-}
-
-export interface BrandingManifestResponse {
-  background_color: string;
-  categories: string[];
-  description: string;
-  display: string;
-  icons: BrandingManifestIcon[];
-  id: string;
-  lang: string;
-  name: string;
-  scope: string;
-  short_name: string;
-  start_url: string;
-  theme_color: string;
-}
-
 export interface BrandingResponse {
-  appleTouchIcon180URL: string;
-  pwaIcon192URL: string;
-  pwaIcon512URL: string;
-  pwaMaskableIcon512URL: string;
   description: string;
   faviconURL: string;
   logoURL: string;
@@ -8271,21 +8245,6 @@ export namespace Branding {
     export type RequestHeaders = {};
     export type ResponseBody = BrandingResponseDoc;
   }
-
-  /**
-   * No description
-   * @tags settings
-   * @name ManifestWebmanifestList
-   * @summary 查询品牌 Web App Manifest
-   * @request GET:/branding/manifest.webmanifest
-   */
-  export namespace ManifestWebmanifestList {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = BrandingManifestResponse;
-  }
 }
 
 export namespace ContextArtifacts {
@@ -10223,7 +10182,7 @@ export namespace UiComponents {
 
 export namespace User {
   /**
-   * @description 返回当前用户全部个人偏好配置，缺失项以默认值填充
+   * @description 返回个人偏好配置；旧设置键保持兼容，固定聊天策略覆盖历史值
    * @tags user/settings
    * @name SettingsList
    * @summary 获取当前用户的配置
@@ -10239,7 +10198,7 @@ export namespace User {
   }
 
   /**
-   * @description 批量更新用户个人偏好配置，返回更新后的全量配置
+   * @description 批量更新个人偏好；固定设置的合法写入会规范为固定值：file_mode=full_context、input_height=standard、content_width=compact、context_compact_auto/reuse_model_options/auto_expand_thinking/auto_expand_tool_calls=false，显示信息、Markdown、自动标题与标签、推理回传=true
    * @tags user/settings
    * @name SettingsPartialUpdate
    * @summary 更新当前用户的配置

@@ -9912,25 +9912,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/branding/manifest.webmanifest": {
-            "get": {
-                "produces": [
-                    "application/manifest+json"
-                ],
-                "tags": [
-                    "settings"
-                ],
-                "summary": "查询品牌 Web App Manifest",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/BrandingManifestResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/context-artifacts/{id}": {
             "get": {
                 "security": [
@@ -15148,7 +15129,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "返回当前用户全部个人偏好配置，缺失项以默认值填充",
+                "description": "返回个人偏好配置；旧设置键保持兼容，固定聊天策略覆盖历史值",
                 "produces": [
                     "application/json"
                 ],
@@ -15177,7 +15158,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "批量更新用户个人偏好配置，返回更新后的全量配置",
+                "description": "批量更新个人偏好；固定设置的合法写入会规范为固定值：file_mode=full_context、input_height=standard、content_width=compact、context_compact_auto/reuse_model_options/auto_expand_thinking/auto_expand_tool_calls=false，显示信息、Markdown、自动标题与标签、推理回传=true",
                 "consumes": [
                     "application/json"
                 ],
@@ -16988,107 +16969,16 @@ const docTemplate = `{
                 }
             }
         },
-        "BrandingManifestIcon": {
-            "type": "object",
-            "required": [
-                "purpose",
-                "sizes",
-                "src",
-                "type"
-            ],
-            "properties": {
-                "purpose": {
-                    "type": "string"
-                },
-                "sizes": {
-                    "type": "string"
-                },
-                "src": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "BrandingManifestResponse": {
-            "type": "object",
-            "required": [
-                "background_color",
-                "categories",
-                "description",
-                "display",
-                "icons",
-                "id",
-                "lang",
-                "name",
-                "scope",
-                "short_name",
-                "start_url",
-                "theme_color"
-            ],
-            "properties": {
-                "background_color": {
-                    "type": "string"
-                },
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "description": {
-                    "type": "string"
-                },
-                "display": {
-                    "type": "string"
-                },
-                "icons": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/BrandingManifestIcon"
-                    }
-                },
-                "id": {
-                    "type": "string"
-                },
-                "lang": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "scope": {
-                    "type": "string"
-                },
-                "short_name": {
-                    "type": "string"
-                },
-                "start_url": {
-                    "type": "string"
-                },
-                "theme_color": {
-                    "type": "string"
-                }
-            }
-        },
         "BrandingResponse": {
             "type": "object",
             "required": [
-                "appleTouchIcon180URL",
                 "description",
                 "faviconURL",
                 "logoURL",
-                "pwaIcon192URL",
-                "pwaIcon512URL",
-                "pwaMaskableIcon512URL",
                 "shortName",
                 "title"
             ],
             "properties": {
-                "appleTouchIcon180URL": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -17096,15 +16986,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "logoURL": {
-                    "type": "string"
-                },
-                "pwaIcon192URL": {
-                    "type": "string"
-                },
-                "pwaIcon512URL": {
-                    "type": "string"
-                },
-                "pwaMaskableIcon512URL": {
                     "type": "string"
                 },
                 "shortName": {

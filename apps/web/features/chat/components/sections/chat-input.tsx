@@ -1,18 +1,15 @@
 "use client";
 
-import { Box, CornerDownRight, Eye, EyeOff, Film, HatGlasses, Image, ImageOff, ImagePlus, LoaderCircle, PencilLine, Trash2 } from "lucide-react";
+import { ArrowUp, Square, Box, CornerDownRight, Eye, EyeOff, Film, HatGlasses, Image, ImageOff, ImagePlus, LoaderCircle, PencilLine, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import dynamic from "next/dynamic";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { AudioLines } from "@/components/animate-ui/icons/audio-lines";
-import { Crop } from "@/components/animate-ui/icons/crop";
-import { Link as LinkIcon } from "@/components/animate-ui/icons/link";
-import { Pause } from "@/components/animate-ui/icons/pause";
-import { Send } from "@/components/animate-ui/icons/send";
-import { X as XIcon } from "@/components/animate-ui/icons/x";
+import { Crop } from "lucide-react";
+import { Link as LinkIcon } from "lucide-react";
+import { X as XIcon } from "lucide-react";
 import {
   Attachment,
   AttachmentAction,
@@ -36,7 +33,7 @@ import {
   InputGroupButton,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
-import { PlusIcon } from "@/components/ui/plus";
+import { Plus as PlusIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChatKnowledgeBases } from "@/features/chat/components/sections/chat-knowledge-bases";
 import { ChatMCP } from "@/features/chat/components/sections/chat-mcp";
@@ -45,10 +42,6 @@ import { ChatModelConfig } from "@/features/chat/components/sections/chat-model-
 import { ChatModelPicker } from "@/features/chat/components/sections/chat-model-picker";
 import { ChatMentionMenuPortal } from "@/features/chat/components/shared/chat-mention-menu";
 import { useChatMentionMenu } from "@/features/chat/hooks/use-chat-mention-menu";
-import {
-  type SpeechInputErrorCode,
-  useChatSpeechInput,
-} from "@/features/chat/hooks/use-chat-speech-input";
 import { useChatPreviewSync } from "@/features/chat/hooks/use-chat-preview-sync";
 import type { ChatSubmitDecision } from "@/features/chat/model/chat-task";
 import { isMediaSubmitTask, resolveChatSubmitDecision } from "@/features/chat/model/chat-task";
@@ -265,7 +258,7 @@ function ChatInputComponent({
   fileMode,
   ragAvailable,
   ragAvailabilityReason,
-  sendShortcut = "enter",
+  sendShortcut = "ctrl_enter",
   inputHeight = "standard",
   attachments,
   uploadingAttachments,
@@ -320,28 +313,11 @@ function ChatInputComponent({
   const tChat = useTranslations("chat");
   const tComposer = useTranslations("chat.composer");
   const tFileStatus = useTranslations("files.status");
-  const locale = useLocale();
-  const [isVoiceHovered, setIsVoiceHovered] = React.useState(false);
-  const [toolsMenuHovered, setToolsMenuHovered] = React.useState(false);
+  const [_toolsMenuHovered, setToolsMenuHovered] = React.useState(false);
   const [toolsMenuOpen, setToolsMenuOpen] = React.useState(false);
   const [editingQueuedMessageID, setEditingQueuedMessageID] = React.useState<string | null>(null);
   const [editingQueuedMessageContent, setEditingQueuedMessageContent] = React.useState("");
-  const handleSpeechInputError = React.useCallback((error: SpeechInputErrorCode) => {
-    toast.error(tComposer("voiceErrorTitle"), {
-      id: "chat-speech-input-error",
-      description: tComposer(`voiceErrors.${error}`),
-    });
-  }, [tComposer]);
-  const speechInput = useChatSpeechInput({
-    draft,
-    language: locale,
-    listeningPlaceholder: tComposer("voiceListeningPlaceholder"),
-    onDraftChange,
-    onError: handleSpeechInputError,
-    placeholder: tComposer("inputPlaceholder"),
-    startingPlaceholder: tComposer("voiceStartingPlaceholder"),
-  });
-  const [hoveredTool, setHoveredTool] = React.useState<"upload" | "screenshot" | null>(null);
+  const [_hoveredTool, setHoveredTool] = React.useState<"upload" | "screenshot" | null>(null);
   const [ragWarnDismissed, setRagWarnDismissed] = React.useState(false);
   const [previewAttachment, setPreviewAttachment] = React.useState<PendingAttachment | null>(null);
   const [markdownPreview, setMarkdownPreview] = React.useState(false);
@@ -359,16 +335,8 @@ function ChatInputComponent({
   const hasSubmitContent = hasDraftText || attachments.length > 0;
   const canSend = hasSubmitContent && !loading && !uploading;
   const submitActionLabel = hasSubmitContent
-    ? sending
-      ? tComposer("queueMessage")
-      : tChat("send")
-    : sending
-      ? tComposer("pauseGeneration")
-      : speechInput.supported
-        ? speechInput.active
-          ? tComposer("cancelVoiceInput")
-          : tComposer("voiceInput")
-        : tComposer("voiceUnsupported");
+    ? sending ? tComposer("queueMessage") : tChat("send")
+    : sending ? tComposer("pauseGeneration") : tChat("send");
   const showMarkdownPreview = markdownPreview && hasDraftText;
   const inputHeightClassName =
     inputHeight === "compact" ? "max-h-32" : inputHeight === "loose" ? "max-h-64" : "max-h-44";
@@ -828,7 +796,7 @@ function ChatInputComponent({
                           onClick={() => onRemoveAttachment(item.fileID)}
                           aria-label={tComposer("removeAttachment", { name: item.fileName })}
                         >
-                          <XIcon size={15} strokeWidth={1.8} animateOnHover="default" />
+                          <XIcon size={15} strokeWidth={1.8} />
                         </AttachmentAction>
                       </AttachmentActions>
                     </Attachment>
@@ -900,8 +868,7 @@ function ChatInputComponent({
             ref={textareaRef}
             value={draft}
             disabled={loading}
-            readOnly={speechInput.active}
-            placeholder={dropActive ? tChat("attachments.dropTitle") : speechInput.placeholder}
+            placeholder={dropActive ? tChat("attachments.dropTitle") : tComposer("inputPlaceholder")}
             rows={1}
             aria-controls={showMentionMenu ? mentionMenuID : undefined}
             aria-expanded={showMentionMenu ? true : undefined}
@@ -910,7 +877,6 @@ function ChatInputComponent({
               "rounded-3xl min-h-12 overflow-y-auto px-5 text-[15px] leading-6 placeholder:text-muted-foreground placeholder:font-[inherit] placeholder:leading-[inherit]",
               showSelectedSkills || hasComposerAttachments ? "pt-2" : "pt-4",
               inputHeightClassName,
-              speechInput.active ? "placeholder:font-normal placeholder:text-muted-foreground" : "",
             )}
             onFocus={handleMentionFocus}
             onBlur={handleMentionBlur}
@@ -989,7 +955,7 @@ function ChatInputComponent({
                           type="button"
                           variant="ghost"
                           size="icon-sm"
-                          className="size-7 rounded-md text-muted-foreground hover:text-foreground sm:size-8"
+                          className="size-8 rounded-full bg-foreground text-background hover:bg-foreground/85 hover:text-background sm:size-8"
                           disabled={loading || uploading}
                           aria-label={tComposer("openTools")}
                           onMouseEnter={() => setToolsMenuHovered(true)}
@@ -998,7 +964,6 @@ function ChatInputComponent({
                           <PlusIcon
                             size={20}
                             strokeWidth={1.4}
-                            animate={toolsMenuHovered || toolsMenuOpen ? "default" : undefined}
                           />
                         </InputGroupButton>
                       </DropdownMenuTrigger>
@@ -1016,7 +981,7 @@ function ChatInputComponent({
                         onSelectUploadTool();
                       }}
                     >
-                      <LinkIcon size={12} strokeWidth={1.5} animate={hoveredTool === "upload" ? "default" : undefined} />
+                      <LinkIcon size={12} strokeWidth={1.5} />
                       {tComposer("uploadFile")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -1027,7 +992,7 @@ function ChatInputComponent({
                         onSelectScreenshotTool();
                       }}
                     >
-                      <Crop size={12} strokeWidth={1.5} animate={hoveredTool === "screenshot" ? "default" : undefined} />
+                      <Crop size={12} strokeWidth={1.5} />
                       {tComposer("screenshot")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -1099,7 +1064,6 @@ function ChatInputComponent({
                         "size-7 rounded-md text-muted-foreground hover:text-foreground sm:size-8",
                         showMarkdownPreview && "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary",
                       )}
-                      disabled={speechInput.active}
                       aria-label={showMarkdownPreview ? tComposer("hideMarkdownPreview") : tComposer("previewMarkdown")}
                       aria-pressed={showMarkdownPreview}
                       onClick={() => setMarkdownPreview((visible) => !visible)}
@@ -1156,39 +1120,15 @@ function ChatInputComponent({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    className="size-7 rounded-md text-muted-foreground hover:text-foreground sm:size-8"
-                    disabled={loading || uploading || (!sending && !hasSubmitContent && !speechInput.supported)}
-                    onClick={hasSubmitContent ? onSendMessage : sending ? onStopMessage : speechInput.toggle}
-                    onMouseEnter={() => setIsVoiceHovered(true)}
-                    onMouseLeave={() => setIsVoiceHovered(false)}
+                    className="size-8 rounded-full bg-foreground text-background hover:bg-foreground/85 hover:text-background sm:size-8"
+                    disabled={loading || uploading || (!sending && !hasSubmitContent)}
+                    onClick={hasSubmitContent ? onSendMessage : onStopMessage}
                     aria-label={submitActionLabel}
                   >
-                    {hasSubmitContent ? (
-                      <Send
-                        size={20}
-                        strokeWidth={1.4}
-                        animate={isVoiceHovered ? "default" : undefined}
-                      />
-                    ) : sending ? (
-                      <Pause
-                        size={20}
-                        strokeWidth={1.4}
-                        animate="default-loop"
-                      />
-                    ) : speechInput.status === "starting" ? (
-                      <LoaderCircle className="size-5 animate-spin" strokeWidth={1.6} />
-                    ) : speechInput.active ? (
-                      <AudioLines
-                        size={20}
-                        strokeWidth={1.4}
-                        animate="default"
-                      />
+                    {sending && !hasSubmitContent ? (
+                      <Square size={14} strokeWidth={1.8} fill="currentColor" />
                     ) : (
-                      <AudioLines
-                        size={20}
-                        strokeWidth={1.4}
-                        animate={isVoiceHovered ? "default" : undefined}
-                      />
+                      <ArrowUp size={20} strokeWidth={1.8} />
                     )}
                   </InputGroupButton>
                 </TooltipTrigger>

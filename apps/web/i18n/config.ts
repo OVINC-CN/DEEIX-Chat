@@ -2,7 +2,7 @@ export const APP_LOCALES = ["en-US", "zh-CN"] as const;
 
 export type AppLocale = (typeof APP_LOCALES)[number];
 
-export const DEFAULT_LOCALE: AppLocale = "en-US";
+export const DEFAULT_LOCALE: AppLocale = "zh-CN";
 export const LOCALE_COOKIE_NAME = "deeix_chat_locale";
 
 export const APP_LOCALE_LABELS: Record<AppLocale, string> = {

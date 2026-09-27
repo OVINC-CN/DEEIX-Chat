@@ -17,7 +17,6 @@ import { AppSidebar } from "@/features/layouts/components/navigation/app-sidebar
 import { MobileHeader } from "@/features/layouts/components/sections/mobile-header";
 import { LayoutConversationNavigationProvider } from "@/features/layouts/context/layout-conversation-navigation-context";
 import { MobileHeaderActionProvider } from "@/features/layouts/context/mobile-header-action-context";
-import { AppearancePreferencesSync } from "@/features/settings";
 import { UserLocaleSync } from "@/i18n/user-locale-sync";
 
 const AnnouncementDialogHost = dynamic(
@@ -90,7 +89,6 @@ export function ProjectLayout({
   return (
     <>
       <UserLocaleSync />
-      <AppearancePreferencesSync />
       <InitialSecurityGuard />
       <AnnouncementDialogHost />
       <SidebarProvider className="h-svh overflow-hidden" defaultOpen={defaultSidebarOpen}>

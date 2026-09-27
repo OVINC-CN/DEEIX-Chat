@@ -25,7 +25,7 @@ export function AppLogo({
 
   return (
     <Image
-      src={branding.logoURL || (resolvedTheme === "dark" ? "/logo-white.svg" : "/logo.svg")}
+      src={branding.logoURL || (resolvedTheme === "dark" ? "/logo-white.png" : "/logo.png")}
       alt={alt ?? branding.title}
       width={width}
       height={height}
@@ -36,7 +36,7 @@ export function AppLogo({
 }
 
 export function DeeixLogo({
-  alt = "DEEIX Chat",
+  alt = "OVINC Chat",
   width,
   height,
   priority,
@@ -46,7 +46,7 @@ export function DeeixLogo({
 
   return (
     <Image
-      src={resolvedTheme === "dark" ? "/logo-white.svg" : "/logo.svg"}
+      src={resolvedTheme === "dark" ? "/logo-white.png" : "/logo.png"}
       alt={alt}
       width={width}
       height={height}

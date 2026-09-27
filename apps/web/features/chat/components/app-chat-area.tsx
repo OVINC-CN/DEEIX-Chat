@@ -269,10 +269,10 @@ export function AppChatArea() {
     mcpMaxSelectedTools,
     selectedPlatformModelName,
     setSelectedPlatformModelName,
+    setSelectedPlatformModelNameAutomatically,
   } = useChatModelOptions({
     conversationPublicID: conversationID,
     conversationModel: currentConversation?.model ?? null,
-    newConversationDefaultModel: newConversationProject?.defaultModel ?? "",
     newConversationDefaultsPending,
     resetToken: newConversationRevision,
   });
@@ -342,35 +342,6 @@ export function AppChatArea() {
     setSelectedUIComponents,
   } = useChatUIComponents();
   const newConversationSelectionKey = `${newConversationRevision}:${newConversationProjectID || "unassigned"}`;
-  const warnedUnavailableProjectModelRef = React.useRef("");
-  React.useEffect(() => {
-    const configuredModel = newConversationProject?.defaultModel.trim() ?? "";
-    if (
-      conversationID ||
-      !configuredModel ||
-      modelsLoading ||
-      modelOptions.length === 0 ||
-      modelsErrorMsg.trim() ||
-      modelOptions.some((model) => model.platformModelName === configuredModel)
-    ) {
-      return;
-    }
-
-    const warningKey = `${newConversationSelectionKey}:${configuredModel}`;
-    if (warnedUnavailableProjectModelRef.current === warningKey) {
-      return;
-    }
-    warnedUnavailableProjectModelRef.current = warningKey;
-    toast.warning(t("projectDefaultModelUnavailable", { model: configuredModel }));
-  }, [
-    conversationID,
-    modelOptions,
-    modelsErrorMsg,
-    modelsLoading,
-    newConversationProject?.defaultModel,
-    newConversationSelectionKey,
-    t,
-  ]);
   const newConversationDefaultMCPToolIDs = React.useMemo(
     () => normalizeImageAttachmentProcessorSelection(
       filterAvailableMCPToolIDs(
@@ -554,7 +525,7 @@ export function AppChatArea() {
     selectedModel,
     selectedPlatformModelName,
     setAttachments,
-    setSelectedPlatformModelName,
+    setSelectedPlatformModelName: setSelectedPlatformModelNameAutomatically,
     releaseAttachments,
   });
 
@@ -689,10 +660,10 @@ export function AppChatArea() {
     transient: temporaryMode,
     messages: displayMessages,
   });
-  const { workspaceRef, artifactResizing, onArtifactResizeStart } = useChatArtifactResize(artifactWorkspace);
-  const hasInlineArtifact = Boolean(artifactWorkspace.activeArtifact && artifactWorkspace.isInlineViewport);
+  const { workspaceRef, artifactResizing, onArtifactResizeStart, effectiveArtifactRatio, canInlineArtifact } = useChatArtifactResize(artifactWorkspace);
+  const hasInlineArtifact = Boolean(artifactWorkspace.activeArtifact && artifactWorkspace.isInlineViewport && canInlineArtifact);
   const workspaceGridColumns = hasInlineArtifact
-    ? `minmax(0, ${1 - artifactWorkspace.artifactRatio}fr) minmax(0, ${artifactWorkspace.artifactRatio}fr)`
+    ? `minmax(0, ${1 - effectiveArtifactRatio}fr) minmax(0, ${effectiveArtifactRatio}fr)`
     : "minmax(0, 1fr) minmax(0, 0fr)";
 
   const selectedModelDefaultOptions = modelOptionPolicyDisabled
@@ -916,7 +887,7 @@ export function AppChatArea() {
           <ChatArtifactWorkspace
             artifact={artifactWorkspace.activeArtifact}
             artifacts={artifactWorkspace.artifacts}
-            isInlineViewport={artifactWorkspace.isInlineViewport}
+            isInlineViewport={artifactWorkspace.isInlineViewport && canInlineArtifact}
             onArtifactChange={artifactWorkspace.selectArtifact}
             onClose={artifactWorkspace.closeArtifact}
             onResizeReset={artifactWorkspace.resetArtifactRatio}

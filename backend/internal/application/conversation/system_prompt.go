@@ -19,62 +19,49 @@ const (
 )
 
 const htmlVisualPromptFormatInstruction = `<format>
-  <rule>标题从 ## 起，子层级使用 ###；禁用 #</rule>
-  <rule>遵循用户语言</rule>
-  <rule>保持高信息密度和紧凑的行文</rule>
-  <rule>保持紧凑的回复格式，避免松散的内容给用户带来阅读障碍</rule>
-  <rule>代码块标注语言，优先完整可运行，复杂逻辑添加注释</rule>
+  <rule>Start headings at ## and use ### for subheadings; never use #.</rule>
+  <rule>Follow the user's language.</rule>
+  <rule>Keep information dense, concise, and easy to read.</rule>
+  <rule>Label code blocks with their language; prefer complete runnable code and explain complex logic.</rule>
   <html-visual>
-    <rationale>
-      纯 Markdown 的固定垂直流式结构在表达复杂逻辑时存在先天缺陷（阅读疲劳、重点不突出、缺乏真正的图表与横向排版能力）。你必须主动评估内容结构复杂度，当纯 Markdown 无法清晰、紧凑地传达信息时，强制使用 HTML 实时渲染作为核心表达手段，而非退而求其次的辅助。
-    </rationale>
-    <css-constraint>
-	  绝对禁止使用` + "`" + `<style>` + "`" + `标签、` + "`" + `class` + "`" + `属性及伪类/伪元素。
-	  可视化必须100%采用纯内联样式（` + "`" + `style="..."` + "`" + `），仅依赖 Flexbox、Grid 与基础盒子模型（padding/margin/border/box-shadow/背景色差）构建视觉层级。
-    </css-constraint>
+    <rationale>Evaluate the content's structure. When plain Markdown cannot convey complex relationships clearly and compactly, use live HTML rendering for the relevant parts of the answer.</rationale>
+    <css-constraint>Never use style tags, class attributes, pseudo-classes, or pseudo-elements. Use inline style attributes with Flexbox, Grid, and the basic box model (padding, margin, borders, shadows, and surfaces) to establish visual hierarchy.</css-constraint>
     <theme-variables>
-      <principle>下列全局 CSS 变量会随用户选择的浅色、深色和主题预设自动更新。涉及背景、文字、边框、阴影、强调色、图表色或字体时，必须在内联 style 中引用这些变量，禁止写死仅适用于单一主题的颜色。</principle>
+      <principle>The following global CSS variables track the application's light and dark themes. Use them for backgrounds, text, borders, shadows, accents, charts, and typography; never hard-code colors that work in only one theme.</principle>
       <available>
         <group name="surface-and-text">--background, --foreground, --pure, --pure-foreground, --card, --card-foreground, --popover, --popover-foreground, --primary, --primary-foreground, --secondary, --secondary-foreground, --muted, --muted-foreground, --accent, --accent-foreground, --destructive, --destructive-foreground</group>
         <group name="control-and-border">--border, --input, --ring</group>
         <group name="chart">--chart-1, --chart-2, --chart-3, --chart-4, --chart-5</group>
-        <group name="typography">--font-sans, --font-serif, --font-mono, --font-economist, --font-songti, --font-heiti, --font-chat, --font-chat-weight, --font-chat-strong-weight, --ui-font-scale, --chat-font-scale, --tracking-normal</group>
+        <group name="typography">--font-sans, --font-serif, --font-mono, --font-economist, --font-chat, --font-chat-weight, --font-chat-strong-weight, --ui-font-scale, --chat-font-scale, --tracking-normal</group>
         <group name="shape-and-space">--radius, --spacing</group>
         <group name="shadow">--shadow-x, --shadow-y, --shadow-blur, --shadow-spread, --shadow-opacity, --shadow-color, --shadow-2xs, --shadow-xs, --shadow-sm, --shadow, --shadow-md, --shadow-lg, --shadow-xl, --shadow-2xl</group>
       </available>
-      <constraint>只能引用上述变量；禁止在 style 中定义或覆盖 CSS 自定义属性，禁止杜撰变量名。</constraint>
-      <constraint>语义色必须成对使用，例如 --card 搭配 --card-foreground、--primary 搭配 --primary-foreground，确保所有主题下都有足够对比度。</constraint>
-      <constraint>颜色与阴影可使用 transparent、currentColor、calc() 或 color-mix() 辅助表达，但其中的 var() 仍只能引用上述变量。</constraint>
+      <constraint>Reference only the listed variables. Never define or override CSS custom properties in style attributes or invent variable names.</constraint>
+      <constraint>Pair semantic colors, such as --card with --card-foreground and --primary with --primary-foreground, to preserve contrast in every theme.</constraint>
+      <constraint>Colors and shadows may use transparent, currentColor, calc(), or color-mix(), but every var() reference must use a listed variable.</constraint>
       <example>style="background:var(--card);color:var(--card-foreground);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm)"</example>
     </theme-variables>
     <default-trigger>
-      遇到以下情形，必须放弃纯 Markdown 列表或表格的敷衍表达，主动切入 HTML 内嵌排版：
-      <case type="logic-graph">逻辑与结构图：流程图、架构图、状态机、树状层级、思维导图等任何包含节点与连线关系的逻辑（用 HTML/CSS 的 DOM 结构与箭头符号构建）。</case>
-      <case type="horizontal-layout">横向与对比排版：多维对比矩阵、优劣势对照、参数矩阵、并排展示（利用 Flex/Grid 布局实现真正的横向空间利用）。</case>
-      <case type="info-card">数据与信息卡片：多字段聚合展示、需要视觉分组与边框隔离的密集信息。</case>
-      <case type="space-optimize">空间节省：内容较多且纯垂直排列会导致严重割裂和冗长感时，利用折叠（details）、标签页等组件收拢信息。</case>
+      Prefer inline HTML when it communicates the following content more clearly:
+      <case type="logic-graph">Flowcharts, architecture, state machines, trees, and other node-and-connection structures. Build them with HTML/CSS layout and arrow symbols.</case>
+      <case type="horizontal-layout">Comparison matrices, advantages and disadvantages, parameters, and side-by-side views. Use Flexbox or Grid for horizontal layout.</case>
+      <case type="info-card">Dense information with multiple fields that benefits from grouped cards and borders.</case>
+      <case type="space-optimize">Long vertical content that benefits from compact grouping or details/summary disclosure.</case>
     </default-trigger>
     <vision-plus>
-      Vision+ 指令是视觉表达能力的升维，仅当用户显式声明时启用。
-      <capability>可用内联 HTML 绘制矢量逻辑图、结构连线、几何图形与数据图表，但仍须遵守下方红线。</capability>
-      <capability>可用更复杂的 CSS 特效和高级交互组件，但不得用于纯装饰目的。</capability>
-      <red-line>
-        1. HTML 片段占比不得喧宾夺主
-        2. 每个可视化片段必须服务于具体的信息表达需求。
-        3. 绝对禁止输出 !DOCTYPE/html/head/body 全量页面框架；禁止将整段回复包裹于单一 HTML 块。
-        4. 图形仅限：流程图、架构图、状态机、树状层级、对比矩阵、数据图表。禁止：装饰性插画、氛围图、风景、图标装饰。
-        5. 在采用html表达时，请同时考虑Token效率与效果的取舍，及渲染难度和错误率，不要过度设计造成效果失衡。
-        6. 过于复杂的html可视化内容需慎重考虑。
-      </red-line>
+      Enable Vision+ only when the user explicitly requests it.
+      <capability>Use richer inline HTML layouts for structural diagrams, geometry, and data charts while observing the boundaries below.</capability>
+      <capability>More complex CSS effects and interactions must serve information, rather than decoration.</capability>
+      <red-line>Keep visual fragments proportionate to the answer. Every fragment must communicate specific information. Never output a full !DOCTYPE/html/head/body document or wrap the entire reply in one HTML block. Limit graphics to flowcharts, architecture, state machines, trees, comparison matrices, and data charts; omit decorative illustrations, scenery, and icon ornamentation. Balance token efficiency, readability, rendering difficulty, and error risk; avoid excessive complexity.</red-line>
     </vision-plus>
     <boundary>
-      <constraint>永远仅输出自包含片段：只使用 div、section、article、aside、main、p、span、details、summary、table、a 等安全局部标签，绝对禁止 style、script、iframe 以及 !DOCTYPE、html、head、body 等全量页面框架结构。</constraint>
-      <constraint>无缝嵌入正文流：HTML 片段必须像一段加粗或列表一样，自然穿插在 Markdown 文本之间，文字解释与可视化元素相互配合，禁止整段回复全量包裹于一个巨大 HTML 块中。</constraint>
+      <constraint>Output self-contained fragments using safe local tags such as div, section, article, aside, main, p, span, details, summary, table, and a. Never use style, script, iframe, !DOCTYPE, html, head, or body.</constraint>
+      <constraint>Embed fragments naturally between Markdown explanations, like a list or an emphasized paragraph. Text and visual elements must work together; never enclose the complete response in a single large HTML block.</constraint>
     </boundary>
   </html-visual>
 </format>`
 
-const htmlVisualPromptDefaultRequire = `更积极的使用html-visual为用户提供更好的回复质量和效果。`
+const htmlVisualPromptDefaultRequire = `Use html-visual proactively when it improves the clarity and quality of the answer.`
 
 type systemPromptInjection struct {
 	Content      string

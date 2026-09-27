@@ -4,7 +4,7 @@ import { Check, WandSparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 
-import { Blocks } from "@/components/animate-ui/icons/blocks";
+import { Blocks } from "lucide-react";
 import { InputGroupButton } from "@/components/ui/input-group";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Spinner } from "@/components/ui/spinner";
@@ -49,7 +49,7 @@ export function ChatUIComponents({
     component.scope === "builtin" && tLibrary.has(`builtin.${component.name}.title`)
       ? { title: tLibrary(`builtin.${component.name}.title`), summary: tLibrary(`builtin.${component.name}.summary`) }
       : { title: headline(component.description), summary: component.description };
-  const [hovered, setHovered] = React.useState(false);
+  const [_hovered, setHovered] = React.useState(false);
   const selectedSet = React.useMemo(() => new Set(selectedIDs), [selectedIDs]);
   const isDefault = selectedIDs.length === defaultIDs.length && selectedIDs.every((id) => defaultIDs.includes(id));
   const customised = !isDefault || Boolean(htmlVisual?.enabled);
@@ -77,7 +77,7 @@ export function ChatUIComponents({
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
-              <Blocks size={20} strokeWidth={1.4} animate={hovered || customised ? "default" : undefined} />
+              <Blocks size={20} strokeWidth={1.4} />
             </InputGroupButton>
           </PopoverTrigger>
         </TooltipTrigger>

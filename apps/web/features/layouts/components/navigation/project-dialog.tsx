@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Box, ChevronDown, Globe2, type LucideIcon, Search, Wrench } from "lucide-react";
+import { BookOpen, ChevronDown, type LucideIcon, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { toast } from "sonner";
@@ -23,36 +23,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { listVisibleKnowledgeBases } from "@/shared/api/knowledge-bases";
 import type { KnowledgeBaseDTO } from "@/shared/api/knowledge-bases.types";
-import { listAvailableMCPTools } from "@/shared/api/mcp";
-import type { MCPToolDTO } from "@/shared/api/mcp.types";
-import { getMCPPolicy } from "@/shared/api/settings";
-import { listVisibleSkills } from "@/shared/api/skills";
-import { listPublicModels } from "@/shared/api/model";
-import type { PublicModelDTO } from "@/shared/api/model.types";
-import type { SkillSummaryDTO } from "@/shared/api/skills.types";
 import { resolveAccessToken } from "@/shared/auth/resolve-access-token";
-import { ModelSelect, type ModelSelectOption } from "@/shared/components/model-select";
 import { useDialogSnapshot } from "@/shared/hooks/use-dialog-snapshot";
 import { useFeaturePolicy } from "@/shared/hooks/use-feature-policy";
-import { resolveModelOptionIconUrl, resolveModelOptionLabel } from "@/shared/lib/model-option-display";
-import {
-  hasMultipleImageAttachmentProcessors,
-  normalizeImageAttachmentProcessorSelection,
-} from "@/shared/lib/mcp-tool-selection";
-import { parseKindsJSON } from "@/shared/model/llm-schema";
 
 export type ProjectDraft = {
   publicID?: string;
   name: string;
   systemPrompt: string;
-  defaultModel: string;
-  mcpDefaultMode: "inherit" | "custom";
-  defaultMCPToolIDs: number[];
-  defaultSkillIDs: number[];
   defaultKnowledgeBaseIDs: string[];
 };
 
-const PROJECT_DEFAULT_MODEL_INHERIT_VALUE = "__inherit_global_model__";
 
 type ProjectDefaultOption<T extends string | number> = {
   id: T;
@@ -72,10 +53,6 @@ type ProjectCatalogListOptions<ID extends string | number> = {
   page?: number;
   pageSize?: number;
 };
-
-function getSkillID(skill: SkillSummaryDTO): number {
-  return skill.id;
-}
 
 function getKnowledgeBaseID(knowledgeBase: KnowledgeBaseDTO): string {
   return knowledgeBase.publicID;
@@ -248,16 +225,10 @@ export function ProjectDialog({
   const t = useTranslations("recent.projects");
   const { knowledgeBaseEnabled } = useFeaturePolicy();
   const [submitting, setSubmitting] = React.useState(false);
-  const [catalogLoading, setCatalogLoading] = React.useState(false);
-  const [modelCatalogLoading, setModelCatalogLoading] = React.useState(false);
-  const [mcpTools, setMCPTools] = React.useState<MCPToolDTO[]>([]);
-  const [models, setModels] = React.useState<PublicModelDTO[]>([]);
-  const [selectionLimit, setSelectionLimit] = React.useState(1);
   const stableDraft = useDialogSnapshot(draft);
   const open = Boolean(draft);
   const nameInputID = React.useId();
   const systemPromptInputID = React.useId();
-  const defaultModelInputID = React.useId();
   const dialogContentRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -266,112 +237,9 @@ export function ProjectDialog({
     }
   }, [draft]);
 
-  React.useEffect(() => {
-    if (!open) {
-      setCatalogLoading(false);
-      setMCPTools([]);
-      return;
-    }
-
-    let cancelled = false;
-    setCatalogLoading(true);
-    void (async () => {
-      try {
-        const token = await resolveAccessToken();
-        if (!token) {
-          throw new Error("missing access token");
-        }
-        const [tools, policy] = await Promise.all([
-          listAvailableMCPTools(token),
-          getMCPPolicy(token),
-        ]);
-        if (!cancelled) {
-          setMCPTools(tools);
-          setSelectionLimit(Math.max(1, policy.maxSelectedToolsPerMessage));
-          const availableMCPToolIDs = new Set(tools.map((tool) => tool.id));
-          setDraft((current) => {
-            if (!current) {
-              return current;
-            }
-            const defaultMCPToolIDs = normalizeImageAttachmentProcessorSelection(
-              current.defaultMCPToolIDs.filter((id) => availableMCPToolIDs.has(id)).slice(0, Math.max(1, policy.maxSelectedToolsPerMessage)),
-              tools,
-            );
-            const unchangedMCPTools = defaultMCPToolIDs.length === current.defaultMCPToolIDs.length;
-            return unchangedMCPTools
-              ? current
-              : { ...current, defaultMCPToolIDs };
-          });
-        }
-      } catch {
-        if (!cancelled) {
-          setMCPTools([]);
-          toast.error(t("defaultsLoadFailed"));
-        }
-      } finally {
-        if (!cancelled) {
-          setCatalogLoading(false);
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [open, setDraft, t]);
-
-  React.useEffect(() => {
-    if (!open) {
-      setModelCatalogLoading(false);
-      setModels([]);
-      return;
-    }
-
-    const controller = new AbortController();
-    setModelCatalogLoading(true);
-    void (async () => {
-      try {
-        const token = await resolveAccessToken();
-        if (!token) {
-          throw new Error("missing access token");
-        }
-        const items = await listPublicModels(token, controller.signal);
-        if (!controller.signal.aborted) {
-          setModels(items);
-        }
-      } catch {
-        if (!controller.signal.aborted) {
-          setModels([]);
-          toast.error(t("defaultModelsLoadFailed"));
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setModelCatalogLoading(false);
-        }
-      }
-    })();
-    return () => {
-      controller.abort();
-    };
-  }, [open, t]);
-
   const handleCatalogLoadError = React.useCallback(() => {
     toast.error(t("defaultsLoadFailed"));
   }, [t]);
-  const handleSkillIDsResolved = React.useCallback((
-    requestedIDs: number[],
-    availableIDs: ReadonlySet<number>,
-  ) => {
-    const requestedIDSet = new Set(requestedIDs);
-    setDraft((current) => {
-      if (!current) return current;
-      const defaultSkillIDs = current.defaultSkillIDs.filter(
-        (id) => !requestedIDSet.has(id) || availableIDs.has(id),
-      );
-      return defaultSkillIDs.length === current.defaultSkillIDs.length
-        ? current
-        : { ...current, defaultSkillIDs };
-    });
-  }, [setDraft]);
   const handleKnowledgeBaseIDsResolved = React.useCallback((
     requestedIDs: string[],
     availableIDs: ReadonlySet<string>,
@@ -388,14 +256,6 @@ export function ProjectDialog({
         : { ...current, defaultKnowledgeBaseIDs };
     });
   }, [setDraft]);
-  const skillCatalog = usePaginatedProjectCatalog({
-    open,
-    selectedIDs: draft?.defaultSkillIDs ?? [],
-    loadPage: listVisibleSkills,
-    getID: getSkillID,
-    onSelectedIDsResolved: handleSkillIDsResolved,
-    onError: handleCatalogLoadError,
-  });
   const knowledgeBaseCatalog = usePaginatedProjectCatalog({
     open: open && knowledgeBaseEnabled,
     selectedIDs: draft?.defaultKnowledgeBaseIDs.slice(0, 8) ?? [],
@@ -404,32 +264,6 @@ export function ProjectDialog({
     onSelectedIDsResolved: handleKnowledgeBaseIDsResolved,
     onError: handleCatalogLoadError,
   });
-  const modelOptions = React.useMemo<ModelSelectOption[]>(() => {
-    const options: ModelSelectOption[] = [
-      { label: t("inheritGlobalModel"), value: PROJECT_DEFAULT_MODEL_INHERIT_VALUE, iconUrl: null },
-      ...models
-        .filter((model) => model.platformModelName.trim() && parseKindsJSON(model.kindsJSON).includes("chat"))
-        .map((model) => ({
-          label: resolveModelOptionLabel(model.platformModelName),
-          value: model.platformModelName,
-          iconUrl: resolveModelOptionIconUrl({
-            platformModelName: model.platformModelName,
-            vendor: model.vendor ?? "",
-            icon: model.icon ?? "",
-          }),
-        })),
-    ];
-    const currentDefaultModel = stableDraft?.defaultModel.trim() ?? "";
-    if (currentDefaultModel && !options.some((option) => option.value === currentDefaultModel)) {
-      options.push({
-        label: t("unavailableDefaultModel", { model: currentDefaultModel }),
-        value: currentDefaultModel,
-        iconUrl: null,
-      });
-    }
-    return options;
-  }, [models, stableDraft?.defaultModel, t]);
-
   const handleSubmit = React.useCallback<React.FormEventHandler<HTMLFormElement>>(
     async (event) => {
       event.preventDefault();
@@ -446,7 +280,6 @@ export function ProjectDialog({
     [draft?.name, onSubmit, submitting],
   );
 
-  const inheritGlobalMCPDefaults = (stableDraft?.mcpDefaultMode ?? "inherit") === "inherit";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -496,84 +329,7 @@ export function ProjectDialog({
                 />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 sm:items-start">
-                <div className="min-w-0 space-y-1">
-                  <label htmlFor={defaultModelInputID} className="block text-xs text-muted-foreground">
-                    {t("defaultModelLabel")}
-                  </label>
-                  {modelCatalogLoading ? (
-                    <Button
-                      id={defaultModelInputID}
-                      type="button"
-                      variant="outline"
-                      className="h-8 w-full justify-start gap-2 px-3 font-normal shadow-none"
-                      disabled
-                    >
-                      <Spinner className="size-3.5" />
-                      {t("defaultModelLoading")}
-                    </Button>
-                  ) : (
-                    <ModelSelect
-                      id={defaultModelInputID}
-                      value={stableDraft?.defaultModel.trim() || PROJECT_DEFAULT_MODEL_INHERIT_VALUE}
-                      fallbackValue={PROJECT_DEFAULT_MODEL_INHERIT_VALUE}
-                      options={modelOptions}
-                      valueAlign="start"
-                      itemAlign="start"
-                      contentClassName="min-w-[min(24rem,calc(100vw-3rem))]"
-                      triggerClassName="h-8 shadow-none"
-                      portalContainer={dialogContentRef}
-                      onChange={(value) => {
-                        const defaultModel = value === PROJECT_DEFAULT_MODEL_INHERIT_VALUE ? "" : value;
-                        setDraft((current) => current ? { ...current, defaultModel } : current);
-                      }}
-                      disabled={submitting}
-                    />
-                  )}
-                </div>
-
-                <ProjectDefaultSelector
-                  icon={Wrench}
-                  label={t("mcpDefaultsLabel")}
-                  emptyLabel={t("mcpDefaultsEmpty")}
-                  searchPlaceholder={t("searchMCPTools")}
-                  options={mcpTools.map((tool) => ({
-                    id: tool.id,
-                    label: tool.displayName || tool.name,
-                    detail: tool.serverName,
-                  }))}
-                  selectedIDs={inheritGlobalMCPDefaults ? [] : (stableDraft?.defaultMCPToolIDs ?? [])}
-                  selectionLimit={selectionLimit}
-                  loading={catalogLoading}
-                  disabled={submitting}
-                  exclusiveOption={{
-                    active: inheritGlobalMCPDefaults,
-                    icon: Globe2,
-                    label: t("inheritGlobalMCPDefaults"),
-                    detail: t("inheritGlobalMCPDefaultsDescription"),
-                    onChange: (active) => {
-                      setDraft((current) => current
-                        ? {
-                            ...current,
-                            mcpDefaultMode: active ? "inherit" : "custom",
-                            defaultMCPToolIDs: [],
-                          }
-                        : current);
-                    },
-                  }}
-                  onChange={(defaultMCPToolIDs) => {
-                    if (hasMultipleImageAttachmentProcessors(defaultMCPToolIDs, mcpTools)) {
-                      toast.error(t("imageProcessorLimitTitle"), {
-                        description: t("imageProcessorLimitDescription"),
-                      });
-                      return;
-                    }
-                    setDraft((current) => current
-                      ? { ...current, mcpDefaultMode: "custom", defaultMCPToolIDs }
-                      : current);
-                  }}
-                />
-
+              <div className="grid gap-4">
                 {knowledgeBaseEnabled ? (
                   <ProjectDefaultSelector
                     icon={BookOpen}
@@ -601,29 +357,6 @@ export function ProjectDialog({
                   />
                 ) : null}
 
-                <ProjectDefaultSelector
-                  icon={Box}
-                  label={t("selectSkills")}
-                  emptyLabel={t("skillDefaultsEmpty")}
-                  searchPlaceholder={t("searchSkills")}
-                  options={skillCatalog.items.map((skill) => ({
-                    id: skill.id,
-                    label: skill.title,
-                    detail: skill.description.trim() || (skill.trigger ? `/${skill.trigger}` : ""),
-                  }))}
-                  selectedIDs={stableDraft?.defaultSkillIDs ?? []}
-                  selectionLimit={selectionLimit}
-                  loading={skillCatalog.loading && skillCatalog.items.length === 0}
-                  searching={skillCatalog.loading}
-                  loadingMore={skillCatalog.loadingMore}
-                  hasMore={skillCatalog.hasMore}
-                  disabled={submitting || catalogLoading}
-                  onQueryChange={skillCatalog.setQuery}
-                  onLoadMore={skillCatalog.loadMore}
-                  onChange={(defaultSkillIDs) => {
-                    setDraft((current) => current ? { ...current, defaultSkillIDs } : current);
-                  }}
-                />
               </div>
             </div>
 

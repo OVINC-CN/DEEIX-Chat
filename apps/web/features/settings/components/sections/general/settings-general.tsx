@@ -5,14 +5,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { dispatchUserProfileUpdated } from "@/features/settings/events/user-profile-events";
-import { useSettingsAppearancePersistence } from "@/features/settings/hooks/use-settings-appearance-persistence";
-import {
-  type FontSizeOption,
-  useFontSizePreference,
-  writeFontSizePreference,
-} from "@/features/settings/utils/font-size";
-import { type ToastPosition, useToastPosition, writeToastPosition } from "@/features/settings/utils/toast-position";
-import type { ProfileDraft, ThemeMode } from "@/features/settings/types/settings";
+import type { ProfileDraft } from "@/features/settings/types/settings";
 import {
   createDraftFromUser,
   isProfileDraftEqual,
@@ -45,8 +38,6 @@ import {
   SettingsPage,
   SettingsSectionSeparator,
 } from "@/shared/components/settings-layout";
-import { useTheme } from "@/shared/components/theme-provider";
-import { GeneralAppearanceSection } from "./general-appearance";
 import { GeneralNotificationsSection } from "./general-notifications";
 import { GeneralProfileSection } from "./general-profile";
 
@@ -73,7 +64,6 @@ type AvatarUploadPreview = {
 export function SettingsGeneral() {
   const t = useTranslations("settings");
   const { accessToken, user, userStatus } = useAuthSession();
-  const { preset, resolvedTheme, setPreset, setTheme, theme } = useTheme();
   const [viewer, setViewer] = React.useState<UserDTO | null>(null);
   const [draft, setDraft] = React.useState<ProfileDraft>(() => createDraftFromUser());
   const [initialDraft, setInitialDraft] = React.useState<ProfileDraft>(() => createDraftFromUser());
@@ -81,9 +71,6 @@ export function SettingsGeneral() {
   const [avatarDialogValue, setAvatarDialogValue] = React.useState("");
   const [avatarUploading, setAvatarUploading] = React.useState(false);
   const [avatarUploadPreview, setAvatarUploadPreview] = React.useState<AvatarUploadPreview | null>(null);
-  const [themeRuntimeReady, setThemeRuntimeReady] = React.useState(false);
-  const fontSize = useFontSizePreference();
-  const toastPosition = useToastPosition();
   const [notificationRuntimeReady, setNotificationRuntimeReady] = React.useState(false);
   const [notificationSupported, setNotificationSupported] = React.useState(false);
   const [responseCompletionNotificationsEnabled, setResponseCompletionNotificationsEnabled] = React.useState(false);
@@ -92,7 +79,6 @@ export function SettingsGeneral() {
   const [saving, setSaving] = React.useState(false);
   const [usernameDraft, setUsernameDraft] = React.useState("");
   const initialUsernameToastShownRef = React.useRef(false);
-  const persistAppearancePreferences = useSettingsAppearancePersistence();
 
   React.useEffect(() => {
     if (userStatus === "loading") {
@@ -115,7 +101,6 @@ export function SettingsGeneral() {
   }, [user, userStatus]);
 
   React.useEffect(() => {
-    setThemeRuntimeReady(true);
     setNotificationRuntimeReady(true);
     setNotificationSupported(isBrowserNotificationSupported());
     setResponseCompletionNotificationsEnabled(readResponseCompletionNotificationsEnabled());
@@ -166,10 +151,6 @@ export function SettingsGeneral() {
   const normalizedUsernameDraft = usernameDraft.trim().toLowerCase();
   const hasUsernameEdit = canEditUsername && normalizedUsernameDraft !== "" && normalizedUsernameDraft !== viewer?.username;
   const hasEdits = hasProfileEdits || hasUsernameEdit;
-  const activeThemeMode = themeRuntimeReady
-    ? ((theme as ThemeMode | undefined) ?? "system")
-    : "system";
-  const activeThemePreset = themeRuntimeReady ? preset : "default";
 
   React.useEffect(() => {
     if (viewer?.initialUsernameRequired && !initialUsernameToastShownRef.current) {
@@ -403,33 +384,6 @@ export function SettingsGeneral() {
     return t("generalPage.notifications.defaultHelp");
   }, [notificationPermission, notificationRuntimeReady, notificationSupported, t]);
 
-  const handleThemeModeChange = React.useCallback(
-    (mode: ThemeMode) => {
-      setTheme(mode);
-    },
-    [setTheme],
-  );
-
-  const handleThemePresetChange = React.useCallback(
-    (nextPreset: typeof preset) => {
-      setPreset(nextPreset);
-      persistAppearancePreferences({ preset: nextPreset });
-    },
-    [persistAppearancePreferences, setPreset],
-  );
-
-  const handleFontSizeChange = React.useCallback((value: FontSizeOption) => {
-    writeFontSizePreference(value);
-    persistAppearancePreferences({ fontSize: value });
-  }, [persistAppearancePreferences]);
-  // Device-local like the color mode: screen size and keyboard behavior, not
-  // the account, decide where a toast is out of the way.
-  const handleToastPositionChange = React.useCallback((value: ToastPosition) => {
-    writeToastPosition(value);
-    // Show the result where it now lives, so the choice is immediately legible.
-    toast.success(t("generalPage.appearance.toastPositionPreview"), { id: "toast-position-preview" });
-  }, [t]);
-
   return (
     <SettingsPage>
       <GeneralProfileSection
@@ -468,19 +422,6 @@ export function SettingsGeneral() {
         onResponseCompletionNotificationsChange={handleResponseCompletionNotificationsChange}
       />
 
-      <SettingsSectionSeparator />
-
-      <GeneralAppearanceSection
-        resolvedTheme={resolvedTheme}
-        activeThemeMode={activeThemeMode}
-        activeThemePreset={activeThemePreset}
-        fontSize={fontSize}
-        toastPosition={toastPosition}
-        onThemeModeChange={handleThemeModeChange}
-        onThemePresetChange={handleThemePresetChange}
-        onFontSizeChange={handleFontSizeChange}
-        onToastPositionChange={handleToastPositionChange}
-      />
     </SettingsPage>
   );
 }

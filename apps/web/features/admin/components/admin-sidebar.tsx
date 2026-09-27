@@ -26,7 +26,6 @@ const ADMIN_SECTION_LABEL_KEYS: Record<AdminSection, string> = {
   groups: "sections.groups",
   "tool-settings": "sections.toolSettings",
   billing: "sections.billing",
-  announcements: "sections.announcements",
   logs: "sections.logs",
   "content-moderation": "sections.contentModeration",
   "login-settings": "sections.loginSettings",

@@ -5,7 +5,7 @@ import { useMessages, useTranslations } from "next-intl";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { Cog } from "@/components/animate-ui/icons/cog";
+import { Cog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -1048,7 +1048,7 @@ export function ChatModelConfig({
   const tOptionLabels = useTranslations("chat.optionLabels");
   const tOptionDescriptions = useTranslations("chat.optionDescriptions");
   const messages = useMessages();
-  const [hovered, setHovered] = React.useState(false);
+  const [_hovered, setHovered] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [optionsDraft, setOptionsDraft] = React.useState("");
   const [optionsObject, setOptionsObject] = React.useState<ConversationOptions>({});
@@ -1539,7 +1539,6 @@ export function ChatModelConfig({
             <Cog
               size={20}
               strokeWidth={1.4}
-              animate={hovered ? "default" : false}
             />
           </InputGroupButton>
         </TooltipTrigger>

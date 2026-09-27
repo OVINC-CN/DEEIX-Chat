@@ -9,17 +9,14 @@ import {
 } from "lucide-react"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
-import { useToastPosition } from "@/features/settings/utils/toast-position"
 import { useTheme } from "@/shared/components/theme-provider"
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme()
-  const position = useToastPosition()
 
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
-      position={position}
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,
@@ -37,6 +34,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         } as React.CSSProperties
       }
       {...props}
+      position="top-right"
     />
   )
 }
