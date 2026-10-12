@@ -182,14 +182,14 @@ func TestValidateConversationProjectDefaultModelAvailability(t *testing.T) {
 	}
 }
 
-func TestCreateConversationUsesOnlyAvailableProjectDefaultModel(t *testing.T) {
+func TestCreateConversationIgnoresProjectDefaultModel(t *testing.T) {
 	tests := []struct {
 		name           string
 		explicitModel  string
 		projectDefault string
 		wantModel      string
 	}{
-		{name: "project default", projectDefault: "project-model", wantModel: "project-model"},
+		{name: "available project default is ignored", projectDefault: "project-model", wantModel: ""},
 		{name: "explicit selection wins", explicitModel: "manual-model", projectDefault: "project-model", wantModel: "manual-model"},
 		{name: "retired project default falls back", projectDefault: "retired-model", wantModel: ""},
 		{name: "non-chat project default falls back", projectDefault: "image-model", wantModel: ""},
@@ -266,4 +266,49 @@ type knowledgeBaseResolverStub struct {
 
 func (s knowledgeBaseResolverStub) ResolveFiles(ctx context.Context, userID uint, publicIDs []string) ([]domainknowledgebase.KnowledgeBase, []domainconversation.FileObject, error) {
 	return s.resolveFiles(ctx, userID, publicIDs)
+}
+
+func TestEditProjectPreservesOmittedHiddenDefaults(t *testing.T) {
+	for _, mode := range []string{domainconversation.ConversationProjectMCPDefaultModeCustom, domainconversation.ConversationProjectMCPDefaultModeInherit} {
+		t.Run(mode, func(t *testing.T) {
+			repo := &projectMetadataPatchRepository{project: domainconversation.ConversationProject{
+				UserID: 1, PublicID: "project-one", Name: "Before", DefaultModel: "retired-model", MCPDefaultMode: mode,
+				DefaultMCPToolIDs: []uint{7, 8}, DefaultSkillIDs: []uint{9}, DefaultKnowledgeBaseIDs: []string{"legacy-kb"},
+			}}
+			service := &Service{repo: repo, cfg: config.NewRuntime(config.Config{MCPMaxSelectedToolsPerMessage: 1})}
+			name := "After"
+			knowledgeBases := []string{"legacy-kb"}
+			updated, err := service.UpdateConversationProject(context.Background(), 1, "project-one", ConversationProjectPatchInput{Name: &name, DefaultKnowledgeBaseIDs: &knowledgeBases})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if repo.patch.DefaultModel != nil || repo.patch.MCPDefaultMode != nil || repo.patch.DefaultMCPToolIDs != nil || repo.patch.DefaultSkillIDs != nil {
+				t.Fatalf("omitted fields were added to patch: %+v", repo.patch)
+			}
+			if updated.DefaultModel != "retired-model" || updated.MCPDefaultMode != mode || !reflect.DeepEqual(updated.DefaultMCPToolIDs, []uint{7, 8}) || !reflect.DeepEqual(updated.DefaultSkillIDs, []uint{9}) {
+				t.Fatalf("hidden defaults changed: %+v", updated)
+			}
+		})
+	}
+}
+
+type projectMetadataPatchRepository struct {
+	repository.ConversationRepository
+	project domainconversation.ConversationProject
+	patch   domainconversation.ConversationProjectPatch
+}
+
+func (r *projectMetadataPatchRepository) GetConversationProjectByPublicID(context.Context, uint, string) (*domainconversation.ConversationProject, error) {
+	project := r.project
+	return &project, nil
+}
+func (r *projectMetadataPatchRepository) UpdateConversationProjectMetadataByPublicID(_ context.Context, _ uint, _ string, patch domainconversation.ConversationProjectPatch) (*domainconversation.ConversationProject, error) {
+	r.patch = patch
+	if patch.Name != nil {
+		r.project.Name = *patch.Name
+	}
+	if patch.DefaultKnowledgeBaseIDs != nil {
+		r.project.DefaultKnowledgeBaseIDs = *patch.DefaultKnowledgeBaseIDs
+	}
+	return &r.project, nil
 }

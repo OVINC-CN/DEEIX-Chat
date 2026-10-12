@@ -82,8 +82,8 @@ func TestContentWidthSettingIsAllowed(t *testing.T) {
 func TestReuseModelOptionsSettingIsAllowed(t *testing.T) {
 	t.Parallel()
 
-	if got := allowedKeys["chat.reuse_model_options"]; got != "true" {
-		t.Fatalf("expected chat.reuse_model_options default to be true, got %q", got)
+	if got := allowedKeys["chat.reuse_model_options"]; got != "false" {
+		t.Fatalf("expected chat.reuse_model_options default to be false, got %q", got)
 	}
 	for _, value := range []string{"true", "false"} {
 		if err := validateValue("chat.reuse_model_options", value); err != nil {
@@ -135,8 +135,8 @@ func TestTraceAutoExpandSettingsAreAllowed(t *testing.T) {
 		"chat.auto_expand_tool_calls",
 	}
 	for _, key := range keys {
-		if got := allowedKeys[key]; got != "true" {
-			t.Fatalf("expected %s default to be true, got %q", key, got)
+		if got := allowedKeys[key]; got != "false" {
+			t.Fatalf("expected %s default to be false, got %q", key, got)
 		}
 		for _, value := range []string{"true", "false"} {
 			if err := validateValue(key, value); err != nil {

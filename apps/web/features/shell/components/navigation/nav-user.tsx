@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Check,
   ChevronDown,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -18,12 +17,8 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuItemIcon,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -34,10 +29,7 @@ import {
   useSidebarHoverExpansionLock,
 } from "@/components/ui/sidebar";
 import { SpinnerLabel } from "@/components/ui/spinner";
-import { NavDesktopDownload } from "@/features/shell/components/navigation/nav-desktop-download";
 import { useShellUserMenuActions } from "@/features/shell/hooks/use-shell-user-menu-actions";
-import { APP_LOCALE_LABELS, APP_LOCALES } from "@/i18n/config";
-import { dispatchOpenAnnouncements, getAnnouncementUnread, subscribeAnnouncementUnreadChanged } from "@/entities/announcement";
 import { FeatureGate } from "@/shared/capabilities";
 
 export function NavUser({
@@ -52,15 +44,13 @@ export function NavUser({
 }) {
   const t = useTranslations("common.navigation");
   const router = useRouter();
-  const { locale, loggingOut, savingLocale, onLogout, onLocaleSelect } = useShellUserMenuActions();
+  const { loggingOut, onLogout } = useShellUserMenuActions();
   const [open, setOpen] = React.useState(false);
-  const [hasUnreadAnnouncement, setHasUnreadAnnouncement] = React.useState(() => getAnnouncementUnread());
   const skipTriggerFocusRef = React.useRef(false);
   const isAdmin = user.role === "admin" || user.role === "superadmin";
 
   useSidebarHoverExpansionLock(open);
 
-  React.useEffect(() => subscribeAnnouncementUnreadChanged(setHasUnreadAnnouncement), []);
 
   const navigateFromMenu = React.useCallback(
     (href: string) => (event: Event) => {
@@ -71,18 +61,6 @@ export function NavUser({
     },
     [router],
   );
-
-  const closeAfterExternalOpen = React.useCallback(() => {
-    skipTriggerFocusRef.current = true;
-    setOpen(false);
-  }, []);
-
-  const openAnnouncementsFromMenu = React.useCallback((event: Event) => {
-    event.preventDefault();
-    skipTriggerFocusRef.current = true;
-    setOpen(false);
-    dispatchOpenAnnouncements();
-  }, []);
 
   return (
     <SidebarMenu className="group-data-[collapsible=icon]:items-center">
@@ -131,48 +109,18 @@ export function NavUser({
               </span>
             </DropdownMenuLabel>
             <DropdownMenuGroup>
-              <DropdownMenuItem onSelect={navigateFromMenu("/settings/general")}>
+              <DropdownMenuItem onSelect={navigateFromMenu("/setting/general")}>
                 {t("settings")}
               </DropdownMenuItem>
-              <FeatureGate feature="announcements">
-                <DropdownMenuItem onSelect={openAnnouncementsFromMenu}>
-                  <span className="min-w-0 flex-1 truncate">{t("announcements")}</span>
-                  <span className="ml-auto flex size-4 shrink-0 items-center justify-center">
-                    {hasUnreadAnnouncement ? <span aria-hidden="true" className="size-1.5 rounded-full bg-destructive" /> : null}
-                  </span>
-                </DropdownMenuItem>
-              </FeatureGate>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="focus:bg-accent/40 data-[state=open]:bg-accent/40">
-                  {t("language")}
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="min-w-32 p-1.5">
-                  {APP_LOCALES.map((item) => (
-                    <DropdownMenuItem
-                      key={item}
-                      disabled={savingLocale === item}
-                      onSelect={(event) => {
-                        event.preventDefault();
-                        void onLocaleSelect(item);
-                      }}
-                    >
-                      {APP_LOCALE_LABELS[item]}
-                      {locale === item ? <DropdownMenuItemIcon icon={Check} className="ml-auto" /> : null}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
             </DropdownMenuGroup>
             <FeatureGate feature="billingGating">
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem onSelect={navigateFromMenu("/settings/subscription")}>
+                <DropdownMenuItem onSelect={navigateFromMenu("/setting/subscription")}>
                   {t("upgradePlan")}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </FeatureGate>
-            {/* Outside the billing gate: servers without billing still offer the download. */}
-            <NavDesktopDownload onOpenPage={closeAfterExternalOpen} />
             <DropdownMenuSeparator />
             {isAdmin ? (
               <DropdownMenuItem onSelect={navigateFromMenu("/admin")}>

@@ -22,11 +22,6 @@ import {
   type ChatArtifact,
   resolveArtifactDownloadName,
 } from "@/features/chat/model/chat-artifacts";
-import {
-  useChatFontPreference,
-  useChatFontWeightPreference,
-  useFontSizePreference,
-} from "@/features/settings";
 import { cn } from "@/lib/utils";
 import { CopyActionButton } from "@/shared/components/copy-action";
 import { useTheme } from "@/shared/components/theme-provider";
@@ -177,9 +172,6 @@ function ChatArtifactPanel({
 }: ChatArtifactPanelProps) {
   const t = useTranslations("chat.artifacts");
   const { preset, resolvedTheme } = useTheme();
-  const chatFont = useChatFontPreference();
-  const chatFontWeight = useChatFontWeightPreference();
-  const fontSize = useFontSizePreference();
   const [previewTheme, setPreviewTheme] = React.useState<HTMLVisualThemeSnapshot>({
     colorScheme: "light",
     variables: [],
@@ -187,7 +179,7 @@ function ChatArtifactPanel({
 
   React.useEffect(() => {
     setPreviewTheme(captureHTMLVisualThemeSnapshot(resolvedTheme));
-  }, [chatFont, chatFontWeight, fontSize, preset, resolvedTheme]);
+  }, [preset, resolvedTheme]);
 
   // A document is only built once its code block has closed: rebuilding srcdoc on every
   // streamed chunk reloads the frame and re-runs a half-written page each time.

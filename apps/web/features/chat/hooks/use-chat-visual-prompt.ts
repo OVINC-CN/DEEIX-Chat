@@ -7,12 +7,12 @@ const useIsomorphicLayoutEffect = typeof window === "undefined" ? React.useEffec
 
 function readHTMLVisualPromptEnabled(): boolean {
   if (typeof window === "undefined") {
-    return false;
+    return true;
   }
   try {
-    return window.localStorage.getItem(HTML_VISUAL_PROMPT_STORAGE_KEY) === "true";
+    return window.localStorage.getItem(HTML_VISUAL_PROMPT_STORAGE_KEY) !== "false";
   } catch {
-    return false;
+    return true;
   }
 }
 
@@ -28,7 +28,7 @@ function writeHTMLVisualPromptEnabled(enabled: boolean): void {
 }
 
 export function useChatVisualPrompt() {
-  const [enabled, setEnabledState] = React.useState(false);
+  const [enabled, setEnabledState] = React.useState(true);
 
   useIsomorphicLayoutEffect(() => {
     setEnabledState(readHTMLVisualPromptEnabled());
@@ -41,7 +41,7 @@ export function useChatVisualPrompt() {
 
     function onStorage(event: StorageEvent) {
       if (event.key === HTML_VISUAL_PROMPT_STORAGE_KEY) {
-        setEnabledState(event.newValue === "true");
+        setEnabledState(event.newValue !== "false");
       }
     }
 
