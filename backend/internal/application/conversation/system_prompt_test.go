@@ -49,7 +49,7 @@ func TestResolveMessageSystemPromptInjectionAddsHTMLVisualPrompt(t *testing.T) {
 	if got.InlineToUser {
 		t.Fatal("expected native system prompt")
 	}
-	for _, want := range []string{`<format p="100" scope="request">`, "html-visual", "遵循用户语言", "HTML 实时渲染", "theme-variables", "--background", "var(--card)"} {
+	for _, want := range []string{`<format p="100" scope="request">`, "html-visual", "Follow the user's language.", "live HTML rendering", "theme-variables", "--background", "var(--card)"} {
 		if !strings.Contains(got.Content, want) {
 			t.Fatalf("expected content to contain %q, got %q", want, got.Content)
 		}
@@ -65,7 +65,7 @@ func TestResolveMessageSystemPromptInjectionRestrictsHTMLVisualThemeVariables(t 
 	}
 
 	got := resolveMessageSystemPromptInjection(config.Config{}, route, "", requestPromptOptions{HTMLVisual: true})
-	for _, want := range []string{"只能引用上述变量", "禁止在 style 中定义或覆盖 CSS 自定义属性", "--card 搭配 --card-foreground", "color-mix()"} {
+	for _, want := range []string{"Reference only the listed variables", "Never define or override CSS custom properties", "--card with --card-foreground", "color-mix()"} {
 		if !strings.Contains(got.Content, want) {
 			t.Fatalf("expected HTML theme-variable constraint %q, got %q", want, got.Content)
 		}

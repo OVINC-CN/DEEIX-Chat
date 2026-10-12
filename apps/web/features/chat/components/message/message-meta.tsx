@@ -17,19 +17,15 @@ import {
 import { useTranslations } from "next-intl";
 import * as React from "react";
 
-import { Brush } from "@/components/animate-ui/icons/brush";
-import { Check } from "@/components/animate-ui/icons/check";
-import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left";
-import { ChevronRight } from "@/components/animate-ui/icons/chevron-right";
-import { Copy } from "@/components/animate-ui/icons/copy";
-import { GitFork } from "@/components/animate-ui/icons/git-fork";
-import { Heart } from "@/components/animate-ui/icons/heart";
-import { RotateCcw } from "@/components/animate-ui/icons/rotate-ccw";
-import { ThumbsDown } from "@/components/animate-ui/icons/thumbs-down";
-import { ThumbsUp } from "@/components/animate-ui/icons/thumbs-up";
-import { Trash2 } from "@/components/animate-ui/icons/trash-2";
+import { Brush } from "lucide-react";
+import { Check } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { Copy } from "lucide-react";
+import { GitFork } from "lucide-react";
+import { RotateCcw } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,7 +35,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   durationBetweenMS,
@@ -47,7 +42,6 @@ import {
   formatDurationMS,
 } from "@/features/chat/model/duration";
 import { useChatElapsedDurationMS } from "@/features/chat/hooks/use-chat-elapsed-duration";
-import { useChatMemoryPin } from "@/features/chat/hooks/use-chat-memory-pin";
 import { type BillingSnapshot, parseBillingSnapshot } from "@/features/chat/model/billing-snapshot";
 import {
   type ChatRegenerateReasoningOptions,
@@ -188,7 +182,7 @@ function BranchSwitcher({
             disabled={!item.branchNavigator.canPrevious}
             onClick={() => onCycle(item.branchNavigator?.parentPublicID ?? null, "previous")}
           >
-            <ChevronLeft strokeWidth={1.8} animateOnHover="default" />
+            <ChevronLeft strokeWidth={1.8} />
           </Button>
         </TooltipTrigger>
         <TooltipContent side="top">{t("previousBranch")}</TooltipContent>
@@ -207,7 +201,7 @@ function BranchSwitcher({
             disabled={!item.branchNavigator.canNext}
             onClick={() => onCycle(item.branchNavigator?.parentPublicID ?? null, "next")}
           >
-            <ChevronRight strokeWidth={1.8} animateOnHover="default" />
+            <ChevronRight strokeWidth={1.8} />
           </Button>
         </TooltipTrigger>
         <TooltipContent side="top">{t("nextBranch")}</TooltipContent>
@@ -314,7 +308,7 @@ function RegenerateMenuButton({
               className={META_ACTION_BUTTON_CLASSNAME}
               aria-label={label}
             >
-              <RotateCcw strokeWidth={1.8} animateOnHover="default" />
+              <RotateCcw strokeWidth={1.8} />
             </Button>
           </DropdownMenuTrigger>
         </TooltipTrigger>
@@ -376,7 +370,7 @@ function ForkMessageButton({
       disabled={disabled || inFlight}
       onClick={() => void handleFork()}
     >
-      <GitFork strokeWidth={1.8} animateOnHover="default" />
+      <GitFork strokeWidth={1.8} />
     </MetaIconButton>
   );
 }
@@ -421,7 +415,7 @@ function DeleteMessageButton({
         disabled={disabled}
         onClick={() => setConfirmOpen(true)}
       >
-        <Trash2 size={14} strokeWidth={1.8} animateOnHover="shake" />
+        <Trash2 size={14} strokeWidth={1.8} />
       </MetaIconButton>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -483,7 +477,7 @@ export function UserMessageMeta({
               disabled={messagePending}
               onClick={onRetry}
             >
-              <RotateCcw strokeWidth={1.8} animateOnHover="default" />
+              <RotateCcw strokeWidth={1.8} />
             </MetaIconButton>
           ) : null}
           <MetaIconButton
@@ -491,7 +485,7 @@ export function UserMessageMeta({
             disabled={messagePending || !hasPersistedMessage}
             onClick={onEdit}
           >
-            <Brush strokeWidth={1.8} animateOnHover="default" />
+            <Brush strokeWidth={1.8} />
           </MetaIconButton>
           <MetaIconButton
             label={t("copyMessage")}
@@ -499,9 +493,9 @@ export function UserMessageMeta({
             onClick={onCopy}
           >
             {copySucceeded ? (
-              <Check strokeWidth={1.8} animate="default" />
+              <Check strokeWidth={1.8} />
             ) : (
-              <Copy strokeWidth={1.8} animateOnHover="default" />
+              <Copy strokeWidth={1.8} />
             )}
           </MetaIconButton>
           {/* The backend forbids deleting the root message (empty parentPublicID), so the UI doesn't show the entry at all. */}
@@ -1006,86 +1000,9 @@ function TieredBillingTable({ line }: { line: Extract<BillingTooltipLine, { type
   );
 }
 
-function QuickMemoryPin({ disabled }: { disabled?: boolean }) {
-  const t = useTranslations("chat.messages");
-  const [open, setOpen] = React.useState(false);
-  const [key, setKey] = React.useState("");
-  const [value, setValue] = React.useState("");
-  const { saving, savePreference } = useChatMemoryPin();
-
-  const handleSave = React.useCallback(
-    () =>
-      savePreference(key, value, () => {
-        setKey("");
-        setValue("");
-        setOpen(false);
-      }),
-    [key, savePreference, value],
-  );
-
-  const handleKeyDown = React.useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        void handleSave();
-      }
-    },
-    [handleSave],
-  );
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <PopoverTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              data-screenshot-exclude="true"
-              className={META_ACTION_BUTTON_CLASSNAME}
-              aria-label={t("rememberPreference")}
-              disabled={disabled}
-            >
-              <Heart strokeWidth={1.8} animateOnHover="default" />
-            </Button>
-          </PopoverTrigger>
-        </TooltipTrigger>
-        <TooltipContent side="top">{t("rememberPreference")}</TooltipContent>
-      </Tooltip>
-      <PopoverContent align="start" className="w-64 p-3">
-        <p className="mb-2 text-[12px] font-medium text-foreground">{t("rememberPreference")}</p>
-        <div className="space-y-2">
-          <Input
-            placeholder={t("memoryNamePlaceholder")}
-            value={key}
-            onChange={(e) => setKey(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <Input
-            placeholder={t("memoryValuePlaceholder")}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <Button
-            size="sm"
-            className="h-7 w-full text-[12px]"
-            disabled={!key.trim() || !value.trim() || saving}
-            onClick={() => void handleSave()}
-          >
-            {saving ? t("savingPreference") : t("savePreference")}
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
 export function AssistantMessageMeta({
   item,
   busy,
-  reaction,
   onCycleBranch,
   onRetry,
   regenerateReasoning = null,
@@ -1096,7 +1013,6 @@ export function AssistantMessageMeta({
   onFork,
   onDelete,
   copySucceeded = false,
-  onReact,
   showModelInfo = true,
   showLatency = true,
   showTokenUsage = true,
@@ -1209,9 +1125,9 @@ export function AssistantMessageMeta({
                   onClick={onCopy}
                 >
                   {copySucceeded ? (
-                    <Check strokeWidth={1.8} animate="default" />
+                    <Check strokeWidth={1.8} />
                   ) : (
-                    <Copy strokeWidth={1.8} animateOnHover="default" />
+                    <Copy strokeWidth={1.8} />
                   )}
                 </MetaIconButton>
                 {canEdit ? (
@@ -1219,25 +1135,9 @@ export function AssistantMessageMeta({
                     label={t("editReply")}
                     onClick={onEdit}
                   >
-                    <Brush strokeWidth={1.8} animateOnHover="default" />
+                    <Brush strokeWidth={1.8} />
                   </MetaIconButton>
                 ) : null}
-                <MetaIconButton
-                  label={t("likeReply")}
-                  className={reaction === "up" ? "text-foreground" : undefined}
-                  disabled={messagePending}
-                  onClick={() => onReact(reaction === "up" ? null : "up")}
-                >
-                  <ThumbsUp strokeWidth={1.8} animateOnHover="default" />
-                </MetaIconButton>
-                <MetaIconButton
-                  label={t("dislikeReply")}
-                  className={reaction === "down" ? "text-foreground" : undefined}
-                  disabled={messagePending}
-                  onClick={() => onReact(reaction === "down" ? null : "down")}
-                >
-                  <ThumbsDown strokeWidth={1.8} animateOnHover="default" />
-                </MetaIconButton>
                 {canRetry && regenerateReasoning && onRetryWithReasoning ? (
                   <RegenerateMenuButton
                     label={t("retryReply")}
@@ -1251,7 +1151,7 @@ export function AssistantMessageMeta({
                     label={t("retryReply")}
                     onClick={onRetry}
                   >
-                    <RotateCcw strokeWidth={1.8} animateOnHover="default" />
+                    <RotateCcw strokeWidth={1.8} />
                   </MetaIconButton>
                 ) : null}
                 {canDelete && onDelete ? (
@@ -1278,7 +1178,6 @@ export function AssistantMessageMeta({
                     onFork={onFork}
                   />
                 ) : null}
-                <QuickMemoryPin disabled={messagePending} />
               </>
             ) : null}
             {canShowBranchNavigator ? <BranchSwitcher item={item} onCycle={onCycleBranch} /> : null}

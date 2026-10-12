@@ -1245,7 +1245,6 @@ export function ChatModelConfig({
   );
 
   return (
-    <>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent
           className="w-[calc(100vw-1rem)] overflow-hidden p-4 sm:w-full sm:max-w-[800px] sm:p-6 md:max-w-[900px]"
@@ -1290,6 +1289,5 @@ export function ChatModelConfig({
           </DialogHeightTransition>
         </DialogContent>
       </Dialog>
-    </>
   );
 }

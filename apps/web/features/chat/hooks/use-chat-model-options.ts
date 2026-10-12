@@ -2,6 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import * as React from "react";
+import { toast } from "sonner";
+import { useAuthSession } from "@/shared/auth/auth-session-context";
 import { sanitizeConversationOptions } from "@/features/chat/model/conversation-options";
 import {
   type ChatModelOption,
@@ -31,7 +33,7 @@ import {
   parseProtocolsJSON,
   resolveModelProviderIcon,
 } from "@/entities/model";
-import { type ChatContentWidth, parseChatContentWidth, useUserSettings } from "@/entities/user-settings";
+import { type ChatContentWidth, updateUserSettings, useUserSettings } from "@/entities/user-settings";
 import { resolveConversationDefaultModel } from "@/entities/conversation";
 import { isOneOf, isRecord, parseJSON } from "@/shared/lib/type-guards";
 
@@ -52,10 +54,6 @@ function parseJSONObject(raw: string): Record<string, unknown> | null {
   }
   const parsed = parseJSON(normalized);
   return isRecord(parsed) ? parsed : null;
-}
-
-function resolveChatContentWidth(settings: Record<string, string>): ChatContentWidth {
-  return parseChatContentWidth(settings["chat.content_width"]);
 }
 
 function normalizeNativeToolPayload(value: unknown): Record<string, unknown> {
@@ -395,18 +393,19 @@ function parseModalities(value: unknown): ModelModality[] {
 export function useChatModelOptions({
   conversationPublicID,
   conversationModel,
-  newConversationDefaultModel,
   newConversationDefaultsPending = false,
   resetToken,
 }: {
   conversationPublicID: string | null;
   conversationModel?: string | null;
-  newConversationDefaultModel?: string | null;
   newConversationDefaultsPending?: boolean;
   resetToken?: number;
 }) {
   const t = useTranslations("chat.models");
   const { settings: userSettings } = useUserSettings();
+  const { accessToken } = useAuthSession();
+  const modelSaveRequestRef = React.useRef(0);
+  const manualDefaultModelRef = React.useRef<string | null>(null);
   const [availableModels, setAvailableModels] = React.useState<PublicModelDTO[]>([]);
   const [modelsLoading, setModelsLoading] = React.useState(true);
   const [defaultModelResolving, setDefaultModelResolving] = React.useState(false);
@@ -424,26 +423,32 @@ export function useChatModelOptions({
   const previousResetTokenRef = React.useRef(resetToken);
   const runModelRequestRef = React.useRef(0);
   const modelCatalogRequestRef = React.useRef<Promise<ModelCatalogRefreshResult> | null>(null);
-  const userDefaultModel = userSettings["chat.default_model"]?.trim() ?? "";
+  const userDefaultModel = manualDefaultModelRef.current ?? userSettings["chat.default_model"]?.trim() ?? "";
   const sendShortcut: SendShortcut = parseSendShortcut(userSettings["chat.send_on_enter"]);
   const restoreDraftOnFailure = userSettings["chat.restore_draft_on_failure"] !== "false";
   const preserveConversationDrafts = userSettings["chat.preserve_conversation_drafts"] !== "false";
-  const inputHeight: "compact" | "standard" | "loose" =
-    userSettings["chat.input_height"] === "compact" || userSettings["chat.input_height"] === "loose"
-      ? userSettings["chat.input_height"]
-      : "standard";
-  const contentWidth: ChatContentWidth = resolveChatContentWidth(userSettings);
-  const markdownRender = userSettings["chat.markdown_render"] !== "false";
-  const showModelInfo = userSettings["chat.show_model_info"] !== "false";
-  const showLatency = userSettings["chat.show_latency"] !== "false";
-  const showTokenUsage = userSettings["chat.show_token_usage"] !== "false";
-  const showBillingCost = billingCostAvailable && userSettings["chat.show_billing_cost"] !== "false";
+  const inputHeight = "standard" as const;
+  const contentWidth: ChatContentWidth = "compact";
+  const markdownRender = true;
+  const showModelInfo = true;
+  const showLatency = true;
+  const showTokenUsage = true;
+  const showBillingCost = billingCostAvailable;
   const showProcessTrace = userSettings["chat.show_process_trace"] !== "false";
 
   const selectPlatformModelName = React.useCallback((platformModelName: string) => {
+    const model = platformModelName.trim();
+    if (!model) return;
     userSelectedModelRef.current = true;
-    setSelectedPlatformModelName(platformModelName);
-  }, []);
+    manualDefaultModelRef.current = model;
+    setSelectedPlatformModelName(model);
+    const requestID = ++modelSaveRequestRef.current;
+    void updateUserSettings(accessToken, { "chat.default_model": model }).catch(() => {
+      if (requestID === modelSaveRequestRef.current) {
+        toast.error(t("selectionSaveFailed"));
+      }
+    });
+  }, [accessToken, t]);
 
   const loadModelCatalog = React.useCallback((accessToken?: string): Promise<ModelCatalogRefreshResult> => {
     if (modelCatalogRequestRef.current) {
@@ -601,22 +606,21 @@ export function useChatModelOptions({
       setDefaultModelResolving(false);
       return;
     }
-    // The picker refreshes the catalog on open, so this effect re-runs while the user is choosing a
-    // model. A manual choice is never overridden; skip the resolving state so the trigger does not
-    // flash its skeleton for a frame after the selection.
-    if (conversationPublicID?.trim() || userSelectedModelRef.current) {
+    const selectionAvailable = availableModels.some((model) => model.platformModelName === selectedPlatformModelName);
+    if ((conversationPublicID?.trim() || userSelectedModelRef.current) && selectionAvailable) {
       setDefaultModelResolving(false);
       return;
     }
+    if (!selectionAvailable) userSelectedModelRef.current = false;
     if (newConversationDefaultsPending) {
       setDefaultModelResolving(true);
       return;
     }
 
-    // A new chat, project or default setting shows the skeleton until the default is known, so the
+    // A new chat or default setting shows the skeleton until the default is known, so the
     // previous conversation's model never flashes first. When only the catalog changed (the picker
     // refreshes it on open), the default is re-resolved in the background instead.
-    const resolutionKey = JSON.stringify([resetToken, newConversationDefaultModel ?? "", userDefaultModel]);
+    const resolutionKey = JSON.stringify([resetToken, userDefaultModel]);
     const catalogOnlyChange = defaultModelResolutionKeyRef.current === resolutionKey;
     defaultModelResolutionKeyRef.current = resolutionKey;
     let cancelled = false;
@@ -629,7 +633,6 @@ export function useChatModelOptions({
       const result = await resolveConversationDefaultModel({
         accessToken: token,
         availableModels,
-        projectDefaultModel: newConversationDefaultModel ?? "",
         userDefaultModel,
       });
       if (!cancelled && !userSelectedModelRef.current) {
@@ -649,7 +652,7 @@ export function useChatModelOptions({
     return () => {
       cancelled = true;
     };
-  }, [availableModels, conversationPublicID, newConversationDefaultModel, newConversationDefaultsPending, resetToken, userDefaultModel]);
+  }, [availableModels, conversationPublicID, newConversationDefaultsPending, resetToken, selectedPlatformModelName, userDefaultModel]);
 
   const modelOptions = React.useMemo<ChatModelOption[]>(
     () =>
@@ -681,5 +684,9 @@ export function useChatModelOptions({
     mcpMaxSelectedTools,
     selectedPlatformModelName,
     setSelectedPlatformModelName: selectPlatformModelName,
+    setSelectedPlatformModelNameAutomatically: (model: string) => {
+      userSelectedModelRef.current = true;
+      setSelectedPlatformModelName(model);
+    },
   };
 }

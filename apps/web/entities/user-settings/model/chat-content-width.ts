@@ -12,8 +12,8 @@ export const DEFAULT_CHAT_CONTENT_WIDTH: ChatContentWidth = "compact";
 export const CHAT_CONTENT_WIDTH_OPTIONS: ChatContentWidthOption[] = [
   {
     value: "compact",
-    width: 760,
-    className: "max-w-[760px]",
+    width: 800,
+    className: "max-w-[800px]",
     previewScaleClassName: "w-7/12",
   },
   {

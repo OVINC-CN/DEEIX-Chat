@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	appusersettings "github.com/DEEIX-AI/DEEIX-Chat/backend/internal/application/usersettings"
 	model "github.com/DEEIX-AI/DEEIX-Chat/backend/internal/domain/conversation"
 	domainmemory "github.com/DEEIX-AI/DEEIX-Chat/backend/internal/domain/memory"
 	"github.com/DEEIX-AI/DEEIX-Chat/backend/internal/shared/background"
@@ -58,6 +59,9 @@ func (s *Service) invalidateSnapshotCache(conversationID uint) {
 
 // getUserSettingCached 从共享缓存读取用户设置，未命中或缓存不可用时回退到 DB。
 func (s *Service) getUserSettingCached(ctx context.Context, userID uint, key string) (string, error) {
+	if value, fixed := appusersettings.FixedValue(key); fixed {
+		return value, nil
+	}
 	if s.cache == nil {
 		return s.repo.GetUserSettingValue(ctx, userID, key)
 	}

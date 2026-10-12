@@ -20,20 +20,20 @@ type ChatPreferencesState = ChatPreferences & {
 const DEFAULT_CHAT_PREFERENCES: ChatPreferences = {
   autoGenerateTitle: true,
   autoGenerateLabels: true,
-  autoExpandThinking: true,
-  autoExpandToolCalls: true,
+  autoExpandThinking: false,
+  autoExpandToolCalls: false,
   deleteFilesByDefault: false,
-  reuseModelOptions: true,
+  reuseModelOptions: false,
 };
 
 function resolveChatPreferences(settings: Record<string, string>): ChatPreferences {
   return {
-    autoGenerateTitle: settings["chat.auto_generate_title"] !== "false",
-    autoGenerateLabels: settings["chat.auto_generate_labels"] !== "false",
-    autoExpandThinking: settings["chat.auto_expand_thinking"] !== "false",
-    autoExpandToolCalls: settings["chat.auto_expand_tool_calls"] !== "false",
+    autoGenerateTitle: true,
+    autoGenerateLabels: true,
+    autoExpandThinking: false,
+    autoExpandToolCalls: false,
     deleteFilesByDefault: settings["chat.delete_conversation_files_by_default"] === "true",
-    reuseModelOptions: settings["chat.reuse_model_options"] !== "false",
+    reuseModelOptions: false,
   };
 }
 

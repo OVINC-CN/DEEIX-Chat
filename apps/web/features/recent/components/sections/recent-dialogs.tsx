@@ -11,7 +11,7 @@ import {
 } from "@/entities/conversation";
 import { DeleteFilesOption } from "@/entities/file";
 import type { ConversationDTO, ConversationShareDTO } from "@/shared/api/conversation-types";
-import { Sparkles } from "@/components/animate-ui/icons/sparkles";
+import { Sparkles } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -159,7 +159,7 @@ export function RecentDialogs({
                 {renamingAutomatically ? (
                   <Spinner className="size-3.5" />
                 ) : (
-                  <Sparkles size={15} strokeWidth={1.5} animateOnHover="default" />
+                  <Sparkles size={15} strokeWidth={1.5} />
                 )}
               </button>
             </div>

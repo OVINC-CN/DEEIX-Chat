@@ -48,7 +48,7 @@
     "recent": "Recent",
     "files": "Files",
     "knowledgeBases": "Knowledge bases",
-    "library": "Library",
+    "library": "提示词",
     "searchTitle": "Search",
     "searchDescription": "Search conversation titles, labels, projects, and message content",
     "searchPlaceholder": "Search conversations or message content",
@@ -84,7 +84,8 @@
     "fallbackUser": "User",
     "today": "Today",
     "archived": "Archived",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "skillsPrompt": "提示词"
   },
   "time": {
     "todayTime": "{time}",
