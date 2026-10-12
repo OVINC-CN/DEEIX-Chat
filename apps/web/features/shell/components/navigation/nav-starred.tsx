@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 
-import { List } from "@/components/animate-ui/icons/list";
+import { List } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,

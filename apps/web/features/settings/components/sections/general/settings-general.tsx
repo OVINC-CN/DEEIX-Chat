@@ -4,15 +4,7 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-import { useSettingsAppearancePersistence } from "@/features/settings/hooks/use-settings-appearance-persistence";
 import { useSettingsGeneralProfile } from "@/features/settings/hooks/use-settings-general-profile";
-import {
-  type FontSizeOption,
-  useFontSizePreference,
-  writeFontSizePreference,
-} from "@/features/settings/utils/font-size";
-import { type ToastPosition, useToastPosition, writeToastPosition } from "@/shared/lib/toast-position";
-import type { ThemeMode } from "@/features/settings/types/settings";
 import {
   disableResponseCompletionNotifications,
   enableResponseCompletionNotifications,
@@ -24,14 +16,11 @@ import {
   SettingsPage,
   SettingsSectionSeparator,
 } from "@/shared/components/settings-layout";
-import { useTheme } from "@/shared/components/theme-provider";
-import { GeneralAppearanceSection } from "./general-appearance";
 import { GeneralNotificationsSection } from "./general-notifications";
 import { GeneralProfileSection } from "./general-profile";
 
 export function SettingsGeneral() {
   const t = useTranslations("settings");
-  const { preset, resolvedTheme, setPreset, setTheme, theme } = useTheme();
   const {
     viewer,
     draft,
@@ -57,25 +46,18 @@ export function SettingsGeneral() {
     handleCycleGeneratedAvatar,
     handleUploadAvatarFile,
   } = useSettingsGeneralProfile();
-  const [themeRuntimeReady, setThemeRuntimeReady] = React.useState(false);
-  const fontSize = useFontSizePreference();
-  const toastPosition = useToastPosition();
   const [notificationRuntimeReady, setNotificationRuntimeReady] = React.useState(false);
   const [notificationSupported, setNotificationSupported] = React.useState(false);
   const [responseCompletionNotificationsEnabled, setResponseCompletionNotificationsEnabled] = React.useState(false);
   const [notificationPermission, setNotificationPermission] = React.useState<NotificationPermission | "unsupported">("unsupported");
-  const persistAppearancePreferences = useSettingsAppearancePersistence();
 
   React.useEffect(() => {
-    setThemeRuntimeReady(true);
     setNotificationRuntimeReady(true);
     setNotificationSupported(isBrowserNotificationSupported());
     setResponseCompletionNotificationsEnabled(readResponseCompletionNotificationsEnabled());
     setNotificationPermission(getBrowserNotificationPermission());
   }, []);
 
-  const activeThemeMode: ThemeMode = themeRuntimeReady ? theme : "system";
-  const activeThemePreset = themeRuntimeReady ? preset : "default";
 
   const handleResponseCompletionNotificationsChange = React.useCallback((checked: boolean) => {
     if (!notificationSupported) {
@@ -132,33 +114,6 @@ export function SettingsGeneral() {
     return t("generalPage.notifications.defaultHelp");
   }, [notificationPermission, notificationRuntimeReady, notificationSupported, t]);
 
-  const handleThemeModeChange = React.useCallback(
-    (mode: ThemeMode) => {
-      setTheme(mode);
-    },
-    [setTheme],
-  );
-
-  const handleThemePresetChange = React.useCallback(
-    (nextPreset: typeof preset) => {
-      setPreset(nextPreset);
-      persistAppearancePreferences({ preset: nextPreset });
-    },
-    [persistAppearancePreferences, setPreset],
-  );
-
-  const handleFontSizeChange = React.useCallback((value: FontSizeOption) => {
-    writeFontSizePreference(value);
-    persistAppearancePreferences({ fontSize: value });
-  }, [persistAppearancePreferences]);
-  // Device-local like the color mode: screen size and keyboard behavior, not
-  // the account, decide where a toast is out of the way.
-  const handleToastPositionChange = React.useCallback((value: ToastPosition) => {
-    writeToastPosition(value);
-    // Show the result where it now lives, so the choice is immediately legible.
-    toast.success(t("generalPage.appearance.toastPositionPreview"), { id: "toast-position-preview" });
-  }, [t]);
-
   return (
     <SettingsPage>
       <GeneralProfileSection
@@ -197,19 +152,6 @@ export function SettingsGeneral() {
         onResponseCompletionNotificationsChange={handleResponseCompletionNotificationsChange}
       />
 
-      <SettingsSectionSeparator />
-
-      <GeneralAppearanceSection
-        resolvedTheme={resolvedTheme}
-        activeThemeMode={activeThemeMode}
-        activeThemePreset={activeThemePreset}
-        fontSize={fontSize}
-        toastPosition={toastPosition}
-        onThemeModeChange={handleThemeModeChange}
-        onThemePresetChange={handleThemePresetChange}
-        onFontSizeChange={handleFontSizeChange}
-        onToastPositionChange={handleToastPositionChange}
-      />
     </SettingsPage>
   );
 }

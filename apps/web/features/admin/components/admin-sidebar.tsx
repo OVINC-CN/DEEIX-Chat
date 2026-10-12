@@ -43,6 +43,8 @@ const ADMIN_SECTION_LABEL_KEYS: Record<AdminSection, string> = {
   about: "sections.about",
 };
 
+const HIDDEN_ADMIN_SECTIONS = new Set<AdminSection>(["announcements", "knowledge-bases", "user-keys"]);
+
 export function AdminSidebar({
   basePath,
 }: {
@@ -62,7 +64,7 @@ export function AdminSidebar({
   );
   const updateRelease = resolveAvailableRelease(packageMeta.version, cachedLatestRelease);
   const visibleSections = React.useMemo(() => {
-    const sections = ADMIN_SECTIONS.filter((item) => isSectionAvailable(item, flags));
+    const sections = ADMIN_SECTIONS.filter((item) => !HIDDEN_ADMIN_SECTIONS.has(item.id) && isSectionAvailable(item, flags));
     return user?.role === "superadmin" ? sections : sections.filter((item) => item.id !== "content-moderation");
   }, [flags, user?.role]);
   const sectionLabel = React.useCallback(

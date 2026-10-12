@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Box, ChevronDown, Globe2, type LucideIcon, Search, Wrench } from "lucide-react";
+import { BookOpen, ChevronDown, type LucideIcon, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { toast } from "sonner";
@@ -23,19 +23,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useShellProjectDialogDefaults } from "@/features/shell/hooks/use-shell-project-dialog-defaults";
 import type { ProjectDraft } from "@/features/shell/types/project";
 import { cn } from "@/lib/utils";
-import {
-  ModelSelect,
-  type ModelSelectOption,
-  parseKindsJSON,
-  resolveModelOptionIconUrl,
-  isPersonalModelRef,
-  resolveModelOptionLabel,
-} from "@/entities/model";
 import { useDialogSnapshot } from "@/shared/hooks/use-dialog-snapshot";
 import { useFeaturePolicy } from "@/shared/hooks/use-feature-policy";
-import { hasMultipleImageAttachmentProcessors } from "@/entities/mcp";
 
-const PROJECT_DEFAULT_MODEL_INHERIT_VALUE = "__inherit_global_model__";
+
 
 type ProjectDefaultOption<T extends string | number> = {
   id: T;
@@ -62,7 +53,6 @@ export function ProjectDialog({
   const open = Boolean(draft);
   const nameInputID = React.useId();
   const systemPromptInputID = React.useId();
-  const defaultModelInputID = React.useId();
   const dialogContentRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -71,43 +61,7 @@ export function ProjectDialog({
     }
   }, [draft]);
 
-  const {
-    catalogLoading,
-    modelCatalogLoading,
-    mcpTools,
-    models,
-    selectionLimit,
-    skillCatalog,
-    knowledgeBaseCatalog,
-  } = useShellProjectDialogDefaults({ open, draft, setDraft, knowledgeBaseEnabled });
-
-  const modelOptions = React.useMemo<ModelSelectOption[]>(() => {
-    const options: ModelSelectOption[] = [
-      { label: t("inheritGlobalModel"), value: PROJECT_DEFAULT_MODEL_INHERIT_VALUE, iconUrl: null },
-      ...models
-        // A project default is shared configuration, so it may only name a platform model.
-        .filter((model) => model.platformModelName.trim() && parseKindsJSON(model.kindsJSON).includes("chat") && !isPersonalModelRef(model.platformModelName))
-        .map((model) => ({
-          label: resolveModelOptionLabel(model.platformModelName),
-          value: model.platformModelName,
-          iconUrl: resolveModelOptionIconUrl({
-            platformModelName: model.platformModelName,
-            vendor: model.vendor ?? "",
-            icon: model.icon ?? "",
-          }),
-        })),
-    ];
-    const currentDefaultModel = stableDraft?.defaultModel.trim() ?? "";
-    if (currentDefaultModel && !options.some((option) => option.value === currentDefaultModel)) {
-      options.push({
-        label: t("unavailableDefaultModel", { model: currentDefaultModel }),
-        value: currentDefaultModel,
-        iconUrl: null,
-      });
-    }
-    return options;
-  }, [models, stableDraft?.defaultModel, t]);
-
+  const { knowledgeBaseCatalog } = useShellProjectDialogDefaults({ open, draft, setDraft, knowledgeBaseEnabled });
   const handleSubmit = React.useCallback<React.FormEventHandler<HTMLFormElement>>(
     async (event) => {
       event.preventDefault();
@@ -124,7 +78,6 @@ export function ProjectDialog({
     [draft?.name, onSubmit, submitting],
   );
 
-  const inheritGlobalMCPDefaults = (stableDraft?.mcpDefaultMode ?? "inherit") === "inherit";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -174,84 +127,7 @@ export function ProjectDialog({
                 />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 sm:items-start">
-                <div className="min-w-0 space-y-1">
-                  <label htmlFor={defaultModelInputID} className="block text-xs text-muted-foreground">
-                    {t("defaultModelLabel")}
-                  </label>
-                  {modelCatalogLoading ? (
-                    <Button
-                      id={defaultModelInputID}
-                      type="button"
-                      variant="outline"
-                      className="h-8 w-full justify-start gap-2 px-3 font-normal shadow-none"
-                      disabled
-                    >
-                      <Spinner className="size-3.5" />
-                      {t("defaultModelLoading")}
-                    </Button>
-                  ) : (
-                    <ModelSelect
-                      id={defaultModelInputID}
-                      value={stableDraft?.defaultModel.trim() || PROJECT_DEFAULT_MODEL_INHERIT_VALUE}
-                      fallbackValue={PROJECT_DEFAULT_MODEL_INHERIT_VALUE}
-                      options={modelOptions}
-                      valueAlign="start"
-                      itemAlign="start"
-                      contentClassName="min-w-[min(24rem,calc(100vw-3rem))]"
-                      triggerClassName="h-8 shadow-none"
-                      portalContainer={dialogContentRef}
-                      onChange={(value) => {
-                        const defaultModel = value === PROJECT_DEFAULT_MODEL_INHERIT_VALUE ? "" : value;
-                        setDraft((current) => current ? { ...current, defaultModel } : current);
-                      }}
-                      disabled={submitting}
-                    />
-                  )}
-                </div>
-
-                <ProjectDefaultSelector
-                  icon={Wrench}
-                  label={t("mcpDefaultsLabel")}
-                  emptyLabel={t("mcpDefaultsEmpty")}
-                  searchPlaceholder={t("searchMCPTools")}
-                  options={mcpTools.map((tool) => ({
-                    id: tool.id,
-                    label: tool.displayName || tool.name,
-                    detail: tool.serverName,
-                  }))}
-                  selectedIDs={inheritGlobalMCPDefaults ? [] : (stableDraft?.defaultMCPToolIDs ?? [])}
-                  selectionLimit={selectionLimit}
-                  loading={catalogLoading}
-                  disabled={submitting}
-                  exclusiveOption={{
-                    active: inheritGlobalMCPDefaults,
-                    icon: Globe2,
-                    label: t("inheritGlobalMCPDefaults"),
-                    detail: t("inheritGlobalMCPDefaultsDescription"),
-                    onChange: (active) => {
-                      setDraft((current) => current
-                        ? {
-                            ...current,
-                            mcpDefaultMode: active ? "inherit" : "custom",
-                            defaultMCPToolIDs: [],
-                          }
-                        : current);
-                    },
-                  }}
-                  onChange={(defaultMCPToolIDs) => {
-                    if (hasMultipleImageAttachmentProcessors(defaultMCPToolIDs, mcpTools)) {
-                      toast.error(t("imageProcessorLimitTitle"), {
-                        description: t("imageProcessorLimitDescription"),
-                      });
-                      return;
-                    }
-                    setDraft((current) => current
-                      ? { ...current, mcpDefaultMode: "custom", defaultMCPToolIDs }
-                      : current);
-                  }}
-                />
-
+              <div className="grid gap-4">
                 {knowledgeBaseEnabled ? (
                   <ProjectDefaultSelector
                     icon={BookOpen}
@@ -279,29 +155,6 @@ export function ProjectDialog({
                   />
                 ) : null}
 
-                <ProjectDefaultSelector
-                  icon={Box}
-                  label={t("selectSkills")}
-                  emptyLabel={t("skillDefaultsEmpty")}
-                  searchPlaceholder={t("searchSkills")}
-                  options={skillCatalog.items.map((skill) => ({
-                    id: skill.id,
-                    label: skill.title,
-                    detail: skill.description.trim() || (skill.trigger ? `/${skill.trigger}` : ""),
-                  }))}
-                  selectedIDs={stableDraft?.defaultSkillIDs ?? []}
-                  selectionLimit={selectionLimit}
-                  loading={skillCatalog.loading && skillCatalog.items.length === 0}
-                  searching={skillCatalog.loading}
-                  loadingMore={skillCatalog.loadingMore}
-                  hasMore={skillCatalog.hasMore}
-                  disabled={submitting || catalogLoading}
-                  onQueryChange={skillCatalog.setQuery}
-                  onLoadMore={skillCatalog.loadMore}
-                  onChange={(defaultSkillIDs) => {
-                    setDraft((current) => current ? { ...current, defaultSkillIDs } : current);
-                  }}
-                />
               </div>
             </div>
 

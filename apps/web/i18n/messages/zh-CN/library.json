@@ -1,5 +1,5 @@
 {
-  "pageTitle": "指令库",
+  "pageTitle": "提示词",
   "pageDescription": "管理你的技能与提示词，在对话中输入 / 即可调用。管理员配置的内置技能和提示词会自动出现。",
   "description": "自定义可在对话中通过 / 调用的技能与提示词。",
   "skillsTab": "技能",

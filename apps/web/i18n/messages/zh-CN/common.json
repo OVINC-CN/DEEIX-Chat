@@ -48,7 +48,7 @@
     "recent": "对话",
     "files": "文件",
     "knowledgeBases": "知识库",
-    "library": "指令库",
+    "library": "提示词",
     "searchTitle": "搜索",
     "searchDescription": "搜索对话标题、标签、项目和消息正文",
     "searchPlaceholder": "搜索对话或消息内容",
@@ -84,7 +84,8 @@
     "fallbackUser": "用户",
     "today": "今天",
     "archived": "已归档",
-    "yesterday": "昨天"
+    "yesterday": "昨天",
+    "skillsPrompt": "提示词"
   },
   "time": {
     "todayTime": "{time}",
