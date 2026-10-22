@@ -4,7 +4,7 @@
 # so `docker build .` and the release workflow (.github/workflows/image.yml) produce the same image.
 # Dependency and compiler caches live in BuildKit cache mounts; CI persists them between runs.
 
-FROM node:24-bookworm-slim AS frontend-builder
+FROM node:24.21.1-bookworm-slim AS frontend-builder
 
 WORKDIR /src
 
@@ -43,7 +43,7 @@ RUN --mount=type=cache,id=next-cache,target=/src/apps/web/.next/cache \
     pnpm build
 
 
-FROM golang:1.26.8-bookworm AS backend-builder
+FROM golang:1.26.10-bookworm AS backend-builder
 
 WORKDIR /src/backend
 
