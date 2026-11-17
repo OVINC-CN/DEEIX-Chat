@@ -163,7 +163,7 @@
 ### 14. 整理工程、依赖和发布配置
 
 - 开发工具链使用 **Go 1.26.8、Node 24、pnpm 10.17.0**；保留包管理器的完整校验信息，依赖安装以当前配置和锁文件为准。
-- 保持当前上游依赖与 Biome，不从归档分支降级。OpenTelemetry 主包、trace、metric、sdk 和 OTLP trace exporter 系列保持 **1.45.0**。
+- 保持当前上游依赖与 Biome，不从归档分支降级。OpenTelemetry 主包、trace、metric、sdk 和 OTLP trace exporter 系列保持 **1.47.0**，修复属性长度限制被合法 U+FFFD 字符绕过的问题。
 - 版本由仓库统一版本值和同步工具管理，不单独修改某个客户端的版本。
 - GitHub 仅保留 GHCR 镜像构建和发布工作流。两个 metadata 步骤都设置 `latest=false`，仅 `main` 的显式规则发布 `latest`；分支及版本标签不能自动生成 `latest`。
 - 清理旧 CI、CodeQL、桌面发布、Release Tag、Docker Hub 发布、stale 工作流、GitHub issue/PR 模板、仓库治理文档及 release-note-writer 技能；根 README 简化为标题。后续合并不顺带恢复这些内容。
